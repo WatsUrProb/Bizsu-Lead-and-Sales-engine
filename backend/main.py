@@ -12,6 +12,7 @@ import joblib
 from fastapi import FastAPI, HTTPException, Query, Request
 from pydantic import BaseModel, Field, field_validator
 
+from backend.candidates import WEIGHTS, load_catalog, outreach_template
 from backend.db import DEFAULT_DB, ROOT, initialize, lead_from_row, now, partner_from_row, session
 from backend.domain import NEXT_STAGE, STAGES, draft_message, qualify, stage_allowed
 
@@ -67,12 +68,19 @@ class DraftInput(BaseModel):
     message: str = Field(min_length=5, max_length=3000)
 
 
+class CandidateActionInput(BaseModel):
+    shortlisted: bool
+    outreach_draft: str = Field(max_length=3000)
+
+
 def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
     path = Path(db_path or os.environ.get("BIZSU_DB_PATH", DEFAULT_DB))
     area_data = json.loads((DATA / "processed" / "areas.json").read_text())
     cluster_data = json.loads((DATA / "processed" / "clusters.json").read_text())
     model_card = json.loads((DATA / "models" / "conversion_card.json").read_text())
     sources = json.loads((DATA / "sources.json").read_text())
+    catalog = load_catalog()
+    candidates_by_id = {item["id"]: item for item in catalog["candidates"]}
     model = joblib.load(DATA / "models" / "conversion.joblib")
     areas = [
         {**area, **cluster_data["assignments"].get(area["name"], {"cluster_id": None, "cluster_label": None})}
@@ -99,7 +107,7 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
             "clusters": {key: value for key, value in cluster_data.items() if key != "assignments"},
             "model": model_card,
             "stages": STAGES,
-            "demo_note": "Planning-area figures are observed aggregates; partners, enquiries and outcomes are synthetic.",
+            "demo_note": "Planning-area figures and sourced company profiles are real public information; referral partners, enquiries and outcomes are synthetic.",
             "ema_note": "The available area electricity context is historical 2013 whole-home consumption. EMA's current source page was reviewed, but the workbook could not be inspected through automated retrieval, so it was not integrated.",
         }
 
@@ -117,6 +125,39 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
         with session(path) as db:
             partners = [partner_from_row(row) for row in db.execute("SELECT * FROM partners WHERE active=1")]
         return sorted(partners, key=lambda partner: partner["ranking"]["score"], reverse=True)
+
+    @app.get("/api/candidates")
+    def list_candidates():
+        with session(path) as db:
+            actions = {row["candidate_id"]: dict(row) for row in db.execute("SELECT * FROM candidate_actions")}
+        candidates = []
+        for candidate in catalog["candidates"]:
+            action = actions.get(candidate["id"], {})
+            candidates.append({
+                **candidate,
+                "shortlisted": bool(action.get("shortlisted", 0)),
+                "outreach_draft": action["outreach_draft"] if action else outreach_template(candidate),
+            })
+        return {
+            "candidates": sorted(candidates, key=lambda item: (-item["evidence_score"], item["name"])),
+            "weights": WEIGHTS,
+            "retrieved_on": catalog["retrieved_on"],
+            "note": catalog["note"],
+        }
+
+    @app.patch("/api/candidates/{candidate_id}")
+    def update_candidate(candidate_id: str, payload: CandidateActionInput):
+        if candidate_id not in candidates_by_id:
+            raise HTTPException(404, "Candidate not found")
+        with session(path) as db:
+            db.execute(
+                """INSERT INTO candidate_actions (candidate_id,shortlisted,outreach_draft,updated_at)
+                   VALUES (?,?,?,?) ON CONFLICT(candidate_id) DO UPDATE SET
+                   shortlisted=excluded.shortlisted,outreach_draft=excluded.outreach_draft,
+                   updated_at=excluded.updated_at""",
+                (candidate_id, int(payload.shortlisted), payload.outreach_draft, now()),
+            )
+        return {"candidate_id": candidate_id, **payload.model_dump(), "sent": False}
 
     @app.post("/api/referral-visits")
     def record_visit(payload: ReferralVisitInput):

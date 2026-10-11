@@ -82,3 +82,27 @@ def test_synthetic_only_contact_and_review_rules(tmp_path):
         payload["property_type"] = "HDB 4 room"
         payload["contact_name"] = "  "
         assert client.post("/api/leads", json=payload).status_code == 422
+
+
+def test_sourced_candidates_stay_separate_from_demo_referrals(tmp_path):
+    with TestClient(create_app(tmp_path / "demo.db")) as client:
+        catalog = client.get("/api/candidates").json()
+        assert len(catalog["candidates"]) == 3
+        candidate = catalog["candidates"][0]
+        assert candidate["evidence"] and candidate["website"].startswith("https://")
+        assert candidate["shortlisted"] is False
+        assert "Unverified" in next(item["coverage"] for item in catalog["candidates"] if item["id"] == "gain-city")
+        assert candidate["id"] not in {partner["id"] for partner in client.get("/api/partners").json()}
+        response = client.patch(f"/api/candidates/{candidate['id']}", json={
+            "shortlisted": True, "outreach_draft": "Draft for human review only.",
+        })
+        assert response.status_code == 200
+        assert response.json()["sent"] is False
+        saved = next(item for item in client.get("/api/candidates").json()["candidates"] if item["id"] == candidate["id"])
+        assert saved["shortlisted"] is True
+        assert saved["outreach_draft"] == "Draft for human review only."
+        client.patch(f"/api/candidates/{candidate['id']}", json={"shortlisted": True, "outreach_draft": ""})
+        cleared = next(item for item in client.get("/api/candidates").json()["candidates"] if item["id"] == candidate["id"])
+        assert cleared["outreach_draft"] == ""
+        assert client.patch("/api/candidates/unknown", json={"shortlisted": True, "outreach_draft": "x"}).status_code == 404
+        assert client.get("/api/dashboard").json()["active_partners"] == 4

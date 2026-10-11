@@ -26,8 +26,8 @@ export default function Market({ areas, meta, navigate }) {
     <section className="hero market-hero">
       <div className="hero-copy"><span className="eyebrow">01 / Market opportunity</span>
         <h1>Understand the landscape.<br /><em>Then test the channel.</em></h1>
-        <p>Explore Singapore’s observed planning-area housing patterns before walking through a fictional partner referral and sales journey.</p>
-        <div className="hero-actions"><button className="button primary" onClick={() => navigate('partners')}>Explore demo partners <span>→</span></button><a className="text-link" href="#method">See data method ↓</a></div>
+        <p>Explore Singapore’s observed planning-area housing patterns, then review sourced aircon service companies and a separate simulated referral journey.</p>
+        <div className="hero-actions"><button className="button primary" onClick={() => navigate('partners')}>Review company candidates <span>→</span></button><a className="text-link" href="#method">See data method ↓</a></div>
       </div>
       <div className="hero-card">
         <span className="card-kicker">Data at a glance</span>

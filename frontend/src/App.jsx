@@ -4,6 +4,7 @@ import Market from './Market.jsx';
 import Partners from './Partners.jsx';
 import Home from './Home.jsx';
 import Sales from './Sales.jsx';
+import './candidates.css';
 
 const pageFromPath = path => ({ '/partners': 'partners', '/home': 'home', '/sales': 'sales' }[path] || 'market');
 
@@ -11,6 +12,7 @@ export default function App() {
   const [page, setPage] = useState(pageFromPath(window.location.pathname));
   const [areas, setAreas] = useState([]);
   const [partners, setPartners] = useState([]);
+  const [candidateCatalog, setCandidateCatalog] = useState(null);
   const [meta, setMeta] = useState(null);
   const [dashboard, setDashboard] = useState(null);
   const [leads, setLeads] = useState([]);
@@ -27,10 +29,11 @@ export default function App() {
     setLoading(true);
     setError('');
     try {
-      const [nextAreas, nextPartners, nextMeta] = await Promise.all([api('/areas'), api('/partners'), api('/meta')]);
+      const [nextAreas, nextPartners, nextMeta, nextCandidates] = await Promise.all([api('/areas'), api('/partners'), api('/meta'), api('/candidates')]);
       setAreas(nextAreas.areas);
       setPartners(nextPartners);
       setMeta(nextMeta);
+      setCandidateCatalog(nextCandidates);
       await refreshSales();
     } catch (err) {
       setError(err.message);
@@ -69,7 +72,7 @@ export default function App() {
       {loading ? <div className="state-panel">Loading the local demo…</div> : error ?
         <div className="state-panel error-state"><h2>Could not load the demo</h2><p>{error}</p><p>Start the FastAPI server on port 8000, then retry.</p><button className="button primary" onClick={load}>Retry</button></div> : <>
           {page === 'market' && <Market areas={areas} meta={meta} navigate={navigate} />}
-          {page === 'partners' && <Partners partners={partners} navigate={navigate} />}
+          {page === 'partners' && <Partners partners={partners} catalog={candidateCatalog} navigate={navigate} />}
           {page === 'home' && <Home areas={areas} partners={partners} navigate={navigate} onSubmitted={refreshSales} />}
           {page === 'sales' && <Sales leads={leads} partners={partners} dashboard={dashboard} refresh={refreshSales} />}
         </>}
@@ -77,7 +80,7 @@ export default function App() {
 
     <footer className="site-footer">
       <span><strong>Bizsu growth lab</strong> · student hackathon proof of concept</span>
-      <span>Government statistics are planning-area aggregates. Partners, enquiries, outcomes and ML scores are synthetic.</span>
+      <span>Company profiles are sourced candidates. Demo referral partners, enquiries, outcomes and ML scores are synthetic.</span>
     </footer>
   </div>;
 }

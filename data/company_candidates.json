@@ -1,0 +1,56 @@
+{
+  "retrieved_on": "2026-10-11",
+  "note": "Public company information is a research snapshot. Listing is not an endorsement or partnership with Bizsu. Confirm details before outreach.",
+  "candidates": [
+    {
+      "id": "gain-city",
+      "name": "Gain City",
+      "website": "https://www.gaincity.com/",
+      "summary": "Aircon servicing, repair and installation for residential and commercial premises.",
+      "focus": "Residential and commercial",
+      "services": ["Aircon servicing", "Repair", "Installation"],
+      "maintenance_plan": "Service contracts listed for residential use",
+      "coverage": "Unverified by planning area",
+      "contact": {"phone": "+65 6222 1212", "email": null},
+      "evidence": [
+        {"label": "Residential and commercial servicing; service contracts", "url": "https://www.gaincity.com/servicing/aircon-servicing"},
+        {"label": "Installation and public service phone", "url": "https://www.gaincity.com/aircon-servicing-and-repair"}
+      ],
+      "signals": {"residential": true, "servicing_and_installation": true, "maintenance_plan": true, "coverage": false}
+    },
+    {
+      "id": "jetstyle",
+      "name": "JetStyle Aircon",
+      "website": "https://www.jetstyle.com.sg/",
+      "summary": "Aircon servicing, maintenance, repair and installation for homes and businesses.",
+      "focus": "Residential and commercial",
+      "services": ["Aircon servicing", "Maintenance", "Repair", "Installation"],
+      "maintenance_plan": "Servicing contract listed",
+      "coverage": "Unverified by planning area",
+      "contact": {"phone": "+65 6969 7779", "email": "enquiry@jetstyle.com.sg"},
+      "evidence": [
+        {"label": "Residential and commercial services", "url": "https://www.jetstyle.com.sg/"},
+        {"label": "Servicing contract", "url": "https://www.jetstyle.com.sg/general-servicing/"},
+        {"label": "Public contact details", "url": "https://www.jetstyle.com.sg/contact-us/"}
+      ],
+      "signals": {"residential": true, "servicing_and_installation": true, "maintenance_plan": true, "coverage": false}
+    },
+    {
+      "id": "natural-cool",
+      "name": "Natural Cool Aircon Services",
+      "website": "https://servicing.naturalcool.com.sg/",
+      "summary": "Aircon servicing, repair and installation for homes and businesses, with maintenance contracts.",
+      "focus": "Residential and commercial",
+      "services": ["Aircon servicing", "Repair", "Installation", "Maintenance"],
+      "maintenance_plan": "Annual maintenance plans listed",
+      "coverage": "Singapore-wide stated; individual planning areas unverified",
+      "contact": {"phone": "+65 6454 1771", "email": "aircon.service@naturalcool.com.sg"},
+      "evidence": [
+        {"label": "Homes, businesses, installation and Singapore-wide service", "url": "https://servicing.naturalcool.com.sg/about-us/"},
+        {"label": "Annual maintenance plans", "url": "https://servicing.naturalcool.com.sg/aircon-servicing-packages/"},
+        {"label": "Public contact details", "url": "https://servicing.naturalcool.com.sg/contact-us/"}
+      ],
+      "signals": {"residential": true, "servicing_and_installation": true, "maintenance_plan": true, "coverage": true}
+    }
+  ]
+}

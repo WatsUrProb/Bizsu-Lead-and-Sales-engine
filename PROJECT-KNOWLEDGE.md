@@ -2,15 +2,15 @@
 
 ## Current checkpoint
 
-Local student hackathon proof of concept implemented from [`Bizsutext.md`](Bizsutext.md) and the user's approved architecture and refinements. No Codex Page link was supplied; this local file records the working context. Prototype location: this directory. The application has not been validated with actual partners or homeowners.
+Local student hackathon proof of concept implemented from [`Bizsutext.md`](Bizsutext.md) and the company-data strategy in `text2.md`. Prototype location: this directory. The application has not been validated with actual partners or homeowners.
 
 ## Intent and scope
 
-Proposed Singapore residential acquisition funnel: fictional AC service partner → unique referral link → synthetic homeowner enquiry → rule-based screening → human-managed pipeline → editable, unsent follow-up. Market dashboard describes Census planning areas; conversion ML is trained only on simulated outcomes. No real outreach, energy-saving claim or paid API dependency.
+Proposed Singapore residential acquisition funnel: sourced real-company candidate research and local shortlist → separate fictional AC service partner → unique referral link → synthetic homeowner enquiry → rule-based screening → human-managed pipeline → editable, unsent follow-up. Market dashboard describes Census planning areas; conversion ML is trained only on simulated outcomes. No real outreach, energy-saving claim or paid API dependency.
 
 ## Actual sources and methods
 
-Official SingStat Census 2020 dwelling, household-size and income tables were downloaded through data.gov.sg APIs and joined by planning area. A 2023 national AC-availability table and EMA's historical 2013 planning-area electricity GeoJSON were also inspected and frozen. Exact URLs, observation dates, retrieval dates and hashes: `data/sources.json`. EMA's current Chapter 3 page was reviewed, but its workbook could not be retrieved for schema inspection. See `README.md` for transformations, model assumptions and limitations.
+Official SingStat Census 2020 dwelling, household-size and income tables were downloaded through data.gov.sg APIs and joined by planning area. A 2023 national AC-availability table and EMA's historical 2013 planning-area electricity GeoJSON were also inspected and frozen. Exact URLs, observation dates, retrieval dates and hashes: `data/sources.json`. Three real Singapore aircon service companies were researched from their own websites on 2026-10-11; evidence links and unverified coverage are recorded in `data/company_candidates.json`. No listed company has agreed to partner with Bizsu. See `README.md` for methods and limitations.
 
 ## Tools and experiments
 
