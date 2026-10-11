@@ -1,0 +1,167 @@
+{
+  "unit": "planning areas, not households",
+  "observation_year": 2020,
+  "feature_keys": [
+    "hdb_share",
+    "large_hdb_share",
+    "condo_share",
+    "large_household_share",
+    "high_income_share"
+  ],
+  "standardisation": "StandardScaler fitted on 28 eligible planning areas",
+  "candidate_metrics": [
+    {
+      "k": 2,
+      "silhouette": 0.554,
+      "stability_ari": 0.807,
+      "minimum_cluster_size": 4,
+      "selection_score": 0.836
+    },
+    {
+      "k": 3,
+      "silhouette": 0.415,
+      "stability_ari": 0.793,
+      "minimum_cluster_size": 2,
+      "selection_score": 0.443
+    },
+    {
+      "k": 4,
+      "silhouette": 0.431,
+      "stability_ari": 0.677,
+      "minimum_cluster_size": 2,
+      "selection_score": 0.418
+    }
+  ],
+  "chosen_k": 2,
+  "cluster_labels": {
+    "0": "Higher HDB household share; Lower Condo/apartment household share",
+    "1": "Lower HDB household share; Higher Condo/apartment household share"
+  },
+  "assignments": {
+    "Ang Mo Kio": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Bedok": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Bishan": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Bukit Batok": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Bukit Merah": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Bukit Panjang": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Bukit Timah": {
+      "cluster_id": 1,
+      "cluster_label": "Lower HDB household share; Higher Condo/apartment household share"
+    },
+    "Choa Chu Kang": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Clementi": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Geylang": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Hougang": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Jurong East": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Jurong West": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Kallang": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Marine Parade": {
+      "cluster_id": 1,
+      "cluster_label": "Lower HDB household share; Higher Condo/apartment household share"
+    },
+    "Novena": {
+      "cluster_id": 1,
+      "cluster_label": "Lower HDB household share; Higher Condo/apartment household share"
+    },
+    "Outram": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Pasir Ris": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Punggol": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Queenstown": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Sembawang": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Sengkang": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Serangoon": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Tampines": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Tanglin": {
+      "cluster_id": 1,
+      "cluster_label": "Lower HDB household share; Higher Condo/apartment household share"
+    },
+    "Toa Payoh": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Woodlands": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    },
+    "Yishun": {
+      "cluster_id": 0,
+      "cluster_label": "Higher HDB household share; Lower Condo/apartment household share"
+    }
+  },
+  "excluded": {
+    "Downtown Core": [
+      "Missing 4/5-room HDB household share"
+    ],
+    "Others": [
+      "Non-geographic aggregate category"
+    ],
+    "River Valley": [
+      "Missing HDB household share",
+      "Missing 4/5-room HDB household share"
+    ]
+  },
+  "limitations": "Descriptive clusters of 2020 aggregate area profiles; no household-level AC, interest or commercial outcomes."
+}

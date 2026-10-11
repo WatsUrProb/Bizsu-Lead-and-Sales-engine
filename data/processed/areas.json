@@ -1,0 +1,1256 @@
+{
+  "unit": "planning area; every figure is an aggregate, never an individual household",
+  "observation_year": 2020,
+  "feature_labels": {
+    "hdb_share": "HDB household share",
+    "large_hdb_share": "4/5-room HDB household share",
+    "condo_share": "Condo/apartment household share",
+    "large_household_share": "4+ person household share",
+    "high_income_share": "$10k+ work-income household share"
+  },
+  "national_ac_ownership_2023_percent": 81.9,
+  "areas": [
+    {
+      "name": "Ang Mo Kio",
+      "observation_year": 2020,
+      "households": 60220,
+      "housing_counts": {
+        "hdb_1_2": 5002,
+        "hdb_3": 24087,
+        "hdb_4": 14894,
+        "hdb_5_exec": 6664,
+        "condo": 4815,
+        "landed": 4433,
+        "other": 325
+      },
+      "household_size_counts": {
+        "1": 12603,
+        "2": 15564,
+        "3": 12172,
+        "4": 10414,
+        "5": 5116,
+        "6": 2834,
+        "7": 980,
+        "8+": 537
+      },
+      "features": {
+        "hdb_share": 0.8410328794420459,
+        "large_hdb_share": 0.3579873796081036,
+        "condo_share": 0.07995682497509134,
+        "large_household_share": 0.33013948854201264,
+        "high_income_share": 0.3110760544669545
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 318.1,
+        "hdb_4room_monthly_kwh": 376.7,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Bedok",
+      "observation_year": 2020,
+      "households": 97551,
+      "housing_counts": {
+        "hdb_1_2": 5391,
+        "hdb_3": 22903,
+        "hdb_4": 22045,
+        "hdb_5_exec": 14226,
+        "condo": 20922,
+        "landed": 11545,
+        "other": 519
+      },
+      "household_size_counts": {
+        "1": 17598,
+        "2": 23486,
+        "3": 19081,
+        "4": 17654,
+        "5": 10727,
+        "6": 4845,
+        "7": 2631,
+        "8+": 1530
+      },
+      "features": {
+        "hdb_share": 0.6618589250750889,
+        "large_hdb_share": 0.3718157681622946,
+        "condo_share": 0.21447242980594766,
+        "large_household_share": 0.3832559379196523,
+        "high_income_share": 0.38518313497555123
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 349.6,
+        "hdb_4room_monthly_kwh": 385,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Bishan",
+      "observation_year": 2020,
+      "households": 29445,
+      "housing_counts": {
+        "hdb_1_2": 605,
+        "hdb_3": 2334,
+        "hdb_4": 9882,
+        "hdb_5_exec": 7727,
+        "condo": 5786,
+        "landed": 3040,
+        "other": 72
+      },
+      "household_size_counts": {
+        "1": 4444,
+        "2": 6352,
+        "3": 6184,
+        "4": 6131,
+        "5": 3551,
+        "6": 1686,
+        "7": 682,
+        "8+": 413
+      },
+      "features": {
+        "hdb_share": 0.697809475292919,
+        "large_hdb_share": 0.5980302258447954,
+        "condo_share": 0.1965019527933435,
+        "large_household_share": 0.42326371200543383,
+        "high_income_share": 0.5010697911360164
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 403.9,
+        "hdb_4room_monthly_kwh": 396,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Bukit Batok",
+      "observation_year": 2020,
+      "households": 54297,
+      "housing_counts": {
+        "hdb_1_2": 3335,
+        "hdb_3": 11517,
+        "hdb_4": 18425,
+        "hdb_5_exec": 10109,
+        "condo": 9338,
+        "landed": 1466,
+        "other": 106
+      },
+      "household_size_counts": {
+        "1": 8445,
+        "2": 12574,
+        "3": 12465,
+        "4": 10873,
+        "5": 5868,
+        "6": 2553,
+        "7": 917,
+        "8+": 603
+      },
+      "features": {
+        "hdb_share": 0.799068088476343,
+        "large_hdb_share": 0.5255170635578393,
+        "condo_share": 0.17198003572941414,
+        "large_household_share": 0.3833360959169015,
+        "high_income_share": 0.38698270622686337
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 362.2,
+        "hdb_4room_monthly_kwh": 380.3,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Bukit Merah",
+      "observation_year": 2020,
+      "households": 59700,
+      "housing_counts": {
+        "hdb_1_2": 10995,
+        "hdb_3": 15708,
+        "hdb_4": 17382,
+        "hdb_5_exec": 9790,
+        "condo": 5429,
+        "landed": 190,
+        "other": 207
+      },
+      "household_size_counts": {
+        "1": 14151,
+        "2": 17214,
+        "3": 11016,
+        "4": 9477,
+        "5": 5033,
+        "6": 1724,
+        "7": 819,
+        "8+": 266
+      },
+      "features": {
+        "hdb_share": 0.902428810720268,
+        "large_hdb_share": 0.455142378559464,
+        "condo_share": 0.09093802345058627,
+        "large_household_share": 0.2901005025125628,
+        "high_income_share": 0.35
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 319.3,
+        "hdb_4room_monthly_kwh": 379.2,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Bukit Panjang",
+      "observation_year": 2020,
+      "households": 43580,
+      "housing_counts": {
+        "hdb_1_2": 1234,
+        "hdb_3": 3638,
+        "hdb_4": 17144,
+        "hdb_5_exec": 14104,
+        "condo": 6643,
+        "landed": 817,
+        "other": null
+      },
+      "household_size_counts": {
+        "1": 4953,
+        "2": 8955,
+        "3": 9415,
+        "4": 10166,
+        "5": 6055,
+        "6": 2450,
+        "7": 1030,
+        "8+": 556
+      },
+      "features": {
+        "hdb_share": 0.8288205598898577,
+        "large_hdb_share": 0.717026158788435,
+        "condo_share": 0.15243230839834787,
+        "large_household_share": 0.4648233134465351,
+        "high_income_share": 0.3951583295089491
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 380.9,
+        "hdb_4room_monthly_kwh": 360.8,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Bukit Timah",
+      "observation_year": 2020,
+      "households": 24612,
+      "housing_counts": {
+        "hdb_1_2": 147,
+        "hdb_3": 469,
+        "hdb_4": 850,
+        "hdb_5_exec": 1027,
+        "condo": 12827,
+        "landed": 9163,
+        "other": 129
+      },
+      "household_size_counts": {
+        "1": 2464,
+        "2": 3889,
+        "3": 4412,
+        "4": 5121,
+        "5": 4515,
+        "6": 2179,
+        "7": 1295,
+        "8+": 737
+      },
+      "features": {
+        "hdb_share": 0.10129205265724037,
+        "large_hdb_share": 0.0762636112465464,
+        "condo_share": 0.5211685356736552,
+        "large_household_share": 0.5626117341134406,
+        "high_income_share": 0.6538274012676744
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 395.2,
+        "hdb_4room_monthly_kwh": 373.7,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Choa Chu Kang",
+      "observation_year": 2020,
+      "households": 58024,
+      "housing_counts": {
+        "hdb_1_2": 2088,
+        "hdb_3": 2487,
+        "hdb_4": 24202,
+        "hdb_5_exec": 21241,
+        "condo": 7395,
+        "landed": 606,
+        "other": 5
+      },
+      "household_size_counts": {
+        "1": 5175,
+        "2": 10812,
+        "3": 12942,
+        "4": 14893,
+        "5": 8292,
+        "6": 3752,
+        "7": 1408,
+        "8+": 749
+      },
+      "features": {
+        "hdb_share": 0.8620226113332414,
+        "large_hdb_share": 0.7831759272025369,
+        "condo_share": 0.1274472632014339,
+        "large_household_share": 0.5014132083275886,
+        "high_income_share": 0.43785330208189716
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 406.5,
+        "hdb_4room_monthly_kwh": 378.1,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Clementi",
+      "observation_year": 2020,
+      "households": 33609,
+      "housing_counts": {
+        "hdb_1_2": 1117,
+        "hdb_3": 11461,
+        "hdb_4": 9298,
+        "hdb_5_exec": 3943,
+        "condo": 5988,
+        "landed": 1614,
+        "other": 186
+      },
+      "household_size_counts": {
+        "1": 6652,
+        "2": 7989,
+        "3": 6733,
+        "4": 6291,
+        "5": 3676,
+        "6": 1443,
+        "7": 566,
+        "8+": 259
+      },
+      "features": {
+        "hdb_share": 0.768246600612931,
+        "large_hdb_share": 0.39397185277752983,
+        "condo_share": 0.1781665625278943,
+        "large_household_share": 0.36403939420988424,
+        "high_income_share": 0.4127763396709215
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 318.2,
+        "hdb_4room_monthly_kwh": 361,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Downtown Core",
+      "observation_year": 2020,
+      "households": 1547,
+      "housing_counts": {
+        "hdb_1_2": null,
+        "hdb_3": null,
+        "hdb_4": 229,
+        "hdb_5_exec": null,
+        "condo": 1282,
+        "landed": null,
+        "other": 36
+      },
+      "household_size_counts": {
+        "1": 681,
+        "2": 410,
+        "3": 173,
+        "4": 130,
+        "5": 86,
+        "6": 29,
+        "7": 27,
+        "8+": 9
+      },
+      "features": {
+        "hdb_share": 0.1480284421460892,
+        "large_hdb_share": null,
+        "condo_share": 0.8287007110536523,
+        "large_household_share": 0.18164188752424046,
+        "high_income_share": 0.6567550096961862
+      },
+      "cluster_eligible": false,
+      "cluster_exclusion_reasons": [
+        "Missing 4/5-room HDB household share"
+      ],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 0,
+        "hdb_4room_monthly_kwh": 0,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Geylang",
+      "observation_year": 2020,
+      "households": 42060,
+      "housing_counts": {
+        "hdb_1_2": 4174,
+        "hdb_3": 11708,
+        "hdb_4": 10424,
+        "hdb_5_exec": 4665,
+        "condo": 8880,
+        "landed": 1864,
+        "other": 344
+      },
+      "household_size_counts": {
+        "1": 10321,
+        "2": 10529,
+        "3": 8060,
+        "4": 6276,
+        "5": 3823,
+        "6": 1826,
+        "7": 732,
+        "8+": 492
+      },
+      "features": {
+        "hdb_share": 0.7363528292914884,
+        "large_hdb_share": 0.35874940561103186,
+        "condo_share": 0.21112696148359486,
+        "large_household_share": 0.3126248216833096,
+        "high_income_share": 0.3314788397527342
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 341.8,
+        "hdb_4room_monthly_kwh": 406.1,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Hougang",
+      "observation_year": 2020,
+      "households": 75109,
+      "housing_counts": {
+        "hdb_1_2": 3132,
+        "hdb_3": 10958,
+        "hdb_4": 27963,
+        "hdb_5_exec": 15926,
+        "condo": 10899,
+        "landed": 6073,
+        "other": 158
+      },
+      "household_size_counts": {
+        "1": 11031,
+        "2": 17088,
+        "3": 14966,
+        "4": 16106,
+        "5": 9321,
+        "6": 3957,
+        "7": 1688,
+        "8+": 952
+      },
+      "features": {
+        "hdb_share": 0.7719314596120305,
+        "large_hdb_share": 0.5843374296023113,
+        "condo_share": 0.14510910809623348,
+        "large_household_share": 0.42636701327404175,
+        "high_income_share": 0.3889147771904832
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 397.2,
+        "hdb_4room_monthly_kwh": 396,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Jurong East",
+      "observation_year": 2020,
+      "households": 27213,
+      "housing_counts": {
+        "hdb_1_2": 1090,
+        "hdb_3": 7162,
+        "hdb_4": 8455,
+        "hdb_5_exec": 7942,
+        "condo": 2477,
+        "landed": null,
+        "other": 86
+      },
+      "household_size_counts": {
+        "1": 4497,
+        "2": 6627,
+        "3": 5995,
+        "4": 5239,
+        "5": 2802,
+        "6": 1329,
+        "7": 465,
+        "8+": 259
+      },
+      "features": {
+        "hdb_share": 0.9057803255796861,
+        "large_hdb_share": 0.602542902289347,
+        "condo_share": 0.09102267298717524,
+        "large_household_share": 0.3709256605298938,
+        "high_income_share": 0.33259839047514056
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 361.5,
+        "hdb_4room_monthly_kwh": 371.1,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Jurong West",
+      "observation_year": 2020,
+      "households": 83879,
+      "housing_counts": {
+        "hdb_1_2": 3700,
+        "hdb_3": 12815,
+        "hdb_4": 31404,
+        "hdb_5_exec": 29247,
+        "condo": 5632,
+        "landed": 1019,
+        "other": 61
+      },
+      "household_size_counts": {
+        "1": 10971,
+        "2": 17005,
+        "3": 17656,
+        "4": 18524,
+        "5": 10976,
+        "6": 5382,
+        "7": 2016,
+        "8+": 1349
+      },
+      "features": {
+        "hdb_share": 0.9199680492137484,
+        "large_hdb_share": 0.7230772899056975,
+        "condo_share": 0.06714433886908523,
+        "large_household_share": 0.45597825439025264,
+        "high_income_share": 0.37529059716973256
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 393.9,
+        "hdb_4room_monthly_kwh": 387.9,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Kallang",
+      "observation_year": 2020,
+      "households": 40832,
+      "housing_counts": {
+        "hdb_1_2": 6907,
+        "hdb_3": 10940,
+        "hdb_4": 9674,
+        "hdb_5_exec": 4736,
+        "condo": 7709,
+        "landed": 509,
+        "other": 357
+      },
+      "household_size_counts": {
+        "1": 10816,
+        "2": 11217,
+        "3": 6883,
+        "4": 5912,
+        "5": 3684,
+        "6": 1526,
+        "7": 485,
+        "8+": 309
+      },
+      "features": {
+        "hdb_share": 0.7899931426332288,
+        "large_hdb_share": 0.35290948275862066,
+        "condo_share": 0.18879800156739812,
+        "large_household_share": 0.29182993730407525,
+        "high_income_share": 0.3469092868338558
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 316.2,
+        "hdb_4room_monthly_kwh": 388,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Marine Parade",
+      "observation_year": 2020,
+      "households": 17069,
+      "housing_counts": {
+        "hdb_1_2": 1387,
+        "hdb_3": 2946,
+        "hdb_4": 1826,
+        "hdb_5_exec": 1833,
+        "condo": 6334,
+        "landed": 2603,
+        "other": 139
+      },
+      "household_size_counts": {
+        "1": 3367,
+        "2": 3863,
+        "3": 3176,
+        "4": 2842,
+        "5": 2110,
+        "6": 940,
+        "7": 418,
+        "8+": 354
+      },
+      "features": {
+        "hdb_share": 0.46827582166500675,
+        "large_hdb_share": 0.21436522350459897,
+        "condo_share": 0.3710820786220634,
+        "large_household_share": 0.3904153728982366,
+        "high_income_share": 0.47044349405354735
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 324.4,
+        "hdb_4room_monthly_kwh": 360.3,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Novena",
+      "observation_year": 2020,
+      "households": 18281,
+      "housing_counts": {
+        "hdb_1_2": 768,
+        "hdb_3": 3342,
+        "hdb_4": 2822,
+        "hdb_5_exec": 1438,
+        "condo": 7641,
+        "landed": 2193,
+        "other": 76
+      },
+      "household_size_counts": {
+        "1": 3630,
+        "2": 4302,
+        "3": 3366,
+        "4": 3217,
+        "5": 2073,
+        "6": 994,
+        "7": 389,
+        "8+": 308
+      },
+      "features": {
+        "hdb_share": 0.45785241507576174,
+        "large_hdb_share": 0.23302882774465292,
+        "condo_share": 0.4179749466659373,
+        "large_household_share": 0.3818718888463432,
+        "high_income_share": 0.47688857283518404
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 350.4,
+        "hdb_4room_monthly_kwh": 372.9,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Others",
+      "observation_year": 2020,
+      "households": 12233,
+      "housing_counts": {
+        "hdb_1_2": 383,
+        "hdb_3": 1961,
+        "hdb_4": 1492,
+        "hdb_5_exec": 295,
+        "condo": 6933,
+        "landed": 1045,
+        "other": 124
+      },
+      "household_size_counts": {
+        "1": 2822,
+        "2": 2919,
+        "3": 2167,
+        "4": 1979,
+        "5": 1273,
+        "6": 639,
+        "7": 264,
+        "8+": 170
+      },
+      "features": {
+        "hdb_share": 0.33769312515327393,
+        "large_hdb_share": 0.14608027466688467,
+        "condo_share": 0.5667456878934031,
+        "large_household_share": 0.35355186789830784,
+        "high_income_share": 0.5100138968364261
+      },
+      "cluster_eligible": false,
+      "cluster_exclusion_reasons": [
+        "Non-geographic aggregate category"
+      ],
+      "electricity_context": null
+    },
+    {
+      "name": "Outram",
+      "observation_year": 2020,
+      "households": 8053,
+      "housing_counts": {
+        "hdb_1_2": 2889,
+        "hdb_3": 2356,
+        "hdb_4": 1735,
+        "hdb_5_exec": 625,
+        "condo": 420,
+        "landed": null,
+        "other": 27
+      },
+      "household_size_counts": {
+        "1": 2832,
+        "2": 2195,
+        "3": 1296,
+        "4": 888,
+        "5": 496,
+        "6": 203,
+        "7": 113,
+        "8+": 29
+      },
+      "features": {
+        "hdb_share": 0.9443685583012542,
+        "large_hdb_share": 0.2930584875201788,
+        "condo_share": 0.052154476592574196,
+        "large_household_share": 0.21470259530609712,
+        "high_income_share": 0.2818825282503415
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 270.7,
+        "hdb_4room_monthly_kwh": 380.7,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Pasir Ris",
+      "observation_year": 2020,
+      "households": 44799,
+      "housing_counts": {
+        "hdb_1_2": 734,
+        "hdb_3": 356,
+        "hdb_4": 11809,
+        "hdb_5_exec": 17180,
+        "condo": 12814,
+        "landed": 1905,
+        "other": null
+      },
+      "household_size_counts": {
+        "1": 4790,
+        "2": 8146,
+        "3": 8749,
+        "4": 10900,
+        "5": 6883,
+        "6": 3055,
+        "7": 1462,
+        "8+": 814
+      },
+      "features": {
+        "hdb_share": 0.6714435590080136,
+        "large_hdb_share": 0.6470903368378759,
+        "condo_share": 0.2860331703832675,
+        "large_household_share": 0.5159490167191232,
+        "high_income_share": 0.5215741422799616
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 481,
+        "hdb_4room_monthly_kwh": 424,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Punggol",
+      "observation_year": 2020,
+      "households": 56166,
+      "housing_counts": {
+        "hdb_1_2": 4364,
+        "hdb_3": 5404,
+        "hdb_4": 22277,
+        "hdb_5_exec": 16990,
+        "condo": 7061,
+        "landed": 69,
+        "other": null
+      },
+      "household_size_counts": {
+        "1": 5375,
+        "2": 13023,
+        "3": 12453,
+        "4": 12781,
+        "5": 7856,
+        "6": 2972,
+        "7": 1248,
+        "8+": 458
+      },
+      "features": {
+        "hdb_share": 0.8730370686892426,
+        "large_hdb_share": 0.6991240252109817,
+        "condo_share": 0.12571662571662573,
+        "large_household_share": 0.4507175159349072,
+        "high_income_share": 0.4475839475839476
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 363.8,
+        "hdb_4room_monthly_kwh": 327.8,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Queenstown",
+      "observation_year": 2020,
+      "households": 37053,
+      "housing_counts": {
+        "hdb_1_2": 3814,
+        "hdb_3": 13661,
+        "hdb_4": 9424,
+        "hdb_5_exec": 4360,
+        "condo": 4676,
+        "landed": 1032,
+        "other": 86
+      },
+      "household_size_counts": {
+        "1": 8278,
+        "2": 10224,
+        "3": 7181,
+        "4": 5959,
+        "5": 3411,
+        "6": 1284,
+        "7": 500,
+        "8+": 215
+      },
+      "features": {
+        "hdb_share": 0.8436293957304402,
+        "large_hdb_share": 0.3720076646965158,
+        "condo_share": 0.12619760883059403,
+        "large_household_share": 0.30683075594418807,
+        "high_income_share": 0.38050900062073245
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 298.4,
+        "hdb_4room_monthly_kwh": 346.5,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "River Valley",
+      "observation_year": 2020,
+      "households": 3976,
+      "housing_counts": {
+        "hdb_1_2": null,
+        "hdb_3": null,
+        "hdb_4": null,
+        "hdb_5_exec": null,
+        "condo": 3721,
+        "landed": 252,
+        "other": 3
+      },
+      "household_size_counts": {
+        "1": 869,
+        "2": 794,
+        "3": 571,
+        "4": 740,
+        "5": 603,
+        "6": 223,
+        "7": 117,
+        "8+": 58
+      },
+      "features": {
+        "hdb_share": null,
+        "large_hdb_share": null,
+        "condo_share": 0.9358651911468813,
+        "large_household_share": 0.43787726358148893,
+        "high_income_share": 0.6642354124748491
+      },
+      "cluster_eligible": false,
+      "cluster_exclusion_reasons": [
+        "Missing HDB household share",
+        "Missing 4/5-room HDB household share"
+      ],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 0,
+        "hdb_4room_monthly_kwh": 0,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Sembawang",
+      "observation_year": 2020,
+      "households": 33049,
+      "housing_counts": {
+        "hdb_1_2": 3516,
+        "hdb_3": 1507,
+        "hdb_4": 11908,
+        "hdb_5_exec": 11653,
+        "condo": 3509,
+        "landed": 943,
+        "other": 13
+      },
+      "household_size_counts": {
+        "1": 4310,
+        "2": 7162,
+        "3": 6744,
+        "4": 7466,
+        "5": 4158,
+        "6": 2097,
+        "7": 676,
+        "8+": 437
+      },
+      "features": {
+        "hdb_share": 0.8648975763260613,
+        "large_hdb_share": 0.7129111319555811,
+        "condo_share": 0.10617567853792853,
+        "large_household_share": 0.44884867923386484,
+        "high_income_share": 0.3941420315289419
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 408.9,
+        "hdb_4room_monthly_kwh": 365.5,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Sengkang",
+      "observation_year": 2020,
+      "households": 79376,
+      "housing_counts": {
+        "hdb_1_2": 3950,
+        "hdb_3": 4043,
+        "hdb_4": 31507,
+        "hdb_5_exec": 28680,
+        "condo": 10823,
+        "landed": 372,
+        "other": null
+      },
+      "household_size_counts": {
+        "1": 8576,
+        "2": 16046,
+        "3": 17143,
+        "4": 18989,
+        "5": 11208,
+        "6": 5095,
+        "7": 1632,
+        "8+": 687
+      },
+      "features": {
+        "hdb_share": 0.8589498085063495,
+        "large_hdb_share": 0.7582518645434388,
+        "condo_share": 0.13635103809715782,
+        "large_household_share": 0.4738334005240879,
+        "high_income_share": 0.4475282201169119
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 395,
+        "hdb_4room_monthly_kwh": 363.7,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Serangoon",
+      "observation_year": 2020,
+      "households": 38086,
+      "housing_counts": {
+        "hdb_1_2": 664,
+        "hdb_3": 4376,
+        "hdb_4": 10514,
+        "hdb_5_exec": 6531,
+        "condo": 6178,
+        "landed": 9745,
+        "other": 78
+      },
+      "household_size_counts": {
+        "1": 5384,
+        "2": 7984,
+        "3": 7800,
+        "4": 7687,
+        "5": 4694,
+        "6": 2309,
+        "7": 1178,
+        "8+": 1050
+      },
+      "features": {
+        "hdb_share": 0.5798718689282151,
+        "large_hdb_share": 0.4475397783962611,
+        "condo_share": 0.1622118363703198,
+        "large_household_share": 0.4442052197657932,
+        "high_income_share": 0.4776820879063173
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 397.1,
+        "hdb_4room_monthly_kwh": 396.4,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Tampines",
+      "observation_year": 2020,
+      "households": 83681,
+      "housing_counts": {
+        "hdb_1_2": 3215,
+        "hdb_3": 14313,
+        "hdb_4": 31182,
+        "hdb_5_exec": 24136,
+        "condo": 9543,
+        "landed": 1211,
+        "other": 81
+      },
+      "household_size_counts": {
+        "1": 10895,
+        "2": 17995,
+        "3": 18183,
+        "4": 17600,
+        "5": 10400,
+        "6": 5341,
+        "7": 2303,
+        "8+": 964
+      },
+      "features": {
+        "hdb_share": 0.8705201897682867,
+        "large_hdb_share": 0.6610580657496923,
+        "condo_share": 0.11404022418470143,
+        "large_household_share": 0.4374708715240019,
+        "high_income_share": 0.4095792354297869
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 422,
+        "hdb_4room_monthly_kwh": 418.5,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Tanglin",
+      "observation_year": 2020,
+      "households": 7938,
+      "housing_counts": {
+        "hdb_1_2": null,
+        "hdb_3": 21,
+        "hdb_4": 79,
+        "hdb_5_exec": 86,
+        "condo": 6493,
+        "landed": 1234,
+        "other": 25
+      },
+      "household_size_counts": {
+        "1": 1240,
+        "2": 1609,
+        "3": 1290,
+        "4": 1410,
+        "5": 1208,
+        "6": 594,
+        "7": 307,
+        "8+": 280
+      },
+      "features": {
+        "hdb_share": 0.023557571176618795,
+        "large_hdb_share": 0.020786092214663644,
+        "condo_share": 0.8179642227261275,
+        "large_household_share": 0.47858402620307383,
+        "high_income_share": 0.6860670194003528
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 415.9,
+        "hdb_4room_monthly_kwh": 396.7,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Toa Payoh",
+      "observation_year": 2020,
+      "households": 46880,
+      "housing_counts": {
+        "hdb_1_2": 4793,
+        "hdb_3": 16019,
+        "hdb_4": 11368,
+        "hdb_5_exec": 7092,
+        "condo": 5440,
+        "landed": 1771,
+        "other": 397
+      },
+      "household_size_counts": {
+        "1": 11689,
+        "2": 11432,
+        "3": 8921,
+        "4": 7454,
+        "5": 4221,
+        "6": 2074,
+        "7": 680,
+        "8+": 408
+      },
+      "features": {
+        "hdb_share": 0.8377133105802048,
+        "large_hdb_share": 0.3937713310580205,
+        "condo_share": 0.11604095563139932,
+        "large_household_share": 0.31648890784982936,
+        "high_income_share": 0.3359428327645051
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 326.3,
+        "hdb_4room_monthly_kwh": 370.3,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Woodlands",
+      "observation_year": 2020,
+      "households": 78839,
+      "housing_counts": {
+        "hdb_1_2": 5299,
+        "hdb_3": 7367,
+        "hdb_4": 31978,
+        "hdb_5_exec": 28321,
+        "condo": 5592,
+        "landed": 214,
+        "other": 68
+      },
+      "household_size_counts": {
+        "1": 9617,
+        "2": 15549,
+        "3": 16625,
+        "4": 16941,
+        "5": 10943,
+        "6": 5533,
+        "7": 2252,
+        "8+": 1379
+      },
+      "features": {
+        "hdb_share": 0.9254937277235886,
+        "large_hdb_share": 0.7648371998630119,
+        "condo_share": 0.07092936237141516,
+        "large_household_share": 0.4699197097883027,
+        "high_income_share": 0.34130316214056494
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 402.5,
+        "hdb_4room_monthly_kwh": 377.2,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    },
+    {
+      "name": "Yishun",
+      "observation_year": 2020,
+      "households": 75403,
+      "housing_counts": {
+        "hdb_1_2": 4119,
+        "hdb_3": 16531,
+        "hdb_4": 32083,
+        "hdb_5_exec": 14040,
+        "condo": 6902,
+        "landed": 1496,
+        "other": 232
+      },
+      "household_size_counts": {
+        "1": 11791,
+        "2": 16798,
+        "3": 16724,
+        "4": 15535,
+        "5": 8404,
+        "6": 4116,
+        "7": 1244,
+        "8+": 790
+      },
+      "features": {
+        "hdb_share": 0.8855483203586064,
+        "large_hdb_share": 0.611686537670915,
+        "condo_share": 0.09153481956951315,
+        "large_household_share": 0.3990424784159781,
+        "high_income_share": 0.32769253212736893
+      },
+      "cluster_eligible": true,
+      "cluster_exclusion_reasons": [],
+      "electricity_context": {
+        "year": 2013,
+        "average_monthly_kwh": 387.2,
+        "hdb_4room_monthly_kwh": 402.9,
+        "source_key": "ema_2013",
+        "note": "Historical whole-home average; not AC use or current demand"
+      }
+    }
+  ],
+  "provenance_file": "data/sources.json"
+}

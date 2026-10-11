@@ -1,0 +1,467 @@
+{
+  "fields": [
+    {
+      "id": "Number",
+      "type": "text"
+    },
+    {
+      "id": "Total",
+      "type": "numeric"
+    },
+    {
+      "id": "HDBDwellings_Total",
+      "type": "text"
+    },
+    {
+      "id": "HDBDwellings_1_and2_RoomFlats1",
+      "type": "text"
+    },
+    {
+      "id": "HDBDwellings_3_RoomFlats",
+      "type": "text"
+    },
+    {
+      "id": "HDBDwellings_4_RoomFlats",
+      "type": "text"
+    },
+    {
+      "id": "HDBDwellings_5_RoomandExecutiveFlats",
+      "type": "text"
+    },
+    {
+      "id": "CondominiumsandOtherApartments",
+      "type": "numeric"
+    },
+    {
+      "id": "LandedProperties",
+      "type": "text"
+    },
+    {
+      "id": "Others",
+      "type": "text"
+    },
+    {
+      "id": "_id",
+      "type": "int4"
+    }
+  ],
+  "records": [
+    {
+      "CondominiumsandOtherApartments": "220102",
+      "HDBDwellings_1_and2_RoomFlats1": "88814",
+      "HDBDwellings_3_RoomFlats": "242388",
+      "HDBDwellings_4_RoomFlats": "434277",
+      "HDBDwellings_5_RoomandExecutiveFlats": "314609",
+      "HDBDwellings_Total": "1080088",
+      "LandedProperties": "68425",
+      "Number": "Total",
+      "Others": "3944",
+      "Total": "1372559",
+      "_id": 1
+    },
+    {
+      "CondominiumsandOtherApartments": "4815",
+      "HDBDwellings_1_and2_RoomFlats1": "5002",
+      "HDBDwellings_3_RoomFlats": "24087",
+      "HDBDwellings_4_RoomFlats": "14894",
+      "HDBDwellings_5_RoomandExecutiveFlats": "6664",
+      "HDBDwellings_Total": "50647",
+      "LandedProperties": "4433",
+      "Number": "Ang Mo Kio",
+      "Others": "325",
+      "Total": "60220",
+      "_id": 2
+    },
+    {
+      "CondominiumsandOtherApartments": "20922",
+      "HDBDwellings_1_and2_RoomFlats1": "5391",
+      "HDBDwellings_3_RoomFlats": "22903",
+      "HDBDwellings_4_RoomFlats": "22045",
+      "HDBDwellings_5_RoomandExecutiveFlats": "14226",
+      "HDBDwellings_Total": "64565",
+      "LandedProperties": "11545",
+      "Number": "Bedok",
+      "Others": "519",
+      "Total": "97551",
+      "_id": 3
+    },
+    {
+      "CondominiumsandOtherApartments": "5786",
+      "HDBDwellings_1_and2_RoomFlats1": "605",
+      "HDBDwellings_3_RoomFlats": "2334",
+      "HDBDwellings_4_RoomFlats": "9882",
+      "HDBDwellings_5_RoomandExecutiveFlats": "7727",
+      "HDBDwellings_Total": "20547",
+      "LandedProperties": "3040",
+      "Number": "Bishan",
+      "Others": "72",
+      "Total": "29445",
+      "_id": 4
+    },
+    {
+      "CondominiumsandOtherApartments": "9338",
+      "HDBDwellings_1_and2_RoomFlats1": "3335",
+      "HDBDwellings_3_RoomFlats": "11517",
+      "HDBDwellings_4_RoomFlats": "18425",
+      "HDBDwellings_5_RoomandExecutiveFlats": "10109",
+      "HDBDwellings_Total": "43387",
+      "LandedProperties": "1466",
+      "Number": "Bukit Batok",
+      "Others": "106",
+      "Total": "54297",
+      "_id": 5
+    },
+    {
+      "CondominiumsandOtherApartments": "5429",
+      "HDBDwellings_1_and2_RoomFlats1": "10995",
+      "HDBDwellings_3_RoomFlats": "15708",
+      "HDBDwellings_4_RoomFlats": "17382",
+      "HDBDwellings_5_RoomandExecutiveFlats": "9790",
+      "HDBDwellings_Total": "53875",
+      "LandedProperties": "190",
+      "Number": "Bukit Merah",
+      "Others": "207",
+      "Total": "59700",
+      "_id": 6
+    },
+    {
+      "CondominiumsandOtherApartments": "6643",
+      "HDBDwellings_1_and2_RoomFlats1": "1234",
+      "HDBDwellings_3_RoomFlats": "3638",
+      "HDBDwellings_4_RoomFlats": "17144",
+      "HDBDwellings_5_RoomandExecutiveFlats": "14104",
+      "HDBDwellings_Total": "36120",
+      "LandedProperties": "817",
+      "Number": "Bukit Panjang",
+      "Others": "-",
+      "Total": "43580",
+      "_id": 7
+    },
+    {
+      "CondominiumsandOtherApartments": "12827",
+      "HDBDwellings_1_and2_RoomFlats1": "147",
+      "HDBDwellings_3_RoomFlats": "469",
+      "HDBDwellings_4_RoomFlats": "850",
+      "HDBDwellings_5_RoomandExecutiveFlats": "1027",
+      "HDBDwellings_Total": "2493",
+      "LandedProperties": "9163",
+      "Number": "Bukit Timah",
+      "Others": "129",
+      "Total": "24612",
+      "_id": 8
+    },
+    {
+      "CondominiumsandOtherApartments": "7395",
+      "HDBDwellings_1_and2_RoomFlats1": "2088",
+      "HDBDwellings_3_RoomFlats": "2487",
+      "HDBDwellings_4_RoomFlats": "24202",
+      "HDBDwellings_5_RoomandExecutiveFlats": "21241",
+      "HDBDwellings_Total": "50018",
+      "LandedProperties": "606",
+      "Number": "Choa Chu Kang",
+      "Others": "5",
+      "Total": "58024",
+      "_id": 9
+    },
+    {
+      "CondominiumsandOtherApartments": "5988",
+      "HDBDwellings_1_and2_RoomFlats1": "1117",
+      "HDBDwellings_3_RoomFlats": "11461",
+      "HDBDwellings_4_RoomFlats": "9298",
+      "HDBDwellings_5_RoomandExecutiveFlats": "3943",
+      "HDBDwellings_Total": "25820",
+      "LandedProperties": "1614",
+      "Number": "Clementi",
+      "Others": "186",
+      "Total": "33609",
+      "_id": 10
+    },
+    {
+      "CondominiumsandOtherApartments": "1282",
+      "HDBDwellings_1_and2_RoomFlats1": "-",
+      "HDBDwellings_3_RoomFlats": "-",
+      "HDBDwellings_4_RoomFlats": "229",
+      "HDBDwellings_5_RoomandExecutiveFlats": "-",
+      "HDBDwellings_Total": "229",
+      "LandedProperties": "-",
+      "Number": "Downtown Core",
+      "Others": "36",
+      "Total": "1547",
+      "_id": 11
+    },
+    {
+      "CondominiumsandOtherApartments": "8880",
+      "HDBDwellings_1_and2_RoomFlats1": "4174",
+      "HDBDwellings_3_RoomFlats": "11708",
+      "HDBDwellings_4_RoomFlats": "10424",
+      "HDBDwellings_5_RoomandExecutiveFlats": "4665",
+      "HDBDwellings_Total": "30971",
+      "LandedProperties": "1864",
+      "Number": "Geylang",
+      "Others": "344",
+      "Total": "42060",
+      "_id": 12
+    },
+    {
+      "CondominiumsandOtherApartments": "10899",
+      "HDBDwellings_1_and2_RoomFlats1": "3132",
+      "HDBDwellings_3_RoomFlats": "10958",
+      "HDBDwellings_4_RoomFlats": "27963",
+      "HDBDwellings_5_RoomandExecutiveFlats": "15926",
+      "HDBDwellings_Total": "57979",
+      "LandedProperties": "6073",
+      "Number": "Hougang",
+      "Others": "158",
+      "Total": "75109",
+      "_id": 13
+    },
+    {
+      "CondominiumsandOtherApartments": "2477",
+      "HDBDwellings_1_and2_RoomFlats1": "1090",
+      "HDBDwellings_3_RoomFlats": "7162",
+      "HDBDwellings_4_RoomFlats": "8455",
+      "HDBDwellings_5_RoomandExecutiveFlats": "7942",
+      "HDBDwellings_Total": "24649",
+      "LandedProperties": "-",
+      "Number": "Jurong East",
+      "Others": "86",
+      "Total": "27213",
+      "_id": 14
+    },
+    {
+      "CondominiumsandOtherApartments": "5632",
+      "HDBDwellings_1_and2_RoomFlats1": "3700",
+      "HDBDwellings_3_RoomFlats": "12815",
+      "HDBDwellings_4_RoomFlats": "31404",
+      "HDBDwellings_5_RoomandExecutiveFlats": "29247",
+      "HDBDwellings_Total": "77166",
+      "LandedProperties": "1019",
+      "Number": "Jurong West",
+      "Others": "61",
+      "Total": "83879",
+      "_id": 15
+    },
+    {
+      "CondominiumsandOtherApartments": "7709",
+      "HDBDwellings_1_and2_RoomFlats1": "6907",
+      "HDBDwellings_3_RoomFlats": "10940",
+      "HDBDwellings_4_RoomFlats": "9674",
+      "HDBDwellings_5_RoomandExecutiveFlats": "4736",
+      "HDBDwellings_Total": "32257",
+      "LandedProperties": "509",
+      "Number": "Kallang",
+      "Others": "357",
+      "Total": "40832",
+      "_id": 16
+    },
+    {
+      "CondominiumsandOtherApartments": "6334",
+      "HDBDwellings_1_and2_RoomFlats1": "1387",
+      "HDBDwellings_3_RoomFlats": "2946",
+      "HDBDwellings_4_RoomFlats": "1826",
+      "HDBDwellings_5_RoomandExecutiveFlats": "1833",
+      "HDBDwellings_Total": "7993",
+      "LandedProperties": "2603",
+      "Number": "Marine Parade",
+      "Others": "139",
+      "Total": "17069",
+      "_id": 17
+    },
+    {
+      "CondominiumsandOtherApartments": "7641",
+      "HDBDwellings_1_and2_RoomFlats1": "768",
+      "HDBDwellings_3_RoomFlats": "3342",
+      "HDBDwellings_4_RoomFlats": "2822",
+      "HDBDwellings_5_RoomandExecutiveFlats": "1438",
+      "HDBDwellings_Total": "8370",
+      "LandedProperties": "2193",
+      "Number": "Novena",
+      "Others": "76",
+      "Total": "18281",
+      "_id": 18
+    },
+    {
+      "CondominiumsandOtherApartments": "420",
+      "HDBDwellings_1_and2_RoomFlats1": "2889",
+      "HDBDwellings_3_RoomFlats": "2356",
+      "HDBDwellings_4_RoomFlats": "1735",
+      "HDBDwellings_5_RoomandExecutiveFlats": "625",
+      "HDBDwellings_Total": "7605",
+      "LandedProperties": "-",
+      "Number": "Outram",
+      "Others": "27",
+      "Total": "8053",
+      "_id": 19
+    },
+    {
+      "CondominiumsandOtherApartments": "12814",
+      "HDBDwellings_1_and2_RoomFlats1": "734",
+      "HDBDwellings_3_RoomFlats": "356",
+      "HDBDwellings_4_RoomFlats": "11809",
+      "HDBDwellings_5_RoomandExecutiveFlats": "17180",
+      "HDBDwellings_Total": "30080",
+      "LandedProperties": "1905",
+      "Number": "Pasir Ris",
+      "Others": "-",
+      "Total": "44799",
+      "_id": 20
+    },
+    {
+      "CondominiumsandOtherApartments": "7061",
+      "HDBDwellings_1_and2_RoomFlats1": "4364",
+      "HDBDwellings_3_RoomFlats": "5404",
+      "HDBDwellings_4_RoomFlats": "22277",
+      "HDBDwellings_5_RoomandExecutiveFlats": "16990",
+      "HDBDwellings_Total": "49035",
+      "LandedProperties": "69",
+      "Number": "Punggol",
+      "Others": "-",
+      "Total": "56166",
+      "_id": 21
+    },
+    {
+      "CondominiumsandOtherApartments": "4676",
+      "HDBDwellings_1_and2_RoomFlats1": "3814",
+      "HDBDwellings_3_RoomFlats": "13661",
+      "HDBDwellings_4_RoomFlats": "9424",
+      "HDBDwellings_5_RoomandExecutiveFlats": "4360",
+      "HDBDwellings_Total": "31259",
+      "LandedProperties": "1032",
+      "Number": "Queenstown",
+      "Others": "86",
+      "Total": "37053",
+      "_id": 22
+    },
+    {
+      "CondominiumsandOtherApartments": "3721",
+      "HDBDwellings_1_and2_RoomFlats1": "-",
+      "HDBDwellings_3_RoomFlats": "-",
+      "HDBDwellings_4_RoomFlats": "-",
+      "HDBDwellings_5_RoomandExecutiveFlats": "-",
+      "HDBDwellings_Total": "-",
+      "LandedProperties": "252",
+      "Number": "River Valley",
+      "Others": "3",
+      "Total": "3976",
+      "_id": 23
+    },
+    {
+      "CondominiumsandOtherApartments": "3509",
+      "HDBDwellings_1_and2_RoomFlats1": "3516",
+      "HDBDwellings_3_RoomFlats": "1507",
+      "HDBDwellings_4_RoomFlats": "11908",
+      "HDBDwellings_5_RoomandExecutiveFlats": "11653",
+      "HDBDwellings_Total": "28584",
+      "LandedProperties": "943",
+      "Number": "Sembawang",
+      "Others": "13",
+      "Total": "33049",
+      "_id": 24
+    },
+    {
+      "CondominiumsandOtherApartments": "10823",
+      "HDBDwellings_1_and2_RoomFlats1": "3950",
+      "HDBDwellings_3_RoomFlats": "4043",
+      "HDBDwellings_4_RoomFlats": "31507",
+      "HDBDwellings_5_RoomandExecutiveFlats": "28680",
+      "HDBDwellings_Total": "68180",
+      "LandedProperties": "372",
+      "Number": "Sengkang",
+      "Others": "-",
+      "Total": "79376",
+      "_id": 25
+    },
+    {
+      "CondominiumsandOtherApartments": "6178",
+      "HDBDwellings_1_and2_RoomFlats1": "664",
+      "HDBDwellings_3_RoomFlats": "4376",
+      "HDBDwellings_4_RoomFlats": "10514",
+      "HDBDwellings_5_RoomandExecutiveFlats": "6531",
+      "HDBDwellings_Total": "22085",
+      "LandedProperties": "9745",
+      "Number": "Serangoon",
+      "Others": "78",
+      "Total": "38086",
+      "_id": 26
+    },
+    {
+      "CondominiumsandOtherApartments": "9543",
+      "HDBDwellings_1_and2_RoomFlats1": "3215",
+      "HDBDwellings_3_RoomFlats": "14313",
+      "HDBDwellings_4_RoomFlats": "31182",
+      "HDBDwellings_5_RoomandExecutiveFlats": "24136",
+      "HDBDwellings_Total": "72846",
+      "LandedProperties": "1211",
+      "Number": "Tampines",
+      "Others": "81",
+      "Total": "83681",
+      "_id": 27
+    },
+    {
+      "CondominiumsandOtherApartments": "6493",
+      "HDBDwellings_1_and2_RoomFlats1": "-",
+      "HDBDwellings_3_RoomFlats": "21",
+      "HDBDwellings_4_RoomFlats": "79",
+      "HDBDwellings_5_RoomandExecutiveFlats": "86",
+      "HDBDwellings_Total": "187",
+      "LandedProperties": "1234",
+      "Number": "Tanglin",
+      "Others": "25",
+      "Total": "7938",
+      "_id": 28
+    },
+    {
+      "CondominiumsandOtherApartments": "5440",
+      "HDBDwellings_1_and2_RoomFlats1": "4793",
+      "HDBDwellings_3_RoomFlats": "16019",
+      "HDBDwellings_4_RoomFlats": "11368",
+      "HDBDwellings_5_RoomandExecutiveFlats": "7092",
+      "HDBDwellings_Total": "39272",
+      "LandedProperties": "1771",
+      "Number": "Toa Payoh",
+      "Others": "397",
+      "Total": "46880",
+      "_id": 29
+    },
+    {
+      "CondominiumsandOtherApartments": "5592",
+      "HDBDwellings_1_and2_RoomFlats1": "5299",
+      "HDBDwellings_3_RoomFlats": "7367",
+      "HDBDwellings_4_RoomFlats": "31978",
+      "HDBDwellings_5_RoomandExecutiveFlats": "28321",
+      "HDBDwellings_Total": "72965",
+      "LandedProperties": "214",
+      "Number": "Woodlands",
+      "Others": "68",
+      "Total": "78839",
+      "_id": 30
+    },
+    {
+      "CondominiumsandOtherApartments": "6902",
+      "HDBDwellings_1_and2_RoomFlats1": "4119",
+      "HDBDwellings_3_RoomFlats": "16531",
+      "HDBDwellings_4_RoomFlats": "32083",
+      "HDBDwellings_5_RoomandExecutiveFlats": "14040",
+      "HDBDwellings_Total": "66773",
+      "LandedProperties": "1496",
+      "Number": "Yishun",
+      "Others": "232",
+      "Total": "75403",
+      "_id": 31
+    },
+    {
+      "CondominiumsandOtherApartments": "6933",
+      "HDBDwellings_1_and2_RoomFlats1": "383",
+      "HDBDwellings_3_RoomFlats": "1961",
+      "HDBDwellings_4_RoomFlats": "1492",
+      "HDBDwellings_5_RoomandExecutiveFlats": "295",
+      "HDBDwellings_Total": "4131",
+      "LandedProperties": "1045",
+      "Number": "Others",
+      "Others": "124",
+      "Total": "12233",
+      "_id": 32
+    }
+  ],
+  "total": 32
+}

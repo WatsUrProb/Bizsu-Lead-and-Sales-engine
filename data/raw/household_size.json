@@ -1,0 +1,467 @@
+{
+  "fields": [
+    {
+      "id": "Number",
+      "type": "text"
+    },
+    {
+      "id": "Total",
+      "type": "numeric"
+    },
+    {
+      "id": "1Person",
+      "type": "numeric"
+    },
+    {
+      "id": "2Persons",
+      "type": "numeric"
+    },
+    {
+      "id": "3Persons",
+      "type": "numeric"
+    },
+    {
+      "id": "4Persons",
+      "type": "numeric"
+    },
+    {
+      "id": "5Persons",
+      "type": "numeric"
+    },
+    {
+      "id": "6Persons",
+      "type": "numeric"
+    },
+    {
+      "id": "7Persons",
+      "type": "numeric"
+    },
+    {
+      "id": "8orMorePersons",
+      "type": "numeric"
+    },
+    {
+      "id": "_id",
+      "type": "int4"
+    }
+  ],
+  "records": [
+    {
+      "1Person": "220270",
+      "2Persons": "309754",
+      "3Persons": "280544",
+      "4Persons": "275594",
+      "5Persons": "163466",
+      "6Persons": "74981",
+      "7Persons": "30527",
+      "8orMorePersons": "17422",
+      "Number": "Total",
+      "Total": "1372559",
+      "_id": 1
+    },
+    {
+      "1Person": "12603",
+      "2Persons": "15564",
+      "3Persons": "12172",
+      "4Persons": "10414",
+      "5Persons": "5116",
+      "6Persons": "2834",
+      "7Persons": "980",
+      "8orMorePersons": "537",
+      "Number": "Ang Mo Kio",
+      "Total": "60220",
+      "_id": 2
+    },
+    {
+      "1Person": "17598",
+      "2Persons": "23486",
+      "3Persons": "19081",
+      "4Persons": "17654",
+      "5Persons": "10727",
+      "6Persons": "4845",
+      "7Persons": "2631",
+      "8orMorePersons": "1530",
+      "Number": "Bedok",
+      "Total": "97551",
+      "_id": 3
+    },
+    {
+      "1Person": "4444",
+      "2Persons": "6352",
+      "3Persons": "6184",
+      "4Persons": "6131",
+      "5Persons": "3551",
+      "6Persons": "1686",
+      "7Persons": "682",
+      "8orMorePersons": "413",
+      "Number": "Bishan",
+      "Total": "29445",
+      "_id": 4
+    },
+    {
+      "1Person": "8445",
+      "2Persons": "12574",
+      "3Persons": "12465",
+      "4Persons": "10873",
+      "5Persons": "5868",
+      "6Persons": "2553",
+      "7Persons": "917",
+      "8orMorePersons": "603",
+      "Number": "Bukit Batok",
+      "Total": "54297",
+      "_id": 5
+    },
+    {
+      "1Person": "14151",
+      "2Persons": "17214",
+      "3Persons": "11016",
+      "4Persons": "9477",
+      "5Persons": "5033",
+      "6Persons": "1724",
+      "7Persons": "819",
+      "8orMorePersons": "266",
+      "Number": "Bukit Merah",
+      "Total": "59700",
+      "_id": 6
+    },
+    {
+      "1Person": "4953",
+      "2Persons": "8955",
+      "3Persons": "9415",
+      "4Persons": "10166",
+      "5Persons": "6055",
+      "6Persons": "2450",
+      "7Persons": "1030",
+      "8orMorePersons": "556",
+      "Number": "Bukit Panjang",
+      "Total": "43580",
+      "_id": 7
+    },
+    {
+      "1Person": "2464",
+      "2Persons": "3889",
+      "3Persons": "4412",
+      "4Persons": "5121",
+      "5Persons": "4515",
+      "6Persons": "2179",
+      "7Persons": "1295",
+      "8orMorePersons": "737",
+      "Number": "Bukit Timah",
+      "Total": "24612",
+      "_id": 8
+    },
+    {
+      "1Person": "5175",
+      "2Persons": "10812",
+      "3Persons": "12942",
+      "4Persons": "14893",
+      "5Persons": "8292",
+      "6Persons": "3752",
+      "7Persons": "1408",
+      "8orMorePersons": "749",
+      "Number": "Choa Chu Kang",
+      "Total": "58024",
+      "_id": 9
+    },
+    {
+      "1Person": "6652",
+      "2Persons": "7989",
+      "3Persons": "6733",
+      "4Persons": "6291",
+      "5Persons": "3676",
+      "6Persons": "1443",
+      "7Persons": "566",
+      "8orMorePersons": "259",
+      "Number": "Clementi",
+      "Total": "33609",
+      "_id": 10
+    },
+    {
+      "1Person": "681",
+      "2Persons": "410",
+      "3Persons": "173",
+      "4Persons": "130",
+      "5Persons": "86",
+      "6Persons": "29",
+      "7Persons": "27",
+      "8orMorePersons": "9",
+      "Number": "Downtown Core",
+      "Total": "1547",
+      "_id": 11
+    },
+    {
+      "1Person": "10321",
+      "2Persons": "10529",
+      "3Persons": "8060",
+      "4Persons": "6276",
+      "5Persons": "3823",
+      "6Persons": "1826",
+      "7Persons": "732",
+      "8orMorePersons": "492",
+      "Number": "Geylang",
+      "Total": "42060",
+      "_id": 12
+    },
+    {
+      "1Person": "11031",
+      "2Persons": "17088",
+      "3Persons": "14966",
+      "4Persons": "16106",
+      "5Persons": "9321",
+      "6Persons": "3957",
+      "7Persons": "1688",
+      "8orMorePersons": "952",
+      "Number": "Hougang",
+      "Total": "75109",
+      "_id": 13
+    },
+    {
+      "1Person": "4497",
+      "2Persons": "6627",
+      "3Persons": "5995",
+      "4Persons": "5239",
+      "5Persons": "2802",
+      "6Persons": "1329",
+      "7Persons": "465",
+      "8orMorePersons": "259",
+      "Number": "Jurong East",
+      "Total": "27213",
+      "_id": 14
+    },
+    {
+      "1Person": "10971",
+      "2Persons": "17005",
+      "3Persons": "17656",
+      "4Persons": "18524",
+      "5Persons": "10976",
+      "6Persons": "5382",
+      "7Persons": "2016",
+      "8orMorePersons": "1349",
+      "Number": "Jurong West",
+      "Total": "83879",
+      "_id": 15
+    },
+    {
+      "1Person": "10816",
+      "2Persons": "11217",
+      "3Persons": "6883",
+      "4Persons": "5912",
+      "5Persons": "3684",
+      "6Persons": "1526",
+      "7Persons": "485",
+      "8orMorePersons": "309",
+      "Number": "Kallang",
+      "Total": "40832",
+      "_id": 16
+    },
+    {
+      "1Person": "3367",
+      "2Persons": "3863",
+      "3Persons": "3176",
+      "4Persons": "2842",
+      "5Persons": "2110",
+      "6Persons": "940",
+      "7Persons": "418",
+      "8orMorePersons": "354",
+      "Number": "Marine Parade",
+      "Total": "17069",
+      "_id": 17
+    },
+    {
+      "1Person": "3630",
+      "2Persons": "4302",
+      "3Persons": "3366",
+      "4Persons": "3217",
+      "5Persons": "2073",
+      "6Persons": "994",
+      "7Persons": "389",
+      "8orMorePersons": "308",
+      "Number": "Novena",
+      "Total": "18281",
+      "_id": 18
+    },
+    {
+      "1Person": "2832",
+      "2Persons": "2195",
+      "3Persons": "1296",
+      "4Persons": "888",
+      "5Persons": "496",
+      "6Persons": "203",
+      "7Persons": "113",
+      "8orMorePersons": "29",
+      "Number": "Outram",
+      "Total": "8053",
+      "_id": 19
+    },
+    {
+      "1Person": "4790",
+      "2Persons": "8146",
+      "3Persons": "8749",
+      "4Persons": "10900",
+      "5Persons": "6883",
+      "6Persons": "3055",
+      "7Persons": "1462",
+      "8orMorePersons": "814",
+      "Number": "Pasir Ris",
+      "Total": "44799",
+      "_id": 20
+    },
+    {
+      "1Person": "5375",
+      "2Persons": "13023",
+      "3Persons": "12453",
+      "4Persons": "12781",
+      "5Persons": "7856",
+      "6Persons": "2972",
+      "7Persons": "1248",
+      "8orMorePersons": "458",
+      "Number": "Punggol",
+      "Total": "56166",
+      "_id": 21
+    },
+    {
+      "1Person": "8278",
+      "2Persons": "10224",
+      "3Persons": "7181",
+      "4Persons": "5959",
+      "5Persons": "3411",
+      "6Persons": "1284",
+      "7Persons": "500",
+      "8orMorePersons": "215",
+      "Number": "Queenstown",
+      "Total": "37053",
+      "_id": 22
+    },
+    {
+      "1Person": "869",
+      "2Persons": "794",
+      "3Persons": "571",
+      "4Persons": "740",
+      "5Persons": "603",
+      "6Persons": "223",
+      "7Persons": "117",
+      "8orMorePersons": "58",
+      "Number": "River Valley",
+      "Total": "3976",
+      "_id": 23
+    },
+    {
+      "1Person": "4310",
+      "2Persons": "7162",
+      "3Persons": "6744",
+      "4Persons": "7466",
+      "5Persons": "4158",
+      "6Persons": "2097",
+      "7Persons": "676",
+      "8orMorePersons": "437",
+      "Number": "Sembawang",
+      "Total": "33049",
+      "_id": 24
+    },
+    {
+      "1Person": "8576",
+      "2Persons": "16046",
+      "3Persons": "17143",
+      "4Persons": "18989",
+      "5Persons": "11208",
+      "6Persons": "5095",
+      "7Persons": "1632",
+      "8orMorePersons": "687",
+      "Number": "Sengkang",
+      "Total": "79376",
+      "_id": 25
+    },
+    {
+      "1Person": "5384",
+      "2Persons": "7984",
+      "3Persons": "7800",
+      "4Persons": "7687",
+      "5Persons": "4694",
+      "6Persons": "2309",
+      "7Persons": "1178",
+      "8orMorePersons": "1050",
+      "Number": "Serangoon",
+      "Total": "38086",
+      "_id": 26
+    },
+    {
+      "1Person": "10895",
+      "2Persons": "17995",
+      "3Persons": "18183",
+      "4Persons": "17600",
+      "5Persons": "10400",
+      "6Persons": "5341",
+      "7Persons": "2303",
+      "8orMorePersons": "964",
+      "Number": "Tampines",
+      "Total": "83681",
+      "_id": 27
+    },
+    {
+      "1Person": "1240",
+      "2Persons": "1609",
+      "3Persons": "1290",
+      "4Persons": "1410",
+      "5Persons": "1208",
+      "6Persons": "594",
+      "7Persons": "307",
+      "8orMorePersons": "280",
+      "Number": "Tanglin",
+      "Total": "7938",
+      "_id": 28
+    },
+    {
+      "1Person": "11689",
+      "2Persons": "11432",
+      "3Persons": "8921",
+      "4Persons": "7454",
+      "5Persons": "4221",
+      "6Persons": "2074",
+      "7Persons": "680",
+      "8orMorePersons": "408",
+      "Number": "Toa Payoh",
+      "Total": "46880",
+      "_id": 29
+    },
+    {
+      "1Person": "9617",
+      "2Persons": "15549",
+      "3Persons": "16625",
+      "4Persons": "16941",
+      "5Persons": "10943",
+      "6Persons": "5533",
+      "7Persons": "2252",
+      "8orMorePersons": "1379",
+      "Number": "Woodlands",
+      "Total": "78839",
+      "_id": 30
+    },
+    {
+      "1Person": "11791",
+      "2Persons": "16798",
+      "3Persons": "16724",
+      "4Persons": "15535",
+      "5Persons": "8404",
+      "6Persons": "4116",
+      "7Persons": "1244",
+      "8orMorePersons": "790",
+      "Number": "Yishun",
+      "Total": "75403",
+      "_id": 31
+    },
+    {
+      "1Person": "2822",
+      "2Persons": "2919",
+      "3Persons": "2167",
+      "4Persons": "1979",
+      "5Persons": "1273",
+      "6Persons": "639",
+      "7Persons": "264",
+      "8orMorePersons": "170",
+      "Number": "Others",
+      "Total": "12233",
+      "_id": 32
+    }
+  ],
+  "total": 32
+}

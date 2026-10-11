@@ -1,0 +1,26 @@
+{
+  "model": "Logistic regression, demonstration only",
+  "version": "synthetic-v1-seed42",
+  "feature_keys": [
+    "property_type",
+    "ac_type",
+    "ac_units",
+    "daily_hours"
+  ],
+  "metrics": {
+    "training_rows": 900,
+    "held_out_rows": 300,
+    "synthetic_accuracy": 0.703,
+    "synthetic_roc_auc": 0.595,
+    "synthetic_positive_rate": 0.292
+  },
+  "assumptions": [
+    "Area and dwelling-type frequencies come from aggregate Census 2020 counts.",
+    "Household size is sampled separately within area; its joint distribution with dwelling type is unknown.",
+    "The 81.9% national 2023 AC ownership figure is applied uniformly as a scenario assumption.",
+    "AC unit ranges, type shares, daily usage and enquiry selection are simulated assumptions.",
+    "Conversion outcomes come from an invented noisy formula using AC units, usage and type.",
+    "Held-out metrics measure consistency with that invented formula, not real-world accuracy."
+  ],
+  "warning": "Predictions are unvalidated synthetic demonstration scores, not purchase probabilities."
+}

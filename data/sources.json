@@ -1,0 +1,70 @@
+{
+  "retrieved_at_utc": "2026-10-11T05:45:11+00:00",
+  "sources": [
+    {
+      "key": "dwelling",
+      "dataset_id": "d_388f9c61f437a588b47b008a012d13fa",
+      "title": "Resident Households by Planning Area of Residence and Type of Dwelling (Census of Population 2020)",
+      "publisher": "Singapore Department of Statistics",
+      "url": "https://data.gov.sg/datasets/d_388f9c61f437a588b47b008a012d13fa/view",
+      "observation_year": 2020,
+      "source_last_updated": "2021-06-18",
+      "granularity": "planning-area aggregate household counts",
+      "file": "raw/dwelling.json",
+      "retrieved_at_utc": "2026-10-11T05:45:11+00:00",
+      "sha256": "2e958edc753ae98afa90ee5077db031582e8f8442a4f5d3f2bef6b7faaf3c384"
+    },
+    {
+      "key": "household_size",
+      "dataset_id": "d_0ef47f84a0776b27010b242038ea2c6b",
+      "title": "Resident Households by Planning Area of Residence and Household Size (Census of Population 2020)",
+      "publisher": "Singapore Department of Statistics",
+      "url": "https://data.gov.sg/datasets/d_0ef47f84a0776b27010b242038ea2c6b/view",
+      "observation_year": 2020,
+      "source_last_updated": "2022-07-28",
+      "granularity": "planning-area aggregate household counts",
+      "file": "raw/household_size.json",
+      "retrieved_at_utc": "2026-10-11T05:45:11+00:00",
+      "sha256": "46cbcd38cc89f5f99ec25528e4b8ff4866968b6be787bdb6d52af0c28a2ff41c"
+    },
+    {
+      "key": "income",
+      "dataset_id": "d_4e150bbd35c3145ea43019212c7b46c2",
+      "title": "Resident Households by Planning Area of Residence and Monthly Household Income from Work (Census of Population 2020)",
+      "publisher": "Singapore Department of Statistics",
+      "url": "https://data.gov.sg/datasets/d_4e150bbd35c3145ea43019212c7b46c2/view",
+      "observation_year": 2020,
+      "source_last_updated": "2026-06-30",
+      "granularity": "planning-area aggregate household counts; updated income definition",
+      "file": "raw/income.json",
+      "retrieved_at_utc": "2026-10-11T05:45:11+00:00",
+      "sha256": "1b92ad5b5f74c911e383f19eddb3dc4115124cfcf7e5e872541505b448908d9c"
+    },
+    {
+      "key": "ac_ownership",
+      "dataset_id": "d_abef8a7f050670891ad530620bad67cb",
+      "title": "Ownership/Availability Of Selected Consumer Durables/Service, Quinquennial",
+      "publisher": "Singapore Department of Statistics",
+      "url": "https://data.gov.sg/datasets/d_abef8a7f050670891ad530620bad67cb/view",
+      "observation_year": 2023,
+      "source_last_updated": "2024-11-28",
+      "granularity": "national household percentage, not planning-area data",
+      "file": "raw/ac_ownership.json",
+      "retrieved_at_utc": "2026-10-11T05:45:11+00:00",
+      "sha256": "e08e0f98e862042ed10c4742d0d0b65a932d63897d785e8cbc58e87a232ede10"
+    },
+    {
+      "key": "ema_2013",
+      "dataset_id": "d_47db177174ba5899aa9cee08797d9171",
+      "title": "Average Monthly Household Electricity Consumption by URA Planning Area & Dwelling Type, 2013",
+      "publisher": "Energy Market Authority",
+      "url": "https://data.gov.sg/datasets/d_47db177174ba5899aa9cee08797d9171/view",
+      "observation_year": 2013,
+      "source_last_updated": "2026-06-24",
+      "granularity": "historical planning-area averages in kWh; not AC-specific",
+      "file": "reference/ema_2013.json",
+      "retrieved_at_utc": "2026-10-11T05:45:11+00:00",
+      "sha256": "03684fa11cc7ba7ed36fc38944f526cec30172df7ef05f471035bee01a2b4d03"
+    }
+  ]
+}
