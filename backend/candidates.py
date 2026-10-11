@@ -5,6 +5,14 @@ from pathlib import Path
 
 CATALOG = Path(__file__).resolve().parents[1] / "data" / "company_candidates.json"
 WEIGHTS = {"residential": 40, "servicing_and_installation": 30, "maintenance_plan": 20, "coverage": 10}
+# Fictional referral links are assigned to research candidates for a clearly
+# labelled scenario. No listed company supplied these visits or enquiries.
+SCENARIO_COMPANY_BY_PARTNER = {
+    "partner001": "natural-cool",
+    "partner002": "gain-city",
+    "partner003": "jetstyle",
+    "partner004": "gain-city",
+}
 
 
 def load_catalog() -> dict:

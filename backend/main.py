@@ -12,7 +12,7 @@ import joblib
 from fastapi import FastAPI, HTTPException, Query, Request
 from pydantic import BaseModel, Field, field_validator
 
-from backend.candidates import WEIGHTS, load_catalog, outreach_template
+from backend.candidates import SCENARIO_COMPANY_BY_PARTNER, WEIGHTS, load_catalog, outreach_template
 from backend.db import DEFAULT_DB, ROOT, initialize, lead_from_row, now, partner_from_row, session
 from backend.domain import NEXT_STAGE, STAGES, draft_message, qualify, stage_allowed
 
@@ -81,6 +81,15 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
     sources = json.loads((DATA / "sources.json").read_text())
     catalog = load_catalog()
     candidates_by_id = {item["id"]: item for item in catalog["candidates"]}
+
+    def with_company(record: dict) -> dict:
+        company_id = SCENARIO_COMPANY_BY_PARTNER.get(record.get("partner_id", record.get("id")))
+        return {
+            **record,
+            "company_id": company_id,
+            "company_name": candidates_by_id[company_id]["name"] if company_id else None,
+            "scenario_only": True,
+        }
     model = joblib.load(DATA / "models" / "conversion.joblib")
     areas = [
         {**area, **cluster_data["assignments"].get(area["name"], {"cluster_id": None, "cluster_label": None})}
@@ -107,7 +116,7 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
             "clusters": {key: value for key, value in cluster_data.items() if key != "assignments"},
             "model": model_card,
             "stages": STAGES,
-            "demo_note": "Planning-area figures and sourced company profiles are real public information; referral partners, enquiries and outcomes are synthetic.",
+            "demo_note": "Company profiles are public research. Every company-level referral and sales figure is a simulated scenario, not company or Bizsu performance.",
             "ema_note": "The available area electricity context is historical 2013 whole-home consumption. EMA's current source page was reviewed, but the workbook could not be inspected through automated retrieval, so it was not integrated.",
         }
 
@@ -124,7 +133,7 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
     def list_partners():
         with session(path) as db:
             partners = [partner_from_row(row) for row in db.execute("SELECT * FROM partners WHERE active=1")]
-        return sorted(partners, key=lambda partner: partner["ranking"]["score"], reverse=True)
+        return [with_company(partner) for partner in partners]
 
     @app.get("/api/candidates")
     def list_candidates():
@@ -194,7 +203,7 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
             lead_id = db.execute("SELECT last_insert_rowid()").fetchone()[0]
             db.execute("INSERT INTO stage_events (lead_id,from_stage,to_stage,created_at) VALUES (?,?,?,?)", (lead_id, None, "new", now()))
             row = db.execute("SELECT * FROM leads WHERE id=?", (lead_id,)).fetchone()
-        return {**lead_from_row(row), "area_context": area_lookup[record["area"]]["cluster_label"], "score_warning": model_card["warning"]}
+        return {**with_company(lead_from_row(row)), "area_context": area_lookup[record["area"]]["cluster_label"], "score_warning": model_card["warning"]}
 
     @app.get("/api/leads")
     def list_leads(partner_id: str | None = None, stage: str | None = None):
@@ -208,7 +217,7 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
             params.append(stage)
         query += " ORDER BY leads.id DESC"
         with session(path) as db:
-            return [lead_from_row(row) for row in db.execute(query, params)]
+            return [with_company(lead_from_row(row)) for row in db.execute(query, params)]
 
     @app.get("/api/leads/{lead_id}")
     def get_lead(lead_id: int):
@@ -218,7 +227,7 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
                 raise HTTPException(404, "Lead not found")
             events = [dict(event) for event in db.execute("SELECT * FROM stage_events WHERE lead_id=? ORDER BY id", (lead_id,))]
             drafts = [dict(draft) for draft in db.execute("SELECT * FROM followup_drafts WHERE lead_id=? ORDER BY id DESC", (lead_id,))]
-        return {**lead_from_row(row), "stage_events": events, "drafts": drafts, "area_context": area_lookup[row["area"]]["cluster_label"]}
+        return {**with_company(lead_from_row(row)), "stage_events": events, "drafts": drafts, "area_context": area_lookup[row["area"]]["cluster_label"]}
 
     @app.patch("/api/leads/{lead_id}/stage")
     def change_stage(lead_id: int, payload: StageInput):
@@ -256,25 +265,45 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
     @app.get("/api/dashboard")
     def dashboard():
         with session(path) as db:
-            partners = db.execute("SELECT COUNT(*) FROM partners WHERE active=1").fetchone()[0]
-            visits = db.execute("SELECT COUNT(*) FROM referral_events").fetchone()[0]
-            submitted = db.execute("SELECT COUNT(*) FROM leads").fetchone()[0]
-            qualified = db.execute("SELECT COUNT(*) FROM leads WHERE qualification_status='qualified'").fetchone()[0]
-            booked = db.execute("SELECT COUNT(DISTINCT lead_id) FROM stage_events WHERE to_stage='assessment_booked'").fetchone()[0]
-            won = db.execute("SELECT COUNT(*) FROM leads WHERE stage='won'").fetchone()[0]
-            stages = {stage: db.execute("SELECT COUNT(*) FROM leads WHERE stage=?", (stage,)).fetchone()[0] for stage in STAGES}
-        percent = lambda n, d: round(100 * n / d, 1) if d else None
+            active_ids = {row["id"] for row in db.execute("SELECT id FROM partners WHERE active=1")}
+            visits = [row["partner_id"] for row in db.execute("SELECT partner_id FROM referral_events")]
+            leads = [dict(row) for row in db.execute("SELECT id,partner_id,qualification_status,stage FROM leads")]
+            booked_ids = {row["lead_id"] for row in db.execute("SELECT lead_id FROM stage_events WHERE to_stage='assessment_booked'")}
+
+        def summary(partner_ids: set[str] | None) -> dict:
+            scoped_leads = [lead for lead in leads if partner_ids is None or lead["partner_id"] in partner_ids]
+            submitted = len(scoped_leads)
+            qualified = sum(lead["qualification_status"] == "qualified" for lead in scoped_leads)
+            booked = sum(lead["id"] in booked_ids for lead in scoped_leads)
+            won = sum(lead["stage"] == "won" for lead in scoped_leads)
+            percent = lambda numerator, denominator: round(100 * numerator / denominator, 1) if denominator else None
+            return {
+                "synthetic": True,
+                "active_partners": len(active_ids if partner_ids is None else active_ids & partner_ids),
+                "referral_visits": sum(partner_ids is None or visit in partner_ids for visit in visits),
+                "submitted_enquiries": submitted,
+                "qualified_enquiries": qualified,
+                "assessments_booked": booked,
+                "won_deals": won,
+                "stage_counts": {stage: sum(lead["stage"] == stage for lead in scoped_leads) for stage in STAGES},
+                "conversion_rates": {
+                    "enquiry_to_qualified_percent": percent(qualified, submitted),
+                    "qualified_to_booked_percent": percent(booked, qualified),
+                    "booked_to_won_percent": percent(won, booked),
+                },
+            }
+
+        company_breakdown = {
+            company_id: {
+                "company_name": candidate["name"],
+                **summary({partner_id for partner_id, mapped_id in SCENARIO_COMPANY_BY_PARTNER.items() if mapped_id == company_id}),
+            }
+            for company_id, candidate in candidates_by_id.items()
+        }
         return {
-            "synthetic": True,
-            "active_partners": partners, "referral_visits": visits, "submitted_enquiries": submitted,
-            "qualified_enquiries": qualified, "assessments_booked": booked, "won_deals": won,
-            "stage_counts": stages,
-            "conversion_rates": {
-                "enquiry_to_qualified_percent": percent(qualified, submitted),
-                "qualified_to_booked_percent": percent(booked, qualified),
-                "booked_to_won_percent": percent(won, booked),
-            },
-            "note": "All demo funnel records and outcomes are synthetic; rates are descriptive of this small sample, not Bizsu results.",
+            **summary(None),
+            "company_breakdown": company_breakdown,
+            "note": "All company-level visits, enquiries and outcomes are simulated scenarios. They are not activity by, or partnerships with, the listed companies.",
         }
 
     return app

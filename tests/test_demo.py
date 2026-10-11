@@ -106,3 +106,31 @@ def test_sourced_candidates_stay_separate_from_demo_referrals(tmp_path):
         assert cleared["outreach_draft"] == ""
         assert client.patch("/api/candidates/unknown", json={"shortlisted": True, "outreach_draft": "x"}).status_code == 404
         assert client.get("/api/dashboard").json()["active_partners"] == 4
+
+
+def test_company_scenario_counts_follow_attributed_demo_leads(tmp_path):
+    with TestClient(create_app(tmp_path / "demo.db")) as client:
+        partners = client.get("/api/partners").json()
+        company_ids = {item["id"] for item in client.get("/api/candidates").json()["candidates"]}
+        assert {partner["company_id"] for partner in partners} == company_ids
+        assert all(partner["scenario_only"] for partner in partners)
+
+        before = client.get("/api/dashboard").json()["company_breakdown"]
+        target = partners[0]
+        payload = {
+            "referral_code": target["referral_code"], "area": "Ang Mo Kio", "property_type": "HDB 4 room",
+            "ac_type": "split", "ac_units": 2, "daily_hours": 6,
+            "contact_name": "Demo Resident", "contact_email": "resident@example.test", "consent": True,
+        }
+        created = client.post("/api/leads", json=payload).json()
+        assert created["company_id"] == target["company_id"]
+        assert created["company_name"] == target["company_name"]
+        assert client.get(f"/api/leads/{created['id']}").json()["company_id"] == target["company_id"]
+
+        after = client.get("/api/dashboard").json()["company_breakdown"]
+        for company_id in company_ids:
+            expected_delta = 1 if company_id == target["company_id"] else 0
+            assert after[company_id]["submitted_enquiries"] - before[company_id]["submitted_enquiries"] == expected_delta
+        assert sum(item["submitted_enquiries"] for item in after.values()) == len(
+            [lead for lead in client.get("/api/leads").json() if lead["partner_id"]]
+        )

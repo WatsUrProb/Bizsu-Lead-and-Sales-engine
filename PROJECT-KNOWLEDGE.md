@@ -6,7 +6,7 @@ Local student hackathon proof of concept implemented from [`Bizsutext.md`](Bizsu
 
 ## Intent and scope
 
-Proposed Singapore residential acquisition funnel: sourced real-company candidate research and local shortlist → separate fictional AC service partner → unique referral link → synthetic homeowner enquiry → rule-based screening → human-managed pipeline → editable, unsent follow-up. Market dashboard describes Census planning areas; conversion ML is trained only on simulated outcomes. No real outreach, energy-saving claim or paid API dependency.
+Proposed Singapore residential acquisition funnel: sourced real-company candidate research and local shortlist → a company-labelled simulated referral scenario → synthetic homeowner enquiry → rule-based screening → company-filtered, human-managed pipeline → editable, unsent follow-up. Census planning-area research remains in the repository but is outside the main UI flow. Conversion ML is trained only on simulated outcomes. No real outreach, energy-saving claim or paid API dependency.
 
 ## Actual sources and methods
 

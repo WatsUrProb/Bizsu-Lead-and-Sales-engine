@@ -2,20 +2,17 @@
 
 **Explore a potential residential sales channel, from partner referral to reviewed enquiry.**
 
-This Hack and Hire prototype lets the Bizsu team explore Singapore housing patterns, research real air-conditioning service companies, shortlist candidates, and try a simulated referral-to-sales workflow. It is a **local product demo** of a proposed residential channel, not a live Bizsu service.
+This Hack and Hire prototype starts with real, sourced air-conditioning service company profiles. For each company, you can review evidence, shortlist it, open a demo referral form, and inspect a company-filtered sales pipeline. It is a **local product demo** of a proposed residential channel, not a live Bizsu service.
 
-> **Two data lanes:** Market profiles and company candidate details come from public sources. Demo referral partners, homeowner details, visits, pipeline outcomes and conversion scores are fictional or simulated. Listed companies have no stated partnership with Bizsu. Use fictional `.test` email addresses when trying the form.
+> **Real profiles, simulated results:** Company facts come from public sources. Every company referral, homeowner detail, visit, enquiry and sales outcome is simulated. Listed companies have no stated partnership with Bizsu. Use fictional `.test` email addresses when trying the form.
 
 ## What the product does
 
 | Step | In the demo |
 | --- | --- |
-| **Understand the market** | Explore planning-area housing and household profiles, filter areas, and inspect descriptive clusters and source links. |
-| **Research candidates** | Review three real AC service companies, inspect source links and evidence scores, shortlist candidates, and save editable outreach drafts locally. |
-| **Try demo referrals** | Choose a separate fictional referral source and copy its demo link. Real company candidates are never assigned simulated referrals. |
-| **Capture enquiries** | A homeowner opens the link, enters AC and property details, and receives an initial rule-based screening result. The enquiry keeps its partner attribution. |
-| **Work the pipeline** | Sales reviews the enquiry, sees screening reasons and stage history, moves it through allowed stages, and edits a follow-up draft. |
-| **See the funnel** | A dashboard shows synthetic referral sources, visits, enquiries, qualified enquiries, booked assessments and simulated wins. |
+| **Choose a company** | Review three sourced AC service companies, check evidence, change ranking weights, shortlist a candidate and save an outreach draft locally. |
+| **Try its demo referral** | Use that company’s simulated referral link to submit a fictional homeowner enquiry. The company association is a demo scenario only. |
+| **Follow its pipeline** | Filter the sales dashboard by company to see simulated visits, enquiries, screening results, stage history, drafts and outcomes. |
 
 The proposed journey is: **service partner → referral link → homeowner enquiry → screening → human sales review → assessment and quote**. Assessments, quotes and wins can be represented in the demo pipeline; no real appointment is booked and no message is sent.
 
@@ -45,17 +42,16 @@ Open **http://127.0.0.1:5173/**. Vite forwards `/api` requests to the local Fast
 
 ### Five-minute walkthrough
 
-1. On **Market**, filter the planning-area profiles and select an area to inspect its housing mix.
-2. On **Partners**, open a sourced company profile, inspect the evidence, shortlist it and save an outreach draft. Then use the separate **Try the referral journey** section to open a fictional referral link.
-3. On **Homeowner**, use fictional details and a `.test` email, tick the simulated follow-up consent box, and submit an enquiry.
-4. On **Sales**, find the new enquiry, check its partner attribution and screening reasons, update its stage, and save an editable follow-up draft.
-5. Check the dashboard counts to see the new referral and enquiry reflected in the funnel.
+1. On **Companies**, choose an aircon company. Review its sources and the simulated enquiry count.
+2. Click **Try demo form**. Use fictional details and a `.test` email address, then submit.
+3. Click **View this pipeline**. The company filter shows the new enquiry alongside that company’s other simulated records.
+4. Select the enquiry to inspect screening reasons, update its stage and save a follow-up draft. No message is sent.
 
 ## How it works
 
-- **Market context:** A data pipeline joins published 2020 Census household tables by planning area. Five area-level shares feed a K-Means model that groups similar areas. These groups describe places, not individual households or proven customer demand.
+- **Background data:** A data pipeline joins published 2020 Census household tables by planning area. Five area-level shares feed a descriptive K-Means model. This research is retained in the repository but is outside the main product flow because it does not establish company coverage or referral demand.
 - **Company discovery:** A frozen research snapshot records official company websites, documented services and public contact details. Each fact links to evidence. Unknown service coverage is marked **Unverified**. The default evidence score weights documented residential work (40), servicing and installation (30), a maintenance plan (20), and stated Singapore-wide coverage (10). Sliders let reviewers change these weights during a session. The score is a research aid, not a prediction of willingness to partner.
-- **Demo referrals:** Four fictional partners remain separate from the real candidate list. Their weighted scores, referral links and all downstream activity exist only for the simulated journey.
+- **Company scenarios:** Four fictional referral links are assigned to the three sourced company profiles for demonstration. One company has two links. The assignment, visits, enquiries and outcomes are wholly synthetic; no real company supplied them. Company filters aggregate records across all links assigned to that scenario.
 - **Enquiry screening:** Stated rules check demo coverage, AC configuration and completeness. A human would still need to confirm product fit and arrange any real assessment.
 - **Conversion score:** A logistic-regression model demonstrates where ML could fit in a future workflow. It was trained and tested only on simulated outcomes. Its score is **not a validated purchase probability**.
 - **Sales record:** FastAPI and SQLite store referral visits, enquiries, stage events and editable follow-up drafts. The React and Vite frontend calls the local API.
@@ -91,7 +87,7 @@ This changes the checked-in data and model artifacts. The bundled snapshots are 
 npm run build
 ```
 
-The tests cover data joins, suppressed values, cluster selection, sourced candidate separation and saved actions, referral attribution, enquiry validation, screening, stage history, drafts and dashboard updates.
+The tests cover data joins, suppressed values, cluster selection, sourced candidate actions, simulated company attribution and funnel totals, enquiry validation, screening, stage history and drafts.
 
 ## What a real pilot must establish
 
