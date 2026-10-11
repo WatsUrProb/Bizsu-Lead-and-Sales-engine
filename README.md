@@ -1,5 +1,7 @@
 # Bizsu growth lab — student hackathon demo
 
+For Hack and Hire.
+
 A local proof of concept for a **proposed** partner-led residential enquiry channel. It combines real Singapore **planning-area aggregate statistics** with fictional partner, homeowner and sales records. It does not represent an existing Bizsu residential programme, observed conversion performance or measured energy savings.
 
 ## Run locally
