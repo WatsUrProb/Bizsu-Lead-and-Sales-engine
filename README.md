@@ -1,12 +1,26 @@
-# Bizsu growth lab — student hackathon demo
+# Bizsu Lead & Sales Engine
 
-For Hack and Hire.
+**Explore a potential residential sales channel, from partner referral to reviewed enquiry.**
 
-A local proof of concept for a **proposed** partner-led residential enquiry channel. It combines real Singapore **planning-area aggregate statistics** with fictional partner, homeowner and sales records. It does not represent an existing Bizsu residential programme, observed conversion performance or measured energy savings.
+This Hack and Hire prototype lets the Bizsu team explore Singapore housing patterns, assess example air-conditioning service partners, capture homeowner enquiries through referral links, and manage those enquiries in a sales pipeline. It is a **local product demo** of a proposed residential channel, not a live Bizsu service.
 
-## Run locally
+> **Demo data:** Market profiles use published Singapore planning-area statistics. Partners, homeowner details, referrals, pipeline outcomes and conversion scores are fictional or simulated. Use fictional `.test` email addresses when trying the form.
 
-Requires Node.js 22+ and Python 3.13 (the tested versions were Node 22.23.3 and Python 3.13). No account, paid API key or external service is needed to run the bundled demo.
+## What the product does
+
+| Step | In the demo |
+| --- | --- |
+| **Understand the market** | Explore planning-area housing and household profiles, filter areas, and inspect descriptive clusters and source links. |
+| **Explore partners** | Compare fictional AC service partners using an explainable weighted score, then copy a unique referral link. |
+| **Capture enquiries** | A homeowner opens the link, enters AC and property details, and receives an initial rule-based screening result. The enquiry keeps its partner attribution. |
+| **Work the pipeline** | Sales reviews the enquiry, sees screening reasons and stage history, moves it through allowed stages, and edits a follow-up draft. |
+| **See the funnel** | A dashboard counts partners, referral visits, enquiries, qualified enquiries, booked assessments and simulated wins. |
+
+The proposed journey is: **service partner → referral link → homeowner enquiry → screening → human sales review → assessment and quote**. Assessments, quotes and wins can be represented in the demo pipeline; no real appointment is booked and no message is sent.
+
+## Try it locally
+
+Use Node.js 22+ and Python 3.13. The tested versions were Node 22.23.3 and Python 3.13. The bundled demo runs without an account, paid API key or external service.
 
 ```bash
 python3.13 -m venv .venv
@@ -14,43 +28,51 @@ python3.13 -m venv .venv
 npm install
 ```
 
-Start the backend in one terminal:
+Start the API in one terminal:
 
 ```bash
 .venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8000
 ```
 
-Start the frontend in another:
+Start the web app in another:
 
 ```bash
 npm run dev -- --port 5173
 ```
 
-Open **http://127.0.0.1:5173/**. The Vite development server proxies `/api` to the local FastAPI server. The backend creates `data/demo.db` and seeds fictional partners and enquiries on first run. To use a fresh separate database, set `BIZSU_DB_PATH` to a new local file before starting the backend. The app is intended for local use only; it has no login or production privacy controls.
+Open **http://127.0.0.1:5173/**. Vite forwards `/api` requests to the local FastAPI server. On first run, the API creates `data/demo.db` and seeds fictional partners and enquiries. To start with a separate database, set `BIZSU_DB_PATH` to a new local file before starting the API.
 
-## Demo walkthrough
+### Five-minute walkthrough
 
-1. **Market:** inspect the 2020 planning-area clusters, housing counts, source links and descriptive filters. Open a selected area's historical 2013 electricity context.
-2. **Partners:** inspect a fictional partner's weighted score and copy its unique referral link.
-3. **Homeowner:** open that link, fill the form using a `.test` email address, consent to **simulated** follow-up and submit.
-4. **Sales:** find the attributed enquiry, read the rule-based screening reasons and unvalidated synthetic ML score, move it to an allowed stage and save an editable follow-up draft. No message is sent.
-5. Return to the dashboard to see enquiry and referral metrics update.
+1. On **Market**, filter the planning-area profiles and select an area to inspect its housing mix.
+2. On **Partners**, select a demo partner and open its unique homeowner referral link.
+3. On **Homeowner**, use fictional details and a `.test` email, tick the simulated follow-up consent box, and submit an enquiry.
+4. On **Sales**, find the new enquiry, check its partner attribution and screening reasons, update its stage, and save an editable follow-up draft.
+5. Check the dashboard counts to see the new referral and enquiry reflected in the funnel.
 
-## Data provenance and level
+## How it works
 
-The exact source URLs, observation years, source update dates, retrieval timestamp and snapshot SHA-256 hashes are in [`data/sources.json`](data/sources.json). The frozen JSON snapshots allow offline use. Each Census table has 31 rows after excluding its national `Total` row; one of the 31 is the non-geographic `Others` row. The tables were joined **only on planning-area name and Census year**. Counts and shares remain area aggregates.
+- **Market context:** A data pipeline joins published 2020 Census household tables by planning area. Five area-level shares feed a K-Means model that groups similar areas. These groups describe places, not individual households or proven customer demand.
+- **Partner assessment:** A transparent rule-based score weights residential relevance (40%), service complementarity (30%), geographic coverage (20%) and fictional engagement fit (10%). The example businesses have not been recruited or verified.
+- **Enquiry screening:** Stated rules check demo coverage, AC configuration and completeness. A human would still need to confirm product fit and arrange any real assessment.
+- **Conversion score:** A logistic-regression model demonstrates where ML could fit in a future workflow. It was trained and tested only on simulated outcomes. Its score is **not a validated purchase probability**.
+- **Sales record:** FastAPI and SQLite store referral visits, enquiries, stage events and editable follow-up drafts. The React and Vite frontend calls the local API.
 
-| Snapshot | Observation | Content and limit |
-| --- | --- | --- |
-| [SingStat dwelling type](https://data.gov.sg/datasets/d_388f9c61f437a588b47b008a012d13fa/view) | Census 2020; source updated 18 Jun 2021 | Household counts by planning area and dwelling type. Suppressed cells are missing, never zero. |
-| [SingStat household size](https://data.gov.sg/datasets/d_0ef47f84a0776b27010b242038ea2c6b/view) | Census 2020; source updated 28 Jul 2022 | Separate area-level size counts; no dwelling-size cross-tabulation. |
-| [SingStat income bands](https://data.gov.sg/datasets/d_4e150bbd35c3145ea43019212c7b46c2/view) | Census 2020; table updated 30 Jun 2026 | Separate area-level income counts with an updated income definition. No individual income is inferred. |
-| [SingStat AC availability](https://data.gov.sg/datasets/d_abef8a7f050670891ad530620bad67cb/view) | 2023; source updated 28 Nov 2024 | National 81.9% ownership/availability figure. It has no area or dwelling-type breakdown. |
-| [EMA historical electricity](https://data.gov.sg/datasets/d_47db177174ba5899aa9cee08797d9171/view) | **2013**; portal refreshed 24 Jun 2026 | Planning-area average monthly **whole-home** kWh. Used as explicitly historical context only, never in clustering or savings estimates. |
+The API, frontend and data pipeline live in [`backend/`](backend/), [`frontend/`](frontend/) and [`pipeline/`](pipeline/). Model assumptions and synthetic evaluation are recorded in [`data/models/conversion_card.json`](data/models/conversion_card.json).
 
-EMA's [current Singapore Energy Statistics Chapter 3](https://www.ema.gov.sg/resources/singapore-energy-statistics/chapter3) publishes newer electricity context and links to downloadable workbooks. The source page was reviewed, but automated retrieval of the current workbook was blocked; its exact columns and join quality were therefore **not verified**, and it was not integrated. The 2026 portal refresh of the 2013 GeoJSON does not change its observation year. HDB's [dwelling units by town and flat type](https://data.gov.sg/datasets/d_07b1eeeb22efdf7faf5bd6a13667359d/view) was assessed but not joined: HDB town units and Census planning-area resident households have different geographies, measures and dates.
+## Data sources and interpretation
 
-Public source refresh is optional and needs internet access:
+The frozen public data, observation years, retrieval dates and file hashes are listed in [`data/sources.json`](data/sources.json). The demo uses:
+
+| Source | Used for |
+| --- | --- |
+| SingStat Census 2020 [dwelling](https://data.gov.sg/datasets/d_388f9c61f437a588b47b008a012d13fa/view), [household-size](https://data.gov.sg/datasets/d_0ef47f84a0776b27010b242038ea2c6b/view) and [income](https://data.gov.sg/datasets/d_4e150bbd35c3145ea43019212c7b46c2/view) tables | Planning-area household profiles and descriptive clusters. These are separate aggregates, not individual records or a joint household dataset. |
+| [SingStat 2023 AC availability](https://data.gov.sg/datasets/d_abef8a7f050670891ad530620bad67cb/view) | A national figure used as a uniform assumption when generating synthetic records; it is not an area estimate. |
+| [EMA 2013 electricity dataset](https://data.gov.sg/datasets/d_47db177174ba5899aa9cee08797d9171/view) | Historical whole-home electricity context shown for some areas. It is not current AC use and is excluded from clustering and savings estimates. |
+
+Two named planning areas lack published cells needed for clustering and remain visible without a cluster label. The Census `Others` category is non-geographic and is excluded from the area view. Suppressed values stay missing rather than being treated as zero.
+
+Refreshing the public source snapshots is optional and requires internet access:
 
 ```bash
 .venv/bin/python -m pipeline.fetch_sources
@@ -58,35 +80,17 @@ Public source refresh is optional and needs internet access:
 .venv/bin/python -m pipeline.train_models
 ```
 
-The refresh script uses the public [data.gov.sg dataset APIs](https://guide.data.gov.sg/developer-guide/dataset-apis) without a key and respects low unauthenticated rate limits. It changes the frozen snapshots and model artifacts; run it only when you intend to update the demo's data basis.
+This changes the checked-in data and model artifacts. The bundled snapshots are sufficient to run the demo offline.
 
-## Architecture and model methods
-
-| Layer | Implementation |
-| --- | --- |
-| Data pipeline | `pipeline/fetch_sources.py` freezes public data with hashes; `build_data.py` validates common planning-area keys and totals, preserves missing cells, and creates aggregate profiles. |
-| Segmentation | `train_models.py` uses five observed area-level shares: HDB, 4/5-room HDB, condo/apartment, 4+ person households, and $10k+ work-income households. It standardises them, evaluates K-Means `k=2,3,4` with silhouette, repeated 80% subsample adjusted Rand stability and minimum group size, and selects the strongest configuration. Labels come from observed relative centroid features. |
-| Synthetic data | Geographic and dwelling frequencies follow Census counts for the 28 cluster-eligible areas. Household size is drawn separately within area. AC ownership uses the national 2023 figure uniformly **as an assumption**. AC units, system type, usage, enquiry selection and conversion mechanisms are simulated. No missing observed record is invented. |
-| Conversion model | scikit-learn logistic regression uses property type, AC type, number of units and daily hours. Its 75/25 stratified held-out evaluation is on **synthetic outcomes only**. Scores shown to users are unvalidated demonstrations, not real purchase probabilities. Assumptions and test metrics are in `data/models/conversion_card.json`. |
-| API and persistence | FastAPI owns ranking, qualification, inference, pipeline transitions and metrics. SQLite stores partners, leads, stage history, anonymous referral visits and editable drafts. `BIZSU_DB_PATH` can change the local DB file. |
-| Frontend | React + Vite provides Market, Partners, Homeowner and Sales screens. It uses only local API calls. |
-
-Two named areas have suppressed Census cells required for the five features and are displayed without cluster labels. `Others` is not a planning area. The selected two-cluster solution is **descriptive**, based on just 28 geographic areas; it is not evidence of commercial opportunity or household behaviour. Electricity is excluded from K-Means because the verified local area source is from 2013.
-
-Partner scores are illustrative weighted sums: residential relevance 40%, service complementarity 30%, geographic coverage 20%, and fictional engagement fit 10%. Homeowner screening checks the assumed demo coverage, split or multi-split AC configuration, number of units and usage information. Neither is a validated prediction. Draft follow-ups are templates with a human review step and no sending integration.
-
-## Checks
+## Development checks
 
 ```bash
 .venv/bin/python -m pytest -q
 npm run build
 ```
 
-The tests cover Census join integrity and suppressed values, candidate cluster configurations, referral attribution and deduplication, synthetic-only contact validation, qualification, pipeline transition history, draft editing and dashboard updates.
+The tests cover data joins, suppressed values, cluster selection, referral attribution, enquiry validation, screening, stage history, drafts and dashboard updates.
 
-## Limitations and next validation
+## What a real pilot must establish
 
-- No real partner recruitment, homeowner contact, field installation, residential savings measurement or Bizsu conversion evidence occurred.
-- Census 2020 area profiles cannot be used as individual household records. The 2013 EMA reference is historical and is not AC-specific.
-- Synthetic model performance measures only agreement with an invented outcome generator. The model should be retrained and evaluated on consented, representative pilot outcomes before any operational use.
-- Partner willingness, homeowner demand, compatibility, unit economics and measurable energy impact require a real pilot. The demo has no production authentication, privacy retention policy or outbound messaging.
+This prototype has no production authentication, privacy controls or outbound messaging. No real partner recruitment, homeowner contact, installation, residential savings measurement or Bizsu conversion validation has taken place. Before operational use, Bizsu would need to validate partner willingness, homeowner demand, product compatibility, assessment and installation economics, consent and data handling, and measured outcomes. The synthetic conversion model would need representative real pilot data and fresh evaluation.
