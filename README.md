@@ -2,7 +2,7 @@
 
 A local hackathon prototype for finding potential Singapore aircon referral partners. Staff can inspect sourced company evidence, shortlist prospects, draft company-specific proposal emails, and track actual recruitment stages. The separate referral and sales demo contains fictional data.
 
-**The 20 listed companies are prospects, not confirmed Bizsu partners.** Their public service information was reviewed on 11 Oct 2026 from the supplied `data/Bizsu_aircon_partner_prospects.pdf`. “Unverified” means the research did not establish the attribute. Published maintenance packages do not prove customer retention or partnership interest.
+**The 22 listed companies are prospects, not confirmed Bizsu partners.** Twenty came from the supplied `data/Bizsu_aircon_partner_prospects.pdf`; two were added from the newer sourced catalogue. Eight have separate pilot research reviewed through 12 Oct 2026. “Unverified” means the research did not establish the attribute. Published maintenance packages do not prove customer retention or partnership interest.
 
 ## Start locally
 
@@ -36,10 +36,12 @@ The email composer uses a deterministic template grounded in the selected record
 
 ## Data and design
 
-- `data/partner_prospects.json` is the 20-company research snapshot transcribed from the supplied PDF. Each seeded company retains its source URL, review date, and unknowns.
+- `data/partner_prospects.json` is the original 20-company snapshot transcribed from the supplied PDF. `data/company_candidates.json` adds pilot recommendations and source links for eight companies, including two not in the PDF. Existing staff edits and pipeline stages are preserved when the catalogue is loaded.
 - Staff can add and edit companies through the interface. Company, pipeline, event, settings, and draft records persist in SQLite.
 - Fit starts with residential relevance 35%, recurring maintenance 30%, geographic coverage 20%, and installation 15%. Staff can edit and save weights that sum to 100%. Unverified attributes contribute no points.
+- Discover keeps the same cards and profile flow. Use **Pilot reviewed** or **Sort: pilot priority** to find the eight researched recommendations. Pilot rank is an internal outreach suggestion, separate from the adjustable published-service fit score. It does not imply interest or endorsement.
 - **Referral form** and **Sales flow** under **Separate demo** retain the earlier synthetic walkthrough. All referrals, enquiries and outcomes there are fictional scenarios; the real companies did not supply them.
+- The synthetic conversion model is optional. If its local artifact or model card cannot be loaded, or prediction fails, enquiries still save and rule-based screening continues. Scores and model versions are left empty rather than invented.
 
 ## Checks
 
@@ -48,6 +50,6 @@ The email composer uses a deterministic template grounded in the selected record
 npm run build
 ```
 
-The workspace tests cover 20-record import, company-specific generation, control changes, persistence, and stage confirmation. Existing demo tests remain in `tests/test_demo.py`.
+The workspace tests cover the 22-company import, pilot research, company-specific generation, control changes, persistence, and stage confirmation. Demo tests cover missing and failing synthetic scoring.
 
 This prototype has no authentication or outbound messaging and is not a live outreach system. Before operational use, Bizsu would need to confirm company willingness, product compatibility, consent, data handling, and measured pilot outcomes.

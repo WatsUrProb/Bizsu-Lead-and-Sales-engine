@@ -1,39 +1,48 @@
 {
-  "retrieved_on": "2026-10-11",
-  "note": "Public company information is a research snapshot. Listing is not an endorsement or partnership with Bizsu. Confirm details before outreach.",
+  "retrieved_on": "2026-10-12",
+  "note": "Public company information is a research snapshot. Listing and pilot rank are internal research aids, not endorsements, partnership status or evidence of willingness to participate. Confirm details before outreach.",
   "candidates": [
     {
-      "id": "gain-city",
-      "name": "Gain City",
-      "website": "https://www.gaincity.com/",
-      "summary": "Aircon servicing, repair and installation for residential and commercial premises.",
+      "id": "air-connection",
+      "name": "Air Connection Design",
+      "website": "https://www.airconnection.com.sg/",
+      "summary": "Aircon servicing, repair and installation for HDB flats, condominiums, landed homes and businesses.",
       "focus": "Residential and commercial",
       "services": ["Aircon servicing", "Repair", "Installation"],
-      "maintenance_plan": "Service contracts listed for residential use",
-      "coverage": "Unverified by planning area",
-      "contact": {"phone": "+65 6222 1212", "email": null},
+      "maintenance_plan": "Annual quarterly service package listed",
+      "coverage": "Islandwide service stated",
+      "contact": {"phone": null, "email": null},
+      "pilot_rank": 1,
+      "pilot_tier": "contact_first",
+      "partnership_idea": "Pilot a technician referral QR code during recurring servicing.",
+      "ranking_rationale": "Strong documented residential coverage and a practical recurring-service referral point.",
       "evidence": [
-        {"label": "Residential and commercial servicing; service contracts", "url": "https://www.gaincity.com/servicing/aircon-servicing"},
-        {"label": "Installation and public service phone", "url": "https://www.gaincity.com/aircon-servicing-and-repair"}
+        {"label": "Residential and commercial servicing, installation and islandwide coverage", "url": "https://www.airconnection.com.sg/"},
+        {"label": "Residential installation for HDB flats, condominiums and landed homes", "url": "https://www.airconnection.com.sg/aircon-installation-singapore/"},
+        {"label": "Annual quarterly service package", "url": "https://consult.airconnection.com.sg/servicing/"}
       ],
-      "signals": {"residential": true, "servicing_and_installation": true, "maintenance_plan": true, "coverage": false}
+      "signals": {"residential": true, "servicing_and_installation": true, "maintenance_plan": true, "coverage": true}
     },
     {
-      "id": "jetstyle",
-      "name": "JetStyle Aircon",
-      "website": "https://www.jetstyle.com.sg/",
-      "summary": "Aircon servicing, maintenance, repair and installation for homes and businesses.",
+      "id": "81aircon",
+      "name": "81Aircon",
+      "website": "https://www.81aircon.com/",
+      "summary": "Residential and commercial aircon servicing, repair, installation and contract maintenance.",
       "focus": "Residential and commercial",
-      "services": ["Aircon servicing", "Maintenance", "Repair", "Installation"],
-      "maintenance_plan": "Servicing contract listed",
-      "coverage": "Unverified by planning area",
-      "contact": {"phone": "+65 6969 7779", "email": "enquiry@jetstyle.com.sg"},
+      "services": ["Aircon servicing", "Repair", "Installation", "Maintenance"],
+      "maintenance_plan": "Monthly and yearly contract maintenance listed",
+      "coverage": "Islandwide coverage stated",
+      "contact": {"phone": "+65 9090 0081", "email": "sales@81aircon.com"},
+      "pilot_rank": 2,
+      "pilot_tier": "contact_first",
+      "partnership_idea": "Add an optional Bizsu suitability referral to site surveys and maintenance visits.",
+      "ranking_rationale": "Full residential service coverage, recurring plans and site-survey touchpoints support a contained pilot.",
       "evidence": [
-        {"label": "Residential and commercial services", "url": "https://www.jetstyle.com.sg/"},
-        {"label": "Servicing contract", "url": "https://www.jetstyle.com.sg/general-servicing/"},
-        {"label": "Public contact details", "url": "https://www.jetstyle.com.sg/contact-us/"}
+        {"label": "Residential and commercial services with islandwide coverage", "url": "https://www.81aircon.com/"},
+        {"label": "Residential installation services", "url": "https://www.81aircon.com/aircon-installations/"},
+        {"label": "Contract maintenance plans", "url": "https://www.81aircon.com/aircon-maintenance/"}
       ],
-      "signals": {"residential": true, "servicing_and_installation": true, "maintenance_plan": true, "coverage": false}
+      "signals": {"residential": true, "servicing_and_installation": true, "maintenance_plan": true, "coverage": true}
     },
     {
       "id": "natural-cool",
@@ -45,12 +54,120 @@
       "maintenance_plan": "Annual maintenance plans listed",
       "coverage": "Singapore-wide stated; individual planning areas unverified",
       "contact": {"phone": "+65 6454 1771", "email": "aircon.service@naturalcool.com.sg"},
+      "pilot_rank": 3,
+      "pilot_tier": "contact_first",
+      "partnership_idea": "Use a short technician checklist to offer an optional referral after recurring-service inspections.",
+      "ranking_rationale": "Preventive maintenance positioning and documented Singapore-wide residential work align with referral screening.",
       "evidence": [
         {"label": "Homes, businesses, installation and Singapore-wide service", "url": "https://servicing.naturalcool.com.sg/about-us/"},
         {"label": "Annual maintenance plans", "url": "https://servicing.naturalcool.com.sg/aircon-servicing-packages/"},
         {"label": "Public contact details", "url": "https://servicing.naturalcool.com.sg/contact-us/"}
       ],
       "signals": {"residential": true, "servicing_and_installation": true, "maintenance_plan": true, "coverage": true}
+    },
+    {
+      "id": "jetstyle",
+      "name": "JetStyle Aircon",
+      "website": "https://www.jetstyle.com.sg/",
+      "summary": "Aircon servicing, maintenance, repair and installation for homes and businesses.",
+      "focus": "Residential and commercial",
+      "services": ["Aircon servicing", "Maintenance", "Repair", "Installation"],
+      "maintenance_plan": "Servicing contract listed",
+      "coverage": "Unverified by planning area",
+      "contact": {"phone": "+65 6969 7779", "email": "enquiry@jetstyle.com.sg"},
+      "pilot_rank": 4,
+      "pilot_tier": "backup_pilot",
+      "partnership_idea": "Test a post-service referral for relevant residential customers.",
+      "ranking_rationale": "Strong service and installation evidence with a recurring contract, but explicit islandwide coverage remains unverified.",
+      "evidence": [
+        {"label": "Residential and commercial services", "url": "https://www.jetstyle.com.sg/"},
+        {"label": "Servicing contract", "url": "https://www.jetstyle.com.sg/general-servicing/"},
+        {"label": "Public contact details", "url": "https://www.jetstyle.com.sg/contact-us/"}
+      ],
+      "signals": {"residential": true, "servicing_and_installation": true, "maintenance_plan": true, "coverage": false}
+    },
+    {
+      "id": "socool",
+      "name": "SoCool",
+      "website": "https://www.socool.sg/",
+      "summary": "Residential and commercial aircon servicing, repair, installation and yearly maintenance contracts.",
+      "focus": "Residential and commercial",
+      "services": ["Aircon servicing", "Repair", "Installation", "Maintenance"],
+      "maintenance_plan": "Yearly maintenance contract listed",
+      "coverage": "Multiple residential area pages documented; islandwide coverage unverified",
+      "contact": {"phone": "+65 6854 4956", "email": null},
+      "pilot_rank": 5,
+      "pilot_tier": "backup_pilot",
+      "partnership_idea": "Run an area-specific referral experiment alongside residential service visits.",
+      "ranking_rationale": "Area-level service pages create a useful local experiment, while full current coverage remains unverified.",
+      "evidence": [
+        {"label": "Residential and commercial servicing and installation", "url": "https://www.socool.sg/"},
+        {"label": "Yearly maintenance contracts and residential property types", "url": "https://www.socool.sg/appointment/"},
+        {"label": "Residential services and installation in Pasir Ris", "url": "https://www.socool.sg/pasir-ris/"}
+      ],
+      "signals": {"residential": true, "servicing_and_installation": true, "maintenance_plan": true, "coverage": false}
+    },
+    {
+      "id": "coolserve",
+      "name": "Coolserve",
+      "website": "https://coolserve.com/",
+      "summary": "Aircon inspections, servicing, repair, maintenance contracts and system sales with installation options.",
+      "focus": "Residential and commercial",
+      "services": ["Inspection", "Aircon servicing", "Repair", "Installation", "Maintenance"],
+      "maintenance_plan": "Aircon maintenance contract listed",
+      "coverage": "Unverified by planning area",
+      "contact": {"phone": "+65 6288 6316", "email": "service@coolserve.com"},
+      "pilot_rank": 6,
+      "pilot_tier": "backup_pilot",
+      "partnership_idea": "Offer an optional Bizsu suitability check following diagnostic inspections.",
+      "ranking_rationale": "Inspection and maintenance touchpoints fit referral screening, but current explicit islandwide coverage is unverified.",
+      "evidence": [
+        {"label": "Service, repair and public company details", "url": "https://coolserve.com/about-us/"},
+        {"label": "Recurring maintenance contract", "url": "https://coolserve.com/product/maintenance-contract/"},
+        {"label": "Residential multi-split systems with installation options", "url": "https://coolserve.com/product-category/multi/system3/"}
+      ],
+      "signals": {"residential": true, "servicing_and_installation": true, "maintenance_plan": true, "coverage": false}
+    },
+    {
+      "id": "gain-city",
+      "name": "Gain City",
+      "website": "https://www.gaincity.com/aircon-servicing-and-repair",
+      "summary": "Aircon servicing, repair and installation for residential and commercial premises.",
+      "focus": "Residential and commercial",
+      "services": ["Aircon servicing", "Repair", "Installation"],
+      "maintenance_plan": "Service contracts listed for residential use",
+      "coverage": "Unverified by planning area",
+      "contact": {"phone": "+65 6222 1212", "email": null},
+      "pilot_rank": 7,
+      "pilot_tier": "scale_stage",
+      "partnership_idea": "Explore a larger distribution partnership after a smaller pilot validates the residential offer.",
+      "ranking_rationale": "Strong documented capabilities and distribution potential, with a likely longer partnership cycle for an initial pilot.",
+      "evidence": [
+        {"label": "Residential service contracts, servicing and installation", "url": "https://www.gaincity.com/aircon-servicing-and-repair"},
+        {"label": "Residential aircon installation", "url": "https://www.gaincity.com/aircon-installation"}
+      ],
+      "signals": {"residential": true, "servicing_and_installation": true, "maintenance_plan": true, "coverage": false}
+    },
+    {
+      "id": "helpling-singapore",
+      "name": "Helpling Singapore",
+      "website": "https://www.helpling.com.sg/aircon-services",
+      "summary": "A home-services booking platform offering aircon servicing, diagnostics and recurring subscriptions.",
+      "focus": "Residential home-services platform",
+      "services": ["Aircon servicing", "Diagnostics", "Chemical wash", "Air filtration installation"],
+      "maintenance_plan": "One-year and two-year aircon servicing subscriptions listed",
+      "coverage": "Island-wide service coverage stated",
+      "contact": {"phone": "+65 3129 0042", "email": "contact@helpling.sg"},
+      "pilot_rank": 8,
+      "pilot_tier": "alternative_channel",
+      "partnership_idea": "Test a digital post-service assessment referral while using a separate qualified installation partner.",
+      "ranking_rationale": "Strong household booking reach, but no full AC-system installation service was verified, making this a lead channel rather than an installer partnership.",
+      "evidence": [
+        {"label": "Residential booking flow, subscriptions and island-wide coverage", "url": "https://www.helpling.com.sg/aircon-services"},
+        {"label": "Aircon package booking flow", "url": "https://www.helpling.com.sg/aircon-servicing-package-guide"},
+        {"label": "Public contact details and platform terms", "url": "https://www.helpling.com.sg/website-terms-and-conditions"}
+      ],
+      "signals": {"residential": true, "servicing_and_installation": false, "maintenance_plan": true, "coverage": true}
     }
   ]
 }

@@ -6,6 +6,7 @@ from fastapi.testclient import TestClient
 
 from backend.main import create_app
 from backend.domain import qualify, rank_partner, stage_allowed
+from backend.scoring import ConversionScorer, UNAVAILABLE_MESSAGE
 from pipeline.build_data import build
 
 
@@ -87,7 +88,8 @@ def test_synthetic_only_contact_and_review_rules(tmp_path):
 def test_sourced_candidates_stay_separate_from_demo_referrals(tmp_path):
     with TestClient(create_app(tmp_path / "demo.db")) as client:
         catalog = client.get("/api/candidates").json()
-        assert len(catalog["candidates"]) == 3
+        assert len(catalog["candidates"]) == 8
+        assert sorted(item["pilot_rank"] for item in catalog["candidates"]) == list(range(1, 9))
         candidate = catalog["candidates"][0]
         assert candidate["evidence"] and candidate["website"].startswith("https://")
         assert candidate["shortlisted"] is False
@@ -112,7 +114,7 @@ def test_company_scenario_counts_follow_attributed_demo_leads(tmp_path):
     with TestClient(create_app(tmp_path / "demo.db")) as client:
         partners = client.get("/api/partners").json()
         company_ids = {item["id"] for item in client.get("/api/candidates").json()["candidates"]}
-        assert {partner["company_id"] for partner in partners} == company_ids
+        assert {partner["company_id"] for partner in partners} <= company_ids
         assert all(partner["scenario_only"] for partner in partners)
 
         before = client.get("/api/dashboard").json()["company_breakdown"]
@@ -134,3 +136,42 @@ def test_company_scenario_counts_follow_attributed_demo_leads(tmp_path):
         assert sum(item["submitted_enquiries"] for item in after.values()) == len(
             [lead for lead in client.get("/api/leads").json() if lead["partner_id"]]
         )
+
+
+def test_missing_model_keeps_demo_working(tmp_path):
+    scorer = ConversionScorer(tmp_path / "missing.joblib", tmp_path / "missing-card.json")
+    with TestClient(create_app(tmp_path / "demo.db", scorer=scorer)) as client:
+        assert client.get("/api/meta").json()["model"]["available"] is False
+        seeded = client.get("/api/leads").json()
+        assert len(seeded) == 12
+        assert all(lead["ml_score"] is None and lead["model_version"] is None for lead in seeded)
+        response = client.post("/api/leads", json={
+            "area": "Ang Mo Kio", "property_type": "HDB 4 room", "ac_type": "split",
+            "ac_units": 2, "daily_hours": 6, "contact_name": "Test Resident",
+            "contact_email": "resident@example.test", "consent": True,
+        })
+        assert response.status_code == 201, response.text
+        lead = response.json()
+        assert lead["qualification_status"] == "qualified"
+        assert lead["ml_score"] is None and lead["model_version"] is None
+        assert lead["score_warning"] == UNAVAILABLE_MESSAGE
+        assert client.get(f"/api/leads/{lead['id']}").json()["score_warning"] == UNAVAILABLE_MESSAGE
+
+
+def test_prediction_failure_still_saves_enquiry(tmp_path):
+    class BrokenModel:
+        def predict_proba(self, _records):
+            raise RuntimeError("prediction failed")
+
+    scorer = ConversionScorer()
+    assert scorer.available
+    scorer.model = BrokenModel()
+    with TestClient(create_app(tmp_path / "demo.db", seed=False, scorer=scorer)) as client:
+        response = client.post("/api/leads", json={
+            "area": "Ang Mo Kio", "property_type": "HDB 4 room", "ac_type": "split",
+            "ac_units": 2, "daily_hours": 6, "contact_name": "Test Resident",
+            "contact_email": "resident@example.test", "consent": True,
+        })
+        assert response.status_code == 201
+        assert response.json()["ml_score"] is None
+        assert response.json()["score_warning"] == UNAVAILABLE_MESSAGE

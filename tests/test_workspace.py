@@ -8,7 +8,10 @@ from backend.main import create_app
 def test_company_specific_drafts_and_controls(tmp_path: Path):
     with TestClient(create_app(db_path=tmp_path / "workspace.db", seed=False)) as client:
         companies = client.get("/api/workspace").json()["companies"]
-        assert len(companies) == 20
+        assert len(companies) == 22
+        reviewed = [item for item in companies if item["pilot_research"]]
+        assert len(reviewed) == 8
+        assert sorted(item["pilot_research"]["rank"] for item in reviewed) == list(range(1, 9))
         by_name = {item["name"]: item for item in companies}
         settings = {"purpose": "Initial proposal", "tone": "Professional", "angle": "Customer value"}
         a = client.post(f"/api/workspace/companies/{by_name['81Aircon']['id']}/generate", json=settings).json()
@@ -55,3 +58,19 @@ def test_staff_can_add_and_edit_company(tmp_path: Path):
         company = client.get(f"/api/workspace/companies/{company_id}").json()
         assert company["maintenance"] == "Quarterly package"
         assert company["origin"] == "User-entered"
+
+
+def test_new_research_preserves_existing_company_edits(tmp_path: Path):
+    db = tmp_path / "workspace.db"
+    with TestClient(create_app(db_path=db, seed=False)) as client:
+        item = next(x for x in client.get("/api/workspace").json()["companies"] if x["name"] == "81Aircon")
+        payload = {key: item[key] for key in (
+            "name", "website", "residential_evidence", "maintenance", "installation",
+            "coverage", "contact", "source", "retrieved_on", "unknowns",
+        )}
+        payload["contact"] = "Staff verified contact"
+        assert client.put(f"/api/workspace/companies/{item['id']}", json=payload).status_code == 200
+    with TestClient(create_app(db_path=db, seed=False)) as client:
+        saved = client.get(f"/api/workspace/companies/{item['id']}").json()
+        assert saved["contact"] == "Staff verified contact"
+        assert saved["pilot_research"]["rank"] == 2

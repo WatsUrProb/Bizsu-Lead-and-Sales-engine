@@ -8,8 +8,9 @@ const NEXT = {
 };
 
 export default function Sales({ leads, catalog, dashboard, refresh }) {
+  const scenarioCompanies = catalog.candidates.filter(item => dashboard.company_breakdown[item.id]?.active_partners > 0);
   const initialCompany = new URLSearchParams(window.location.search).get('company');
-  const [companyFilter, setCompanyFilter] = useState(catalog.candidates.some(item => item.id === initialCompany) ? initialCompany : 'all');
+  const [companyFilter, setCompanyFilter] = useState(scenarioCompanies.some(item => item.id === initialCompany) ? initialCompany : 'all');
   const [stageFilter, setStageFilter] = useState('all');
   const [selectedId, setSelectedId] = useState(leads[0]?.id);
   const [detail, setDetail] = useState(null);
@@ -19,7 +20,7 @@ export default function Sales({ leads, catalog, dashboard, refresh }) {
   const companyName = companyFilter === 'all' ? 'All companies' : metrics.company_name;
   const chooseCompany = id => {
     setCompanyFilter(id);
-    window.history.replaceState({}, '', id === 'all' ? '/sales' : `/sales?company=${id}`);
+    window.history.replaceState({}, '', id === 'all' ? '/demo/sales' : `/demo/sales?company=${id}`);
   };
   const shownId = filtered.some(lead => lead.id === selectedId) ? selectedId : filtered[0]?.id;
 
@@ -34,7 +35,7 @@ export default function Sales({ leads, catalog, dashboard, refresh }) {
     <section className="page-intro sales-intro"><span className="eyebrow">03 / Sales pipeline</span><h1>See each company.<br /><em>Follow every lead.</em></h1><p>Choose an aircon company to see its simulated referrals, enquiries and outcomes.</p></section>
     <section className="section-block compact-top">
       <div className="data-banner"><strong>Simulation only</strong><span>The company names are real research profiles. Every visit, enquiry and outcome below is invented for this demo. No partnership is implied.</span></div>
-      <div className="company-tabs" role="group" aria-label="Filter by aircon company"><button className={companyFilter === 'all' ? 'active' : ''} onClick={() => chooseCompany('all')}>All companies</button>{catalog.candidates.map(candidate => <button key={candidate.id} className={companyFilter === candidate.id ? 'active' : ''} onClick={() => chooseCompany(candidate.id)}>{candidate.name}<small>{dashboard.company_breakdown[candidate.id]?.submitted_enquiries ?? 0} enquiries</small></button>)}</div>
+      <div className="company-tabs" role="group" aria-label="Filter by aircon company"><button className={companyFilter === 'all' ? 'active' : ''} onClick={() => chooseCompany('all')}>All companies</button>{scenarioCompanies.map(candidate => <button key={candidate.id} className={companyFilter === candidate.id ? 'active' : ''} onClick={() => chooseCompany(candidate.id)}>{candidate.name}<small>{dashboard.company_breakdown[candidate.id]?.submitted_enquiries ?? 0} enquiries</small></button>)}</div>
       <div className="funnel-summary"><div><strong>{companyName} · demo funnel</strong><span>Follow the simulated journey from visit to win.</span></div><span>Simulated data</span></div>
       <div className="funnel-steps" aria-label="Simulated referral funnel">{[
         ['01', 'Visits', metrics.referral_visits],
@@ -73,7 +74,7 @@ function LeadDetail({ lead, refresh }) {
   const saveDraft = () => action(() => api(`/drafts/${draftId}`, { method: 'PATCH', body: JSON.stringify({ message }) }), 'Draft saved locally. No message was sent.');
 
   return <><div className="detail-top"><div><span className="card-kicker">Enquiry #{lead.id}</span><h3>{lead.contact_name}</h3><span className="muted">{lead.area} · {lead.property_type}</span></div><span className={`stage-badge ${lead.stage}`}>{title(lead.stage)}</span></div>
-    <div className="detail-section"><h4>Company scenario & screening</h4><div className="detail-pair"><span>Aircon company</span><strong>{lead.company_name || 'Direct demo enquiry'} · simulated association</strong></div><div className="detail-pair"><span>Screening</span><strong>{title(lead.qualification_status)}</strong></div><ul className="reason-list">{lead.qualification_reasons.map(reason => <li key={reason}>{reason}</li>)}</ul></div>
+    <div className="detail-section"><h4>Company scenario & screening</h4><div className="detail-pair"><span>Aircon company</span><strong>{lead.company_name || 'Direct demo enquiry'} · simulated association</strong></div><div className="detail-pair"><span>Screening</span><strong>{title(lead.qualification_status)}</strong></div><ul className="reason-list">{lead.qualification_reasons.map(reason => <li key={reason}>{reason}</li>)}</ul><p className="small-note">{lead.ml_score == null ? lead.score_warning || "Synthetic scoring is unavailable. Rule-based screening was completed." : `Synthetic conversion score: ${lead.ml_score}/100. ${lead.score_warning || "Unvalidated demo score."}`}</p></div>
     <div className="detail-section"><h4>Pipeline history</h4><ol className="event-list">{lead.stage_events.map(event => <li key={event.id}><span>{title(event.to_stage)}</span><small>{new Date(event.created_at).toLocaleString('en-SG')}</small></li>)}</ol>{options.length > 0 && <div className="stage-controls"><select value={nextStage} onChange={event => setNextStage(event.target.value)}>{options.map(stage => <option key={stage} value={stage}>Move to {title(stage)}</option>)}</select><button className="button secondary" disabled={working} onClick={() => action(() => api(`/leads/${lead.id}/stage`, { method: 'PATCH', body: JSON.stringify({ stage: nextStage }) }), 'Pipeline stage updated.')}>Update stage</button></div>}</div>
     <div className="detail-section draft-section"><h4>Follow-up draft</h4><p className="small-note">Template-based, editable and local. Human review is required; no outbound service is connected.</p>{draftId ? <><textarea aria-label="Editable follow-up draft" rows="5" value={message} onChange={event => setMessage(event.target.value)} /><div className="draft-actions"><button className="button secondary" onClick={generateDraft} disabled={working}>Regenerate</button><button className="button primary" onClick={saveDraft} disabled={working || message.trim().length < 5}>Save draft</button></div></> : <button className="button secondary" onClick={generateDraft} disabled={working}>Generate draft</button>}{feedback && <p className="action-feedback" role="status">{feedback}</p>}</div>
   </>;
