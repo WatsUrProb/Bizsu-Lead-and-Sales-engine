@@ -15,6 +15,7 @@ from pydantic import BaseModel, Field, field_validator
 from backend.candidates import SCENARIO_COMPANY_BY_PARTNER, WEIGHTS, load_catalog, outreach_template
 from backend.db import DEFAULT_DB, ROOT, initialize, lead_from_row, now, partner_from_row, session
 from backend.domain import NEXT_STAGE, STAGES, draft_message, qualify, stage_allowed
+from backend.workspace import initialize_workspace, make_router
 
 DATA = ROOT / "data"
 
@@ -101,9 +102,11 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
     @asynccontextmanager
     async def lifespan(_app: FastAPI):
         initialize(path, seed=seed)
+        initialize_workspace(path)
         yield
 
     app = FastAPI(title="Bizsu Hackathon Demo API", version="0.1.0", lifespan=lifespan)
+    app.include_router(make_router(path))
 
     @app.get("/api/health")
     def health():
