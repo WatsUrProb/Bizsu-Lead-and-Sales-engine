@@ -18,6 +18,13 @@
 .partner-grid,.partner-list,.partner-detail{min-width:0}
 .partner-detail .detail-pair strong{overflow-wrap:anywhere;text-align:right}
 .partner-detail h3{overflow-wrap:anywhere}
+.pilot-meta{display:flex;gap:8px;flex-wrap:wrap;margin:-2px 0 13px}
+.pilot-meta span{background:#edf5ec;border:1px solid #d7e7d8;border-radius:100px;padding:6px 9px;color:#3c7058;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.pilot-recommendation{background:#f4f8f2;border:1px solid #e0eade;border-radius:11px;padding:16px}
+.pilot-recommendation h4{margin-bottom:10px}
+.pilot-recommendation>strong{display:block;color:#285943;font-size:13px;line-height:1.5}
+.pilot-recommendation p{color:#637d70;font-size:12px;line-height:1.55;margin:8px 0}
+.pilot-recommendation small{display:block;color:#84978d;font-size:10px;line-height:1.5}
 .demo-lab{background:#f0f6ef;border-top:1px solid #e0ebe2}
 .demo-referral-panel{max-width:760px;padding:24px;display:flex;flex-direction:column;align-items:flex-start;gap:16px}
 .demo-referral-panel label{display:flex;flex-direction:column;gap:7px;min-width:250px;color:#3a614b;font-size:12px;font-weight:700}

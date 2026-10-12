@@ -10,7 +10,7 @@ Proposed Singapore residential acquisition funnel: sourced real-company candidat
 
 ## Actual sources and methods
 
-Official SingStat Census 2020 dwelling, household-size and income tables were downloaded through data.gov.sg APIs and joined by planning area. A 2023 national AC-availability table and EMA's historical 2013 planning-area electricity GeoJSON were also inspected and frozen. Exact URLs, observation dates, retrieval dates and hashes: `data/sources.json`. Three real Singapore aircon service companies were researched from their own websites on 2026-10-11; evidence links and unverified coverage are recorded in `data/company_candidates.json`. No listed company has agreed to partner with Bizsu. See `README.md` for methods and limitations.
+Official SingStat Census 2020 dwelling, household-size and income tables were downloaded through data.gov.sg APIs and joined by planning area. A 2023 national AC-availability table and EMA's historical 2013 planning-area electricity GeoJSON were also inspected and frozen. Exact URLs, observation dates, retrieval dates and hashes: `data/sources.json`. Eight real Singapore aircon service companies were researched from their own websites through 2026-10-12; evidence links, unverified coverage, evidence scores and a separate editorial pilot rank are recorded in `data/company_candidates.json`. No listed company has agreed to partner with Bizsu. See `README.md` for methods and limitations.
 
 ## Tools and experiments
 

@@ -8,6 +8,13 @@ const SIGNAL_LABELS = {
   coverage: 'Singapore-wide coverage stated',
 };
 
+const TIER_LABELS = {
+  contact_first: 'Contact first',
+  backup_pilot: 'Backup pilot',
+  scale_stage: 'Scale stage',
+  alternative_channel: 'Alternative channel',
+};
+
 export default function Partners({ partners, catalog, navigate }) {
   const [candidates, setCandidates] = useState(catalog?.candidates || []);
   const [weights, setWeights] = useState(catalog?.weights || {});
@@ -26,7 +33,7 @@ export default function Partners({ partners, catalog, navigate }) {
       sum + (candidate.signals[key] ? Number(value) : 0), 0) / total);
   };
   const visible = candidates.filter(candidate => !shortlistOnly || candidate.shortlisted)
-    .sort((a, b) => score(b) - score(a) || a.name.localeCompare(b.name));
+    .sort((a, b) => score(b) - score(a) || a.pilot_rank - b.pilot_rank);
   const selected = visible.find(candidate => candidate.id === selectedId) || visible[0];
   const demoPartner = partners.find(partner => partner.id === demoId) || partners[0];
   const demoLink = demoPartner ? `${window.location.origin}/home?ref=${encodeURIComponent(demoPartner.referral_code)}` : '';
@@ -60,15 +67,16 @@ export default function Partners({ partners, catalog, navigate }) {
     <section className="page-intro"><span className="eyebrow">02 / Partner discovery</span><h1>Find candidates.<br /><em>Check the evidence.</em></h1><p>Research real Singapore aircon service companies, shortlist those worth reviewing, and prepare an editable outreach draft. No company listed here is a Bizsu partner.</p></section>
     <section className="section-block compact-top">
       <div className="data-banner"><strong>Public company information</strong><span>{catalog?.note} Sources checked {catalog?.retrieved_on}.</span></div>
-      <div className="section-heading"><div><h2>Company candidates</h2><p>Evidence scores rank documented fit. Missing details stay unverified; review each source before contacting anyone.</p></div><span className="subtle-tag">{candidates.filter(item => item.shortlisted).length} shortlisted · {candidates.length} researched</span></div>
+      <div className="section-heading"><div><h2>Company candidates</h2><p>Evidence scores measure documented capabilities. Pilot rank is a separate internal outreach recommendation; neither indicates partnership interest.</p></div><span className="subtle-tag">{candidates.filter(item => item.shortlisted).length} shortlisted · {candidates.length} researched</span></div>
       <div className="weight-controls panel"><div><strong>Set research priorities</strong><small>Adjust the weights to re-rank documented evidence. Changes stay in this browser session.</small></div><div className="weight-grid">{Object.entries(weights).map(([key, value]) => <label key={key}><span>{SIGNAL_LABELS[key]} <b>{value}</b></span><input type="range" min="0" max="100" step="10" value={value} onChange={event => setWeights(current => ({ ...current, [key]: Number(event.target.value) }))} /></label>)}</div></div>
       <div className="filter-bar"><label className="checkbox-filter"><input type="checkbox" checked={shortlistOnly} onChange={event => setShortlistOnly(event.target.checked)} /> Shortlisted only</label><span className="filter-result">{visible.length} candidates shown</span></div>
-      <div className="partner-grid"><div className="partner-list">{visible.length ? visible.map((candidate, index) => <button key={candidate.id} className={selected?.id === candidate.id ? 'partner-row selected' : 'partner-row'} onClick={() => setSelectedId(candidate.id)}><span className="partner-rank">{String(index + 1).padStart(2, '0')}</span><span className="partner-row-main"><strong>{candidate.name}</strong><small>{candidate.focus}{candidate.shortlisted ? ' · Shortlisted' : ''}</small></span><span className="partner-score">{score(candidate)}</span></button>) : <div className="empty-state">No candidates shortlisted yet. Turn off the filter to review the list.</div>}</div>
+      <div className="partner-grid"><div className="partner-list">{visible.length ? visible.map(candidate => <button key={candidate.id} className={selected?.id === candidate.id ? 'partner-row selected' : 'partner-row'} onClick={() => setSelectedId(candidate.id)}><span className="partner-rank" title="Pilot rank">P{String(candidate.pilot_rank).padStart(2, '0')}</span><span className="partner-row-main"><strong>{candidate.name}</strong><small>{candidate.focus}{candidate.shortlisted ? ' · Shortlisted' : ''}</small></span><span className="partner-score" title="Evidence score">{score(candidate)}</span></button>) : <div className="empty-state">No candidates shortlisted yet. Turn off the filter to review the list.</div>}</div>
         <div className="panel partner-detail">{selected ? <>
-          <span className="card-kicker">Sourced candidate · no partnership implied</span><h3>{selected.name}</h3><p>{selected.summary}</p>
+          <span className="card-kicker">Sourced candidate · no partnership implied</span><h3>{selected.name}</h3><div className="pilot-meta"><span>Pilot rank #{selected.pilot_rank}</span><span>{TIER_LABELS[selected.pilot_tier]}</span></div><p>{selected.summary}</p>
           <div className="score-feature"><strong>{score(selected)}<small>/ 100</small></strong><span>Documented fit score</span></div>
           <div className="score-list">{Object.entries(weights).map(([key, weight]) => <div key={key}><div className="score-label"><span>{SIGNAL_LABELS[key]} <small>(weight {weight})</small></span><strong>{selected.signals[key] ? 'Documented' : 'Unverified'}</strong></div><div className="bar-track"><div style={{ width: selected.signals[key] ? '100%' : '0%' }} /></div></div>)}</div>
           <div className="detail-section"><h4>What is documented</h4><div className="detail-pair"><span>Services</span><strong>{selected.services.join(', ')}</strong></div><div className="detail-pair"><span>Maintenance</span><strong>{selected.maintenance_plan}</strong></div><div className="detail-pair"><span>Coverage</span><strong>{selected.coverage}</strong></div><div className="detail-pair"><span>Public contact</span><strong>{[selected.contact.phone, selected.contact.email].filter(Boolean).join(' · ') || 'Unverified'}</strong></div></div>
+          <div className="detail-section pilot-recommendation"><h4>Pilot recommendation</h4><strong>{selected.partnership_idea}</strong><p>{selected.ranking_rationale}</p><small>Pilot rank is an internal research recommendation based on public evidence. It does not indicate partnership interest, commercial suitability or endorsement.</small></div>
           <div className="detail-section"><h4>Evidence</h4><ul className="evidence-list">{selected.evidence.map(item => <li key={item.url}><a href={item.url} target="_blank" rel="noreferrer">{item.label} ↗</a></li>)}</ul><small>Checked {catalog.retrieved_on}. Confirm current details on the company site.</small></div>
           <div className="candidate-actions"><button className="button secondary" disabled={saving} onClick={() => save(!selected.shortlisted)}>{selected.shortlisted ? 'Remove from shortlist' : 'Add to shortlist'}</button><a className="text-link" href={selected.website} target="_blank" rel="noreferrer">Official website ↗</a></div>
           <div className="detail-section draft-section"><h4>Editable outreach draft</h4><p className="small-note">Research draft only. Confirm Bizsu's proposal and company details before any contact.</p><textarea aria-label="Candidate outreach draft" rows="8" value={draft} onChange={event => setDraft(event.target.value)} /><div className="draft-actions"><button className="button primary" disabled={saving} onClick={() => save(selected.shortlisted)}>Save draft</button></div>{feedback && <p className="action-feedback" role="status">{feedback}</p>}</div>

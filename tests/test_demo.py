@@ -87,12 +87,35 @@ def test_synthetic_only_contact_and_review_rules(tmp_path):
 def test_sourced_candidates_stay_separate_from_demo_referrals(tmp_path):
     with TestClient(create_app(tmp_path / "demo.db")) as client:
         catalog = client.get("/api/candidates").json()
-        assert len(catalog["candidates"]) == 3
-        candidate = catalog["candidates"][0]
+        candidates = catalog["candidates"]
+        assert len(candidates) == 8
+        assert len({item["id"] for item in candidates}) == 8
+        assert sorted(item["pilot_rank"] for item in candidates) == list(range(1, 9))
+        expected_scores = {
+            "air-connection": 100, "81aircon": 100, "natural-cool": 100,
+            "jetstyle": 90, "socool": 90, "coolserve": 90, "gain-city": 90,
+            "helpling-singapore": 70,
+        }
+        assert {item["id"]: item["evidence_score"] for item in candidates} == expected_scores
+        assert [item["pilot_rank"] for item in candidates] == list(range(1, 9))
+        helpling = next(item for item in candidates if item["id"] == "helpling-singapore")
+        assert helpling["signals"]["servicing_and_installation"] is False
+        for candidate_id in {"jetstyle", "socool", "coolserve", "gain-city"}:
+            assert next(item for item in candidates if item["id"] == candidate_id)["signals"]["coverage"] is False
+        for item in candidates:
+            assert item["pilot_tier"] in {"contact_first", "backup_pilot", "scale_stage", "alternative_channel"}
+            assert item["partnership_idea"] and item["ranking_rationale"]
+            assert item["website"].startswith("https://")
+            assert "utm_" not in item["website"]
+            for evidence in item["evidence"]:
+                assert evidence["url"].startswith("https://")
+                assert "utm_" not in evidence["url"]
+        candidate = candidates[0]
         assert candidate["evidence"] and candidate["website"].startswith("https://")
         assert candidate["shortlisted"] is False
         assert "Unverified" in next(item["coverage"] for item in catalog["candidates"] if item["id"] == "gain-city")
-        assert candidate["id"] not in {partner["id"] for partner in client.get("/api/partners").json()}
+        partner_ids = {partner["id"] for partner in client.get("/api/partners").json()}
+        assert not {item["id"] for item in candidates} & partner_ids
         response = client.patch(f"/api/candidates/{candidate['id']}", json={
             "shortlisted": True, "outreach_draft": "Draft for human review only.",
         })
