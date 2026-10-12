@@ -11,7 +11,7 @@ This Hack and Hire prototype lets the Bizsu team explore Singapore housing patte
 | Step | In the demo |
 | --- | --- |
 | **Understand the market** | Explore planning-area housing and household profiles, filter areas, and inspect descriptive clusters and source links. |
-| **Research candidates** | Review three real AC service companies, inspect source links and evidence scores, shortlist candidates, and save editable outreach drafts locally. |
+| **Research candidates** | Review eight real AC service companies, inspect source links, evidence scores and a separate pilot recommendation rank, shortlist candidates, and save editable outreach drafts locally. |
 | **Try demo referrals** | Choose a separate fictional referral source and copy its demo link. Real company candidates are never assigned simulated referrals. |
 | **Capture enquiries** | A homeowner opens the link, enters AC and property details, and receives an initial rule-based screening result. The enquiry keeps its partner attribution. |
 | **Work the pipeline** | Sales reviews the enquiry, sees screening reasons and stage history, moves it through allowed stages, and edits a follow-up draft. |
@@ -54,7 +54,7 @@ Open **http://127.0.0.1:5173/**. Vite forwards `/api` requests to the local Fast
 ## How it works
 
 - **Market context:** A data pipeline joins published 2020 Census household tables by planning area. Five area-level shares feed a K-Means model that groups similar areas. These groups describe places, not individual households or proven customer demand.
-- **Company discovery:** A frozen research snapshot records official company websites, documented services and public contact details. Each fact links to evidence. Unknown service coverage is marked **Unverified**. The default evidence score weights documented residential work (40), servicing and installation (30), a maintenance plan (20), and stated Singapore-wide coverage (10). Sliders let reviewers change these weights during a session. The score is a research aid, not a prediction of willingness to partner.
+- **Company discovery:** A frozen research snapshot records official company websites, documented services and public contact details. Each fact links to evidence. Unknown service coverage is marked **Unverified**. The default evidence score weights documented residential work (40), servicing and installation (30), a maintenance plan (20), and stated Singapore-wide coverage (10). Sliders let reviewers change these weights during a session. A separate pilot rank records an editorial outreach recommendation and breaks score ties. Neither measure predicts willingness to partner.
 - **Demo referrals:** Four fictional partners remain separate from the real candidate list. Their weighted scores, referral links and all downstream activity exist only for the simulated journey.
 - **Enquiry screening:** Stated rules check demo coverage, AC configuration and completeness. A human would still need to confirm product fit and arrange any real assessment.
 - **Conversion score:** A logistic-regression model demonstrates where ML could fit in a future workflow. It was trained and tested only on simulated outcomes. Its score is **not a validated purchase probability**.

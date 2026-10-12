@@ -139,7 +139,7 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
                 "outreach_draft": action["outreach_draft"] if action else outreach_template(candidate),
             })
         return {
-            "candidates": sorted(candidates, key=lambda item: (-item["evidence_score"], item["name"])),
+            "candidates": sorted(candidates, key=lambda item: (-item["evidence_score"], item["pilot_rank"])),
             "weights": WEIGHTS,
             "retrieved_on": catalog["retrieved_on"],
             "note": catalog["note"],
