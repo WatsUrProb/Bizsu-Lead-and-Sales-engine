@@ -11,12 +11,34 @@ from uuid import uuid4
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field, HttpUrl
 
+from backend.candidates import load_catalog
 from backend.db import now, session
 
 ROOT = Path(__file__).resolve().parents[1]
 SEED = ROOT / "data" / "partner_prospects.json"
+PILOT_RESEARCH = load_catalog()
+PILOT_BY_NAME = {item["name"].casefold(): item for item in PILOT_RESEARCH["candidates"]}
 STAGES = ("Discovered", "Shortlisted", "Contacted", "Interested", "Negotiating", "Onboarded", "Rejected / Archived")
 DEFAULT_WEIGHTS = {"residential": 35, "maintenance": 30, "coverage": 20, "installation": 15}
+
+
+def with_pilot_research(company: dict) -> dict:
+    """Add read-only pilot research without changing a staff-edited company record."""
+    candidate = PILOT_BY_NAME.get(company["name"].casefold()) if company["origin"] == "Public research" else None
+    if not candidate:
+        return {**company, "pilot_research": None}
+    return {
+        **company,
+        "pilot_research": {
+            "rank": candidate["pilot_rank"],
+            "tier": candidate["pilot_tier"],
+            "idea": candidate["partnership_idea"],
+            "rationale": candidate["ranking_rationale"],
+            "evidence_score": candidate["evidence_score"],
+            "evidence": candidate["evidence"],
+            "retrieved_on": PILOT_RESEARCH["retrieved_on"],
+        },
+    }
 
 
 class CompanyInput(BaseModel):
@@ -88,6 +110,21 @@ def initialize_workspace(path: Path):
                  item["installation"], item["coverage"], item["contact"], item["source"],
                  "2026-10-11", item["unknowns"], "Public research", now(), now()))
             db.execute("INSERT OR IGNORE INTO prospect_pipeline(company_id,stage,updated_at) VALUES (?,'Discovered',?)", (slug, now()))
+        # The newer sourced catalogue includes two prospects absent from the original PDF.
+        # INSERT OR IGNORE preserves any existing staff edits and pipeline activity.
+        seeded_names = {item["name"].casefold() for item in json.loads(SEED.read_text())}
+        for candidate in PILOT_RESEARCH["candidates"]:
+            if candidate["name"].casefold() in seeded_names:
+                continue
+            company_id = re.sub(r"[^a-z0-9]+", "-", candidate["name"].lower()).strip("-")
+            contact = " · ".join(value for value in candidate["contact"].values() if value) or "Website contact page"
+            db.execute("""INSERT OR IGNORE INTO prospect_companies VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                (company_id, candidate["name"], candidate["website"], candidate["summary"],
+                 candidate["maintenance_plan"], "yes" if candidate["signals"]["servicing_and_installation"] else "unverified",
+                 candidate["coverage"], contact, candidate["evidence"][0]["url"],
+                 PILOT_RESEARCH["retrieved_on"], "Partnership interest and suitability",
+                 "Public research", now(), now()))
+            db.execute("INSERT OR IGNORE INTO prospect_pipeline(company_id,stage,updated_at) VALUES (?,'Discovered',?)", (company_id, now()))
         db.execute("INSERT OR IGNORE INTO prospect_settings VALUES ('weights',?)", (json.dumps(DEFAULT_WEIGHTS),))
 
 
@@ -103,7 +140,7 @@ def make_router(path: Path) -> APIRouter:
     @router.get("")
     def list_workspace():
         with session(path) as db:
-            companies = [dict(row) for row in db.execute("""SELECT c.*,p.stage,p.note,p.follow_up,p.last_contacted,p.updated_at AS stage_updated_at,
+            companies = [with_pilot_research(dict(row)) for row in db.execute("""SELECT c.*,p.stage,p.note,p.follow_up,p.last_contacted,p.updated_at AS stage_updated_at,
               (SELECT COUNT(*) FROM prospect_drafts d WHERE d.company_id=c.id) AS draft_count
               FROM prospect_companies c JOIN prospect_pipeline p ON p.company_id=c.id ORDER BY c.name""")]
             weights = json.loads(db.execute("SELECT value FROM prospect_settings WHERE key='weights'").fetchone()[0])
@@ -116,7 +153,7 @@ def make_router(path: Path) -> APIRouter:
             pipeline = dict(db.execute("SELECT * FROM prospect_pipeline WHERE company_id=?", (company_id,)).fetchone())
             events = [dict(row) for row in db.execute("SELECT * FROM prospect_events WHERE company_id=? ORDER BY id DESC", (company_id,))]
             drafts = [dict(row) for row in db.execute("SELECT * FROM prospect_drafts WHERE company_id=? ORDER BY id DESC", (company_id,))]
-        return {**company, **pipeline, "events": events, "drafts": drafts}
+        return {**with_pilot_research(company), **pipeline, "events": events, "drafts": drafts}
 
     @router.post("/companies", status_code=201)
     def add_company(payload: CompanyInput):
