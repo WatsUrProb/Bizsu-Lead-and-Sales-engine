@@ -8,9 +8,8 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
-import joblib
-
 from backend.domain import rank_partner
+from backend.scoring import ConversionScorer
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DB = ROOT / "data" / "demo.db"
@@ -87,7 +86,7 @@ CREATE INDEX IF NOT EXISTS stage_events_lead ON stage_events(lead_id);
 """
 
 
-def initialize(path: Path = DEFAULT_DB, seed: bool = True) -> None:
+def initialize(path: Path = DEFAULT_DB, seed: bool = True, scorer: ConversionScorer | None = None) -> None:
     with session(path) as connection:
         connection.executescript(SCHEMA)
         if seed and connection.execute("SELECT COUNT(*) FROM partners").fetchone()[0] == 0:
@@ -100,13 +99,12 @@ def initialize(path: Path = DEFAULT_DB, seed: bool = True) -> None:
                 )
         if seed and connection.execute("SELECT COUNT(*) FROM leads").fetchone()[0] == 0:
             records = [row for row in json.loads((ROOT / "data" / "processed" / "synthetic_training.json").read_text()) if row["ac_type"] == "split"][:12]
-            model_card = json.loads((ROOT / "data" / "models" / "conversion_card.json").read_text())
-            model = joblib.load(ROOT / "data" / "models" / "conversion.joblib")
+            scorer = scorer or ConversionScorer()
             for index, record in enumerate(records, start=1):
                 partner = DEMO_PARTNERS[(index - 1) % len(DEMO_PARTNERS)]
                 stage = ["new", "qualified", "assessment_booked", "assessed", "quoted", "won", "lost"][index % 7]
-                model_input = {key: record[key] for key in model_card["feature_keys"]}
-                ml_score = round(float(model.predict_proba([model_input])[0, 1]) * 100, 1)
+                ml_score = scorer.score(record)
+                model_version = scorer.model_version if ml_score is not None else None
                 connection.execute(
                     """INSERT INTO leads (partner_id,referral_code,area,property_type,ac_type,ac_units,daily_hours,
                        contact_name,contact_email,consent,qualification_status,qualification_reasons,stage,
@@ -115,7 +113,7 @@ def initialize(path: Path = DEFAULT_DB, seed: bool = True) -> None:
                      record["ac_type"], record["ac_units"], record["daily_hours"], f"Demo Resident {index:02d}",
                      f"resident{index:02d}@example.test", 1, "qualified",
                      json.dumps(["Synthetic seeded record; eligibility is illustrative"]), stage,
-                     ml_score, model_card["version"], "synthetic seeded enquiry", now()),
+                     ml_score, model_version, "synthetic seeded enquiry", now()),
                 )
                 lead_id = connection.execute("SELECT last_insert_rowid()").fetchone()[0]
                 connection.execute("INSERT INTO stage_events (lead_id,from_stage,to_stage,created_at) VALUES (?,?,?,?)", (lead_id, None, "new", now()))

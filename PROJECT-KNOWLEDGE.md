@@ -14,7 +14,7 @@ Official SingStat Census 2020 dwelling, household-size and income tables were do
 
 ## Tools and experiments
 
-Implementation: Python 3.13, FastAPI, SQLite, scikit-learn, React, Vite. K-Means compared 2–4 clusters; the initial run selected two. Logistic regression was trained and tested on synthetic records. Local API tests and a Vite build passed, and the market and sales screens were captured in a local headless browser. AI coding assistance was used to research, plan, implement and document the prototype; no model API is required at runtime. No third-party visual assets were used.
+Implementation: Python 3.13, FastAPI, SQLite, scikit-learn, React, Vite. K-Means compared 2–4 clusters; the initial run selected two. Logistic regression was trained and tested on synthetic records. The bundled scoring artifact is optional: missing, corrupt, incompatible or failed predictions yield no score without blocking screening or sales workflows. Local API tests and a Vite build passed, and the market and sales screens were captured in a local headless browser. AI coding assistance was used to research, plan, implement and document the prototype; no model API is required at runtime. No third-party visual assets were used.
 
 ## Open validation work
 
