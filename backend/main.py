@@ -8,13 +8,13 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal
 
-import joblib
 from fastapi import FastAPI, HTTPException, Query, Request
 from pydantic import BaseModel, Field, field_validator
 
 from backend.candidates import WEIGHTS, load_catalog, outreach_template
 from backend.db import DEFAULT_DB, ROOT, initialize, lead_from_row, now, partner_from_row, session
 from backend.domain import NEXT_STAGE, STAGES, draft_message, qualify, stage_allowed
+from backend.scoring import ConversionScorer
 
 DATA = ROOT / "data"
 
@@ -73,15 +73,14 @@ class CandidateActionInput(BaseModel):
     outreach_draft: str = Field(max_length=3000)
 
 
-def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
+def create_app(db_path: Path | None = None, seed: bool = True, scorer: ConversionScorer | None = None) -> FastAPI:
     path = Path(db_path or os.environ.get("BIZSU_DB_PATH", DEFAULT_DB))
     area_data = json.loads((DATA / "processed" / "areas.json").read_text())
     cluster_data = json.loads((DATA / "processed" / "clusters.json").read_text())
-    model_card = json.loads((DATA / "models" / "conversion_card.json").read_text())
     sources = json.loads((DATA / "sources.json").read_text())
     catalog = load_catalog()
     candidates_by_id = {item["id"]: item for item in catalog["candidates"]}
-    model = joblib.load(DATA / "models" / "conversion.joblib")
+    scorer = scorer or ConversionScorer()
     areas = [
         {**area, **cluster_data["assignments"].get(area["name"], {"cluster_id": None, "cluster_label": None})}
         for area in area_data["areas"]
@@ -91,7 +90,7 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
 
     @asynccontextmanager
     async def lifespan(_app: FastAPI):
-        initialize(path, seed=seed)
+        initialize(path, seed=seed, scorer=scorer)
         yield
 
     app = FastAPI(title="Bizsu Hackathon Demo API", version="0.1.0", lifespan=lifespan)
@@ -105,7 +104,7 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
         return {
             "sources": sources,
             "clusters": {key: value for key, value in cluster_data.items() if key != "assignments"},
-            "model": model_card,
+            "model": scorer.metadata(),
             "stages": STAGES,
             "demo_note": "Planning-area figures and sourced company profiles are real public information; referral partners, enquiries and outcomes are synthetic.",
             "ema_note": "The available area electricity context is historical 2013 whole-home consumption. EMA's current source page was reviewed, but the workbook could not be inspected through automated retrieval, so it was not integrated.",
@@ -180,8 +179,8 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
                 if not partner:
                     raise HTTPException(422, "Referral code is invalid")
             qualification = qualify(record, known_areas)
-            prediction = {key: record[key] for key in model_card["feature_keys"]}
-            score = round(float(model.predict_proba([prediction])[0, 1]) * 100, 1)
+            score = scorer.score(record)
+            model_version = scorer.model_version if score is not None else None
             db.execute(
                 """INSERT INTO leads (partner_id,referral_code,area,property_type,ac_type,ac_units,daily_hours,
                    estimated_ac_spend,contact_name,contact_email,consent,qualification_status,qualification_reasons,
@@ -189,12 +188,12 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
                 (partner["id"] if partner else None, record["referral_code"], record["area"], record["property_type"],
                  record["ac_type"], record["ac_units"], record["daily_hours"], record["estimated_ac_spend"],
                  record["contact_name"], record["contact_email"], int(record["consent"]), qualification["status"],
-                 json.dumps(qualification["reasons"]), "new", score, model_card["version"], "synthetic submitted enquiry", now()),
+                 json.dumps(qualification["reasons"]), "new", score, model_version, "synthetic submitted enquiry", now()),
             )
             lead_id = db.execute("SELECT last_insert_rowid()").fetchone()[0]
             db.execute("INSERT INTO stage_events (lead_id,from_stage,to_stage,created_at) VALUES (?,?,?,?)", (lead_id, None, "new", now()))
             row = db.execute("SELECT * FROM leads WHERE id=?", (lead_id,)).fetchone()
-        return {**lead_from_row(row), "area_context": area_lookup[record["area"]]["cluster_label"], "score_warning": model_card["warning"]}
+        return {**lead_from_row(row), "area_context": area_lookup[record["area"]]["cluster_label"], "score_warning": scorer.warning(score)}
 
     @app.get("/api/leads")
     def list_leads(partner_id: str | None = None, stage: str | None = None):
@@ -218,7 +217,11 @@ def create_app(db_path: Path | None = None, seed: bool = True) -> FastAPI:
                 raise HTTPException(404, "Lead not found")
             events = [dict(event) for event in db.execute("SELECT * FROM stage_events WHERE lead_id=? ORDER BY id", (lead_id,))]
             drafts = [dict(draft) for draft in db.execute("SELECT * FROM followup_drafts WHERE lead_id=? ORDER BY id DESC", (lead_id,))]
-        return {**lead_from_row(row), "stage_events": events, "drafts": drafts, "area_context": area_lookup[row["area"]]["cluster_label"]}
+        return {
+            **lead_from_row(row), "stage_events": events, "drafts": drafts,
+            "area_context": area_lookup[row["area"]]["cluster_label"],
+            "score_warning": scorer.warning(row["ml_score"]),
+        }
 
     @app.patch("/api/leads/{lead_id}/stage")
     def change_stage(lead_id: int, payload: StageInput):

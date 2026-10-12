@@ -6,10 +6,19 @@ from fastapi.testclient import TestClient
 
 from backend.main import create_app
 from backend.domain import qualify, rank_partner, stage_allowed
+from backend.scoring import ConversionScorer, UNAVAILABLE_MESSAGE
 from pipeline.build_data import build
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def lead_payload() -> dict:
+    return {
+        "area": "Ang Mo Kio", "property_type": "HDB 4 room", "ac_type": "split",
+        "ac_units": 2, "daily_hours": 6, "estimated_ac_spend": None,
+        "contact_name": "Test Resident", "contact_email": "resident@example.test", "consent": True,
+    }
 
 
 def test_real_data_join_keeps_aggregate_level_and_suppressed_values():
@@ -106,3 +115,56 @@ def test_sourced_candidates_stay_separate_from_demo_referrals(tmp_path):
         assert cleared["outreach_draft"] == ""
         assert client.patch("/api/candidates/unknown", json={"shortlisted": True, "outreach_draft": "x"}).status_code == 404
         assert client.get("/api/dashboard").json()["active_partners"] == 4
+
+
+def test_missing_model_disables_only_synthetic_scoring(tmp_path):
+    scorer = ConversionScorer(tmp_path / "missing.joblib", tmp_path / "missing-card.json")
+    assert scorer.available is False
+    with TestClient(create_app(tmp_path / "demo.db", scorer=scorer)) as client:
+        metadata = client.get("/api/meta").json()["model"]
+        assert metadata == {
+            "available": False,
+            "version": None,
+            "unavailable_reason": "Synthetic scoring model is unavailable.",
+        }
+        seeded = client.get("/api/leads").json()
+        assert len(seeded) == 12
+        assert all(lead["ml_score"] is None and lead["model_version"] is None for lead in seeded)
+        response = client.post("/api/leads", json=lead_payload())
+        assert response.status_code == 201, response.text
+        lead = response.json()
+        assert lead["qualification_status"] == "qualified"
+        assert lead["ml_score"] is None
+        assert lead["model_version"] is None
+        assert lead["score_warning"] == UNAVAILABLE_MESSAGE
+        detail = client.get(f"/api/leads/{lead['id']}").json()
+        assert detail["score_warning"] == UNAVAILABLE_MESSAGE
+
+
+def test_invalid_model_artifacts_are_contained(tmp_path):
+    valid_card = ROOT / "data/models/conversion_card.json"
+    corrupt_model = tmp_path / "corrupt.joblib"
+    corrupt_model.write_bytes(b"not a joblib model")
+    assert ConversionScorer(corrupt_model, valid_card).available is False
+
+    invalid_card = tmp_path / "invalid-card.json"
+    invalid_card.write_text("not json")
+    assert ConversionScorer(ROOT / "data/models/conversion.joblib", invalid_card).available is False
+
+
+def test_prediction_failure_still_saves_lead(tmp_path):
+    class BrokenModel:
+        def predict_proba(self, _records):
+            raise RuntimeError("prediction failed")
+
+    scorer = ConversionScorer()
+    assert scorer.available is True
+    scorer.model = BrokenModel()
+    with TestClient(create_app(tmp_path / "demo.db", seed=False, scorer=scorer)) as client:
+        response = client.post("/api/leads", json=lead_payload())
+        assert response.status_code == 201, response.text
+        lead = response.json()
+        assert lead["qualification_status"] == "qualified"
+        assert lead["ml_score"] is None
+        assert lead["model_version"] is None
+        assert lead["score_warning"] == UNAVAILABLE_MESSAGE
