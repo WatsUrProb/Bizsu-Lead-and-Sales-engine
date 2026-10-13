@@ -153,7 +153,24 @@ def make_router(path: Path) -> APIRouter:
             pipeline = dict(db.execute("SELECT * FROM prospect_pipeline WHERE company_id=?", (company_id,)).fetchone())
             events = [dict(row) for row in db.execute("SELECT * FROM prospect_events WHERE company_id=? ORDER BY id DESC", (company_id,))]
             drafts = [dict(row) for row in db.execute("SELECT * FROM prospect_drafts WHERE company_id=? ORDER BY id DESC", (company_id,))]
-        return {**with_pilot_research(company), **pipeline, "events": events, "drafts": drafts}
+            referral = db.execute("SELECT referral_code FROM partners WHERE company_id=? AND id LIKE 'scenario-%' LIMIT 1", (company_id,)).fetchone()
+        return {**with_pilot_research(company), **pipeline, "events": events, "drafts": drafts,
+                "demo_referral_code": referral["referral_code"] if referral else None}
+
+    @router.post("/companies/{company_id}/demo-referral")
+    def create_demo_referral(company_id: str):
+        with session(path) as db:
+            company = company_or_404(db, company_id)
+            existing = db.execute("SELECT id,referral_code FROM partners WHERE company_id=? AND id LIKE 'scenario-%' LIMIT 1", (company_id,)).fetchone()
+            if existing:
+                return {"partner_id": existing["id"], "referral_code": existing["referral_code"], "company_id": company_id, "scenario_only": True}
+            partner_id = "scenario-" + uuid4().hex[:12]
+            referral_code = "demo-" + uuid4().hex[:16]
+            db.execute("""INSERT INTO partners(id,name,description,customer_focus,service_areas,services,engagement_fit,referral_code,source_notes,active,company_id)
+                VALUES (?,?,?,?,?,?,?,?,?,1,?)""",
+                (partner_id, company["name"] + " demo scenario", "Simulated referral source; no partnership is implied",
+                 "mixed", "[]", "[]", 0, referral_code, "Created for an internal referral walkthrough only", company_id))
+        return {"partner_id": partner_id, "referral_code": referral_code, "company_id": company_id, "scenario_only": True}
 
     @router.post("/companies", status_code=201)
     def add_company(payload: CompanyInput):

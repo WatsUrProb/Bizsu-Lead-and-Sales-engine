@@ -34,9 +34,13 @@ def rank_partner(partner: dict) -> dict:
 
 def qualify(lead: dict, known_areas: set[str]) -> dict:
     reasons = []
-    if lead["area"] not in known_areas:
+    if lead["area"] == "Not provided":
+        reasons.append("Planning area needs to be confirmed")
+    elif lead["area"] not in known_areas:
         reasons.append("Area is outside the assumed Singapore demo coverage")
-    if lead["ac_type"] not in SUPPORTED_AC_TYPES:
+    if lead["ac_type"] == "unknown":
+        reasons.append("AC system type needs to be confirmed")
+    elif lead["ac_type"] not in SUPPORTED_AC_TYPES:
         reasons.append("AC configuration needs a manual compatibility assessment")
     if lead["ac_units"] < 1:
         reasons.append("At least one AC unit is required")

@@ -32,6 +32,22 @@ Open **http://127.0.0.1:5173/**. Vite proxies `/api` to FastAPI. SQLite data is 
 5. Return to the profile or **Outreach drafts** to find the saved copy. It remains Shortlisted until someone explicitly confirms actual outreach.
 6. In Pipeline, use **Move to…** to record later stages. Contacted and Onboarded each require explicit confirmation.
 
+## Homeowner and customer demo
+
+Open **http://127.0.0.1:5173/demo/form** to try the two-step homeowner form. For attribution, use a demo partner referral URL with `?ref=partner001` (or another code returned by `/api/partners`). The form keeps the code in the URL and sends it with the enquiry; the response includes the partner ID, referral code and enquiry ID. Ordinary valid email addresses are accepted. The header's **Back to main page** link returns to Partner Discovery in the internal demo. The success screen's **Internal demo only** link opens that exact enquiry in the Customer Pipeline.
+
+The first form step asks for housing type, planning area, AC system type, unit count, daily use and an optional enquiry note. The backend's stated screening rules use area, system type and completeness. A supported setup can be marked Qualified by staff; uncertain or unsupported setups stay at New until a staff review records why they can proceed. Optional phone numbers and notes persist in SQLite; existing databases receive the new columns automatically.
+
+The Customer Pipeline identifies the referral company, code and demo partner ID for each attributed enquiry. Form submissions are separated from seeded sample journeys. New submissions always begin at New, even if initial screening passes. Moving to later stages requires a recorded reason: an agreed appointment, completed assessment, issued quote, customer acceptance, or loss reason. Seeded stages remain explicitly labelled illustrative because no real events support them.
+
+From any company profile in Partner Discovery, staff can create a **demo referral link** and try the homeowner form. The link is stable in SQLite and keeps that company's name on the resulting enquiry, but does not move the company to Contacted or Onboarded. In the Customer Pipeline, Lost is never preselected. A follow-up can be saved, copied, or opened in an email app; staff explicitly mark it sent only after sending it outside the prototype. This message status does not change the customer stage.
+
+Partner Discovery shows five companies per page. Search, filters and sorting apply to the full company list first. The selected page and search state remain when a company profile is opened and closed.
+
+The hero uses a locally stored [Pexels photograph by Max Vakhtbovych](https://www.pexels.com/photo/interior-of-modern-apartment-living-room-6588599/) showing a modern apartment living room and wall-mounted air conditioner. It represents the residential use case and is not presented as a photographed Singapore property. No approved Bizsu product image was present in this repository.
+
+For a public form deployment, set `BIZSU_PUBLIC_MODE=1` on the API. This disables customer record, dashboard, draft, and partner workspace endpoints while keeping enquiry submission available. Production frontend builds show only the homeowner form unless `VITE_INTERNAL_DEMO=true` is explicitly set at build time. Staff access beyond this local demo still requires a separate authenticated deployment.
+
 The email composer uses a deterministic template grounded in the selected record. It shows the generation method and facts used. It never sends an email. A potential referral commission is presented only as subject to discussion and agreement; installation collaboration requires technical approval.
 
 ## Data and design
@@ -40,7 +56,7 @@ The email composer uses a deterministic template grounded in the selected record
 - Staff can add and edit companies through the interface. Company, pipeline, event, settings, and draft records persist in SQLite.
 - Fit starts with residential relevance 35%, recurring maintenance 30%, geographic coverage 20%, and installation 15%. Staff can edit and save weights that sum to 100%. Unverified attributes contribute no points.
 - Discover keeps the same cards and profile flow. Use **Pilot reviewed** or **Sort: pilot priority** to find the eight researched recommendations. Pilot rank is an internal outreach suggestion, separate from the adjustable published-service fit score. It does not imply interest or endorsement.
-- **Referral form** and **Sales flow** under **Separate demo** retain the earlier synthetic walkthrough. All referrals, enquiries and outcomes there are fictional scenarios; the real companies did not supply them.
+- **Homeowner form** and **Customer pipeline** under **Customer acquisition** retain synthetic sample journeys alongside locally submitted enquiries. All sample referrals and outcomes are fictional; the real companies did not supply them.
 - The synthetic conversion model is optional. If its local artifact or model card cannot be loaded, or prediction fails, enquiries still save and rule-based screening continues. Scores and model versions are left empty rather than invented.
 
 ## Checks

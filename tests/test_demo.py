@@ -72,9 +72,9 @@ def test_synthetic_only_contact_and_review_rules(tmp_path):
     assert not stage_allowed("new", "qualified", "needs_review")
     with TestClient(create_app(tmp_path / "demo.db")) as client:
         payload = {"area": "Ang Mo Kio", "property_type": "HDB 4 room", "ac_type": "split", "ac_units": 1,
-                   "daily_hours": 5, "contact_name": "Real Contact", "contact_email": "person@example.com", "consent": True}
+                   "daily_hours": 5, "contact_name": "Real Contact", "contact_email": "not-an-email", "consent": True}
         assert client.post("/api/leads", json=payload).status_code == 422
-        payload["contact_email"] = "person@example.test"
+        payload["contact_email"] = "person@example.com"
         payload["consent"] = False
         assert client.post("/api/leads", json=payload).status_code == 422
         payload["consent"] = True
@@ -83,6 +83,8 @@ def test_synthetic_only_contact_and_review_rules(tmp_path):
         payload["property_type"] = "HDB 4 room"
         payload["contact_name"] = "  "
         assert client.post("/api/leads", json=payload).status_code == 422
+        payload["contact_name"] = "Real Contact"
+        assert client.post("/api/leads", json=payload).status_code == 201
 
 
 def test_sourced_candidates_stay_separate_from_demo_referrals(tmp_path):
@@ -175,3 +177,108 @@ def test_prediction_failure_still_saves_enquiry(tmp_path):
         assert response.status_code == 201
         assert response.json()["ml_score"] is None
         assert response.json()["score_warning"] == UNAVAILABLE_MESSAGE
+
+
+def test_simple_homeowner_enquiry_preserves_attribution_and_phone(tmp_path):
+    with TestClient(create_app(tmp_path / "demo.db")) as client:
+        partner = client.get("/api/partners").json()[0]
+        response = client.post("/api/leads", json={
+            "referral_code": partner["referral_code"], "property_type": "HDB",
+            "ac_units": 3, "daily_hours": 6, "contact_name": "Demo Homeowner",
+            "contact_email": "homeowner@example.test", "contact_phone": "+65 8123 4567",
+            "consent": True,
+        })
+        assert response.status_code == 201, response.text
+        lead = response.json()
+        assert lead["id"] > 0
+        assert lead["partner_id"] == partner["id"]
+        assert lead["referral_code"] == partner["referral_code"]
+        assert lead["contact_phone"] == "+65 8123 4567"
+        assert lead["area"] == "Not provided" and lead["ac_type"] == "unknown"
+        assert lead["qualification_status"] == "needs_review"
+        assert client.get(f"/api/leads/{lead['id']}").json()["id"] == lead["id"]
+        assert client.patch(f"/api/leads/{lead['id']}/stage", json={"stage": "qualified"}).status_code == 422
+        assert client.post(f"/api/leads/{lead['id']}/review", json={
+            "area": "Ang Mo Kio", "ac_type": "window",
+            "reason": "System needs a manual compatibility check",
+        }).status_code == 422
+        assert client.post(f"/api/leads/{lead['id']}/review", json={
+            "area": "Ang Mo Kio", "ac_type": "split",
+            "reason": "Confirmed compatible AC setup by phone",
+        }).status_code == 200
+        assert client.patch(f"/api/leads/{lead['id']}/stage", json={"stage": "qualified"}).status_code == 200
+
+
+def test_complete_form_screening_and_stage_evidence(tmp_path):
+    with TestClient(create_app(tmp_path / "demo.db")) as client:
+        partner = client.get("/api/partners").json()[0]
+        response = client.post("/api/leads", json={
+            "referral_code": partner["referral_code"], "property_type": "Condo",
+            "area": "Ang Mo Kio", "ac_type": "multi_split", "ac_units": 2,
+            "daily_hours": 7, "enquiry_note": "Interested in an assessment.",
+            "contact_name": "Demo Homeowner", "contact_email": "homeowner@example.com",
+            "consent": True,
+        })
+        assert response.status_code == 201, response.text
+        lead = response.json()
+        assert lead["qualification_status"] == "qualified"
+        assert lead["company_name"] == partner["company_name"]
+        assert lead["enquiry_note"] == "Interested in an assessment."
+        assert client.patch(f"/api/leads/{lead['id']}/stage", json={"stage": "qualified"}).status_code == 200
+        assert client.patch(f"/api/leads/{lead['id']}/stage", json={"stage": "assessment_booked"}).status_code == 422
+        booked = client.patch(f"/api/leads/{lead['id']}/stage", json={
+            "stage": "assessment_booked", "reason": "Customer agreed to a demo appointment on 20 Oct.",
+        })
+        assert booked.status_code == 200
+        detail = client.get(f"/api/leads/{lead['id']}").json()
+        assert detail["stage_events"][-1]["reason"] == "Customer agreed to a demo appointment on 20 Oct."
+
+
+def test_any_workspace_company_can_have_an_attributed_demo_referral(tmp_path):
+    with TestClient(create_app(tmp_path / "demo.db")) as client:
+        company = next(item for item in client.get("/api/workspace").json()["companies"] if item["id"] == "81aircon")
+        assert company["stage"] == "Discovered"
+        created = client.post(f"/api/workspace/companies/{company['id']}/demo-referral")
+        assert created.status_code == 200, created.text
+        referral = created.json()
+        assert referral["company_id"] == company["id"]
+        assert client.post(f"/api/workspace/companies/{company['id']}/demo-referral").json() == referral
+        lead = client.post("/api/leads", json={
+            "referral_code": referral["referral_code"], "property_type": "HDB",
+            "area": "Ang Mo Kio", "ac_type": "split", "ac_units": 2,
+            "daily_hours": 6, "contact_name": "Demo Customer",
+            "contact_email": "customer@example.com", "consent": True,
+        }).json()
+        assert lead["partner_id"] == referral["partner_id"]
+        assert lead["company_id"] == company["id"]
+        assert lead["company_name"] == company["name"]
+        assert client.get("/api/dashboard").json()["company_breakdown"][company["id"]]["submitted_enquiries"] == 1
+        assert client.get(f"/api/workspace/companies/{company['id']}").json()["stage"] == "Discovered"
+
+
+def test_followup_requires_manual_sent_confirmation(tmp_path):
+    with TestClient(create_app(tmp_path / "demo.db")) as client:
+        lead_id = client.get("/api/leads").json()[0]["id"]
+        draft = client.post(f"/api/leads/{lead_id}/draft").json()
+        assert draft["status"] == "draft"
+        assert client.post(f"/api/drafts/{draft['id']}/mark-sent", json={"confirmed": False}).status_code == 422
+        sent = client.post(f"/api/drafts/{draft['id']}/mark-sent", json={"confirmed": True})
+        assert sent.status_code == 200
+        assert sent.json()["status"] == "sent"
+        assert sent.json()["sent_at"]
+        assert client.patch(f"/api/drafts/{draft['id']}", json={"message": "Change already sent text."}).status_code == 422
+
+
+def test_public_mode_hides_internal_customer_records(tmp_path, monkeypatch):
+    monkeypatch.setenv("BIZSU_PUBLIC_MODE", "1")
+    with TestClient(create_app(tmp_path / "demo.db")) as client:
+        assert client.get("/api/leads").status_code == 403
+        assert client.get("/api/leads/1").status_code == 403
+        assert client.get("/api/dashboard").status_code == 403
+        assert client.get("/api/workspace").status_code == 403
+        assert client.get("/api/candidates").status_code == 403
+        assert client.post("/api/leads", json={
+            "property_type": "Condo", "ac_units": 2, "daily_hours": 5,
+            "contact_name": "Demo Homeowner", "contact_email": "homeowner@example.test",
+            "consent": True,
+        }).status_code == 201

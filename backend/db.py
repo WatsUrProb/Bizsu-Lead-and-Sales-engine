@@ -52,25 +52,26 @@ CREATE TABLE IF NOT EXISTS partners (
  id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT NOT NULL,
  customer_focus TEXT NOT NULL, service_areas TEXT NOT NULL, services TEXT NOT NULL,
  engagement_fit REAL NOT NULL, referral_code TEXT NOT NULL UNIQUE,
- source_notes TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1
+ source_notes TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1,
+ company_id TEXT
 );
 CREATE TABLE IF NOT EXISTS leads (
  id INTEGER PRIMARY KEY AUTOINCREMENT, partner_id TEXT REFERENCES partners(id), referral_code TEXT,
  area TEXT NOT NULL, property_type TEXT NOT NULL, ac_type TEXT NOT NULL,
  ac_units INTEGER NOT NULL, daily_hours REAL NOT NULL, estimated_ac_spend REAL,
- contact_name TEXT NOT NULL, contact_email TEXT NOT NULL, consent INTEGER NOT NULL,
+ contact_name TEXT NOT NULL, contact_email TEXT NOT NULL, contact_phone TEXT, enquiry_note TEXT, consent INTEGER NOT NULL,
  qualification_status TEXT NOT NULL, qualification_reasons TEXT NOT NULL,
  stage TEXT NOT NULL DEFAULT 'new', ml_score REAL, model_version TEXT,
  data_kind TEXT NOT NULL DEFAULT 'synthetic', created_at TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS stage_events (
  id INTEGER PRIMARY KEY AUTOINCREMENT, lead_id INTEGER NOT NULL REFERENCES leads(id),
- from_stage TEXT, to_stage TEXT NOT NULL, created_at TEXT NOT NULL
+ from_stage TEXT, to_stage TEXT NOT NULL, reason TEXT, created_at TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS followup_drafts (
  id INTEGER PRIMARY KEY AUTOINCREMENT, lead_id INTEGER NOT NULL REFERENCES leads(id),
  message TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'draft', created_at TEXT NOT NULL,
- updated_at TEXT NOT NULL
+ updated_at TEXT NOT NULL, sent_at TEXT
 );
 CREATE TABLE IF NOT EXISTS referral_events (
  id INTEGER PRIMARY KEY AUTOINCREMENT, partner_id TEXT NOT NULL REFERENCES partners(id),
@@ -89,10 +90,21 @@ CREATE INDEX IF NOT EXISTS stage_events_lead ON stage_events(lead_id);
 def initialize(path: Path = DEFAULT_DB, seed: bool = True, scorer: ConversionScorer | None = None) -> None:
     with session(path) as connection:
         connection.executescript(SCHEMA)
+        if "company_id" not in {row["name"] for row in connection.execute("PRAGMA table_info(partners)")}:
+            connection.execute("ALTER TABLE partners ADD COLUMN company_id TEXT")
+        connection.execute("CREATE UNIQUE INDEX IF NOT EXISTS one_generated_referral_per_company ON partners(company_id) WHERE id LIKE 'scenario-%'")
+        if "contact_phone" not in {row["name"] for row in connection.execute("PRAGMA table_info(leads)")}:
+            connection.execute("ALTER TABLE leads ADD COLUMN contact_phone TEXT")
+        if "enquiry_note" not in {row["name"] for row in connection.execute("PRAGMA table_info(leads)")}:
+            connection.execute("ALTER TABLE leads ADD COLUMN enquiry_note TEXT")
+        if "reason" not in {row["name"] for row in connection.execute("PRAGMA table_info(stage_events)")}:
+            connection.execute("ALTER TABLE stage_events ADD COLUMN reason TEXT")
+        if "sent_at" not in {row["name"] for row in connection.execute("PRAGMA table_info(followup_drafts)")}:
+            connection.execute("ALTER TABLE followup_drafts ADD COLUMN sent_at TEXT")
         if seed and connection.execute("SELECT COUNT(*) FROM partners").fetchone()[0] == 0:
             for partner in DEMO_PARTNERS:
                 connection.execute(
-                    "INSERT INTO partners VALUES (?,?,?,?,?,?,?,?,?,1)",
+                    "INSERT INTO partners (id,name,description,customer_focus,service_areas,services,engagement_fit,referral_code,source_notes,active) VALUES (?,?,?,?,?,?,?,?,?,1)",
                     (partner["id"], partner["name"], partner["description"], partner["customer_focus"],
                      json.dumps(partner["service_areas"]), json.dumps(partner["services"]),
                      partner["engagement_fit"], partner["referral_code"], "Fictional demo partner; no real company facts"),
@@ -116,7 +128,7 @@ def initialize(path: Path = DEFAULT_DB, seed: bool = True, scorer: ConversionSco
                      ml_score, model_version, "synthetic seeded enquiry", now()),
                 )
                 lead_id = connection.execute("SELECT last_insert_rowid()").fetchone()[0]
-                connection.execute("INSERT INTO stage_events (lead_id,from_stage,to_stage,created_at) VALUES (?,?,?,?)", (lead_id, None, "new", now()))
+                connection.execute("INSERT INTO stage_events (lead_id,from_stage,to_stage,reason,created_at) VALUES (?,?,?,?,?)", (lead_id, None, "new", "Illustrative seeded enquiry; no homeowner submission.", now()))
                 path = ["qualified", "assessment_booked", "assessed", "quoted", "won"]
                 if stage == "lost":
                     path = ["qualified", "assessment_booked", "lost"]
@@ -126,7 +138,7 @@ def initialize(path: Path = DEFAULT_DB, seed: bool = True, scorer: ConversionSco
                     path = []
                 previous = "new"
                 for step in path:
-                    connection.execute("INSERT INTO stage_events (lead_id,from_stage,to_stage,created_at) VALUES (?,?,?,?)", (lead_id, previous, step, now()))
+                    connection.execute("INSERT INTO stage_events (lead_id,from_stage,to_stage,reason,created_at) VALUES (?,?,?,?,?)", (lead_id, previous, step, "Illustrative seeded stage; no real assessment, quote, or sale.", now()))
                     previous = step
         if seed:
             # Backfill earlier local demo databases created before seeded visits were added.

@@ -1,0 +1,58 @@
+.homeowner-page{min-height:100vh;background:#f8f7f4;color:#242839;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.homeowner-header{height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 clamp(20px,4vw,70px);background:#fff}
+.homeowner-header>span{color:#777d8f;font-size:12px;font-weight:650}
+.homeowner-return{color:#5c53c1;text-decoration:none;font-size:12px;font-weight:750;padding:9px 12px;border-radius:9px;transition:background .18s}
+.homeowner-return:hover{background:#f0edff}
+.homeowner-brand{display:flex;align-items:center;gap:10px;color:#2b2a40;text-decoration:none;font-size:22px;letter-spacing:-.05em}
+.homeowner-brand span{display:grid;place-items:center;width:37px;height:37px;border-radius:12px;background:#6258df;color:#fff;font-family:Georgia,serif;font-size:26px}
+.homeowner-hero{position:relative;min-height:calc(100vh - 122px);isolation:isolate;overflow:hidden}
+.homeowner-hero-image{position:absolute;inset:0;z-index:-2;background-image:url('/images/home-comfort.jpg');background-size:cover;background-position:center}
+.homeowner-hero:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(30,31,46,.46) 0%,rgba(30,31,46,.20) 52%,rgba(23,25,35,.48) 100%)}
+.homeowner-hero-inner{max-width:1480px;margin:auto;padding:clamp(30px,5vw,70px);min-height:calc(100vh - 122px);display:grid;grid-template-columns:minmax(340px,470px) minmax(0,1fr);align-items:center;gap:clamp(35px,7vw,110px)}
+.homeowner-card{background:#fff;border-radius:23px;box-shadow:0 25px 65px #17172433;padding:clamp(24px,3vw,38px);min-width:0}
+.homeowner-kicker{display:block;color:#6357cb;font-size:10px;letter-spacing:.14em;font-weight:850}
+.homeowner-card-head h2{font-size:clamp(24px,2.2vw,31px);line-height:1.15;letter-spacing:-.04em;margin:10px 0}
+.homeowner-card-head p,.homeowner-success p{color:#697080;font-size:13px;line-height:1.6;margin:0}
+.homeowner-source{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#f3f1ff;border-radius:10px;padding:10px 12px;margin-top:17px;color:#74708f;font-size:11px}
+.homeowner-source strong{color:#544ab9;text-align:right;font-size:11px}
+.homeowner-progress{display:flex;align-items:center;gap:10px;margin:27px 0 22px}
+.homeowner-progress>div{display:flex;align-items:center;gap:8px;min-width:0}
+.homeowner-progress span{width:24px;height:24px;flex:none;display:grid;place-items:center;border-radius:50%;background:#eeedf4;color:#8b8b9c;font-size:11px;font-weight:800}
+.homeowner-progress span.active,.homeowner-progress span.done{background:#6258df;color:#fff}
+.homeowner-progress small{font-size:10px;color:#86899a;font-weight:750;white-space:nowrap}
+.homeowner-progress i{height:1px;background:#dddce7;flex:1;min-width:10px}
+.homeowner-fields{display:grid;gap:17px}
+.homeowner-fields>label{display:block;color:#3f4357;font-size:12px;font-weight:750}
+.homeowner-fields input:not([type=checkbox]),.homeowner-fields select,.homeowner-fields textarea{display:block;width:100%;min-height:46px;border:1px solid #dfe0e9;border-radius:10px;padding:11px 13px;margin-top:7px;background:#fff;color:#252a3c;outline:none}
+.homeowner-fields textarea{resize:vertical;line-height:1.4}
+.homeowner-fields input:focus,.homeowner-fields select:focus{border-color:#8177e9;box-shadow:0 0 0 3px #e9e6ff}
+.homeowner-fields .optional{font-weight:500;color:#9195a5;font-size:11px}
+.homeowner-consent{display:flex!important;gap:10px;align-items:flex-start;color:#62687b!important;font-size:11px!important;line-height:1.5;font-weight:500!important}
+.homeowner-consent input{accent-color:#6258df;margin:2px 0 0;flex:none}
+.homeowner-primary{border:0;border-radius:10px;min-height:46px;background:#6258df;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 17px;font-weight:750;font-size:13px;box-shadow:0 7px 17px #6258df2f;transition:background .18s,transform .18s}
+.homeowner-primary:hover{background:#5147c4;transform:translateY(-1px)}
+.homeowner-primary:disabled{opacity:.55;cursor:wait}
+.homeowner-actions{display:flex;gap:10px;align-items:center}
+.homeowner-actions .homeowner-primary{flex:1}
+.homeowner-back{border:1px solid #e1e0e9;background:#fff;color:#5f6274;border-radius:10px;height:46px;padding:0 14px;font-size:12px;font-weight:750}
+.homeowner-form-note,.homeowner-referral{color:#8a8e9b;font-size:10px;line-height:1.55;margin:17px 0 0}
+.homeowner-referral{margin-top:6px}
+.homeowner-error{background:#fff0eb;color:#994630;border-radius:8px;padding:10px;font-size:11px;margin:12px 0 0}
+.homeowner-copy{color:#fff;text-shadow:0 2px 12px #10122365;max-width:680px}
+.homeowner-copy>span{font-size:11px;letter-spacing:.2em;font-weight:850;color:#f5d9c7}
+.homeowner-copy h1{font-size:clamp(43px,5.6vw,83px);line-height:1.02;letter-spacing:-.065em;margin:18px 0 20px;font-weight:760}
+.homeowner-copy p{font-size:clamp(16px,1.65vw,22px);line-height:1.5;max-width:600px;margin:0 0 20px}
+.homeowner-copy small{font-size:12px;color:#fff;opacity:.88}
+.homeowner-success-icon{width:50px;height:50px;border-radius:15px;background:#e7f6ec;color:#248257;display:grid;place-items:center;font-size:25px;margin-bottom:24px}
+.homeowner-success h1{font-size:29px;letter-spacing:-.04em;line-height:1.13;margin:10px 0 14px}
+.homeowner-reference{border-radius:10px;background:#f6f5fc;padding:13px;margin-top:23px;display:flex;justify-content:space-between;color:#666b7d;font-size:12px}
+.homeowner-reference strong{color:#5147bc}
+.homeowner-demo-link{margin-top:22px;border-top:1px solid #ecebf1;padding-top:18px}
+.homeowner-demo-link span{display:block;color:#9a7992;font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;margin-bottom:9px}
+.homeowner-demo-link button,.homeowner-text-button{border:0;background:none;padding:0;color:#5b51c6;text-align:left;font-size:12px;font-weight:800}
+.homeowner-text-button{display:block;margin-top:20px;color:#74798a}
+.homeowner-footer{min-height:50px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:9px clamp(20px,4vw,70px);color:#85899a;font-size:10px}
+.homeowner-footer a{color:#7572a0}
+@media(max-width:900px){.homeowner-hero-inner{grid-template-columns:minmax(0,1fr);gap:30px}.homeowner-card{max-width:500px;order:2}.homeowner-copy{order:1;max-width:580px}.homeowner-hero-image{background-position:53% center}.homeowner-hero:before{background:linear-gradient(180deg,#1e20318f,#1e203133 35%,#1e20316b)}}
+@media(max-width:600px){.homeowner-header{height:62px}.homeowner-header>span{font-size:10px}.homeowner-hero-inner{padding:30px 16px;min-height:0}.homeowner-copy h1{font-size:44px;margin:10px 0}.homeowner-copy p{font-size:15px}.homeowner-copy small{font-size:10px}.homeowner-card{padding:24px 20px;border-radius:18px}.homeowner-progress small{font-size:9px}.homeowner-footer{align-items:start;flex-direction:column;gap:3px}}
+@media(prefers-reduced-motion:reduce){.homeowner-primary{transition:none}}

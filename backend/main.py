@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator
 
 from backend.candidates import SCENARIO_COMPANY_BY_PARTNER, WEIGHTS, load_catalog, outreach_template
@@ -22,14 +24,16 @@ DATA = ROOT / "data"
 
 class LeadInput(BaseModel):
     referral_code: str | None = None
-    area: str
-    property_type: Literal["HDB 1–2 room", "HDB 3 room", "HDB 4 room", "HDB 5 room/executive", "Condo/apartment", "Landed"]
-    ac_type: Literal["split", "multi_split", "window", "central"]
+    area: str = "Not provided"
+    property_type: Literal["HDB", "Condo", "Landed", "Other", "HDB 1–2 room", "HDB 3 room", "HDB 4 room", "HDB 5 room/executive", "Condo/apartment"]
+    ac_type: Literal["split", "multi_split", "window", "central", "unknown"] = "unknown"
     ac_units: int = Field(ge=1, le=12)
     daily_hours: float = Field(gt=0, le=24)
     estimated_ac_spend: float | None = Field(default=None, ge=0, le=10000)
     contact_name: str = Field(min_length=2, max_length=80)
-    contact_email: str = Field(min_length=5, max_length=160)
+    contact_email: str = Field(min_length=3, max_length=160)
+    contact_phone: str | None = Field(default=None, max_length=30)
+    enquiry_note: str | None = Field(default=None, max_length=1000)
     consent: bool
 
     @field_validator("contact_name")
@@ -42,10 +46,10 @@ class LeadInput(BaseModel):
 
     @field_validator("contact_email")
     @classmethod
-    def synthetic_email_only(cls, value: str) -> str:
+    def valid_email(cls, value: str) -> str:
         value = value.strip().lower()
-        if not value.endswith(".test") or "@" not in value:
-            raise ValueError("Use a synthetic .test email address in this demo")
+        if not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", value):
+            raise ValueError("Enter a valid email address")
         return value
 
     @field_validator("consent")
@@ -55,9 +59,26 @@ class LeadInput(BaseModel):
             raise ValueError("Consent is required to submit the demo enquiry")
         return value
 
+    @field_validator("contact_phone")
+    @classmethod
+    def valid_phone(cls, value: str | None) -> str | None:
+        if value is None or not value.strip():
+            return None
+        value = value.strip()
+        if not all(char.isdigit() or char in "+- ()" for char in value) or sum(char.isdigit() for char in value) < 8:
+            raise ValueError("Enter a valid phone number or leave it blank")
+        return value
+
 
 class StageInput(BaseModel):
     stage: str
+    reason: str | None = Field(default=None, max_length=500)
+
+
+class ReviewInput(BaseModel):
+    area: str
+    ac_type: Literal["split", "multi_split"]
+    reason: str = Field(min_length=10, max_length=500)
 
 
 class ReferralVisitInput(BaseModel):
@@ -67,6 +88,10 @@ class ReferralVisitInput(BaseModel):
 
 class DraftInput(BaseModel):
     message: str = Field(min_length=5, max_length=3000)
+
+
+class SentConfirmation(BaseModel):
+    confirmed: bool
 
 
 class CandidateActionInput(BaseModel):
@@ -83,11 +108,20 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
     candidates_by_id = {item["id"]: item for item in catalog["candidates"]}
 
     def with_company(record: dict) -> dict:
-        company_id = SCENARIO_COMPANY_BY_PARTNER.get(record.get("partner_id", record.get("id")))
+        partner_id = record.get("partner_id") or record.get("id")
+        company_id = record.get("company_id")
+        company_name = None
+        if partner_id:
+            with session(path) as db:
+                partner = db.execute("SELECT company_id FROM partners WHERE id=?", (partner_id,)).fetchone()
+                company_id = company_id or (partner["company_id"] if partner else None)
+                if company_id:
+                    company = db.execute("SELECT name FROM prospect_companies WHERE id=?", (company_id,)).fetchone()
+                    company_name = company["name"] if company else candidates_by_id.get(company_id, {}).get("name")
         return {
             **record,
             "company_id": company_id,
-            "company_name": candidates_by_id[company_id]["name"] if company_id else None,
+            "company_name": company_name,
             "scenario_only": True,
         }
     scorer = scorer or ConversionScorer()
@@ -102,10 +136,29 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
     async def lifespan(_app: FastAPI):
         initialize(path, seed=seed, scorer=scorer)
         initialize_workspace(path)
+        with session(path) as db:
+            for partner_id, company_id in SCENARIO_COMPANY_BY_PARTNER.items():
+                db.execute("UPDATE partners SET company_id=? WHERE id=? AND company_id IS NULL",
+                           (company_id, partner_id))
         yield
 
     app = FastAPI(title="Bizsu Hackathon Demo API", version="0.1.0", lifespan=lifespan)
     app.include_router(make_router(path))
+
+    @app.middleware("http")
+    async def restrict_internal_records(request: Request, call_next):
+        if os.environ.get("BIZSU_PUBLIC_MODE") == "1":
+            route = request.url.path
+            internal = (
+                route.startswith("/api/workspace")
+                or route.startswith("/api/candidates")
+                or route == "/api/dashboard"
+                or route.startswith("/api/drafts")
+                or (route.startswith("/api/leads") and not (route == "/api/leads" and request.method == "POST"))
+            )
+            if internal:
+                return JSONResponse(status_code=403, content={"detail": "Internal demo records are unavailable in public mode"})
+        return await call_next(request)
 
     @app.get("/api/health")
     def health():
@@ -182,7 +235,7 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
     @app.post("/api/leads", status_code=201)
     def create_lead(payload: LeadInput):
         record = payload.model_dump()
-        if record["area"] not in known_areas:
+        if record["area"] != "Not provided" and record["area"] not in known_areas:
             raise HTTPException(422, "Select a listed Singapore planning area")
         with session(path) as db:
             partner = None
@@ -195,17 +248,17 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
             model_version = scorer.model_version if score is not None else None
             db.execute(
                 """INSERT INTO leads (partner_id,referral_code,area,property_type,ac_type,ac_units,daily_hours,
-                   estimated_ac_spend,contact_name,contact_email,consent,qualification_status,qualification_reasons,
-                   stage,ml_score,model_version,data_kind,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                   estimated_ac_spend,contact_name,contact_email,contact_phone,enquiry_note,consent,qualification_status,qualification_reasons,
+                   stage,ml_score,model_version,data_kind,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                 (partner["id"] if partner else None, record["referral_code"], record["area"], record["property_type"],
                  record["ac_type"], record["ac_units"], record["daily_hours"], record["estimated_ac_spend"],
-                 record["contact_name"], record["contact_email"], int(record["consent"]), qualification["status"],
+                 record["contact_name"], record["contact_email"], record["contact_phone"], record["enquiry_note"], int(record["consent"]), qualification["status"],
                  json.dumps(qualification["reasons"]), "new", score, model_version, "synthetic submitted enquiry", now()),
             )
             lead_id = db.execute("SELECT last_insert_rowid()").fetchone()[0]
-            db.execute("INSERT INTO stage_events (lead_id,from_stage,to_stage,created_at) VALUES (?,?,?,?)", (lead_id, None, "new", now()))
+            db.execute("INSERT INTO stage_events (lead_id,from_stage,to_stage,reason,created_at) VALUES (?,?,?,?,?)", (lead_id, None, "new", "Homeowner submitted the enquiry form with contact consent.", now()))
             row = db.execute("SELECT * FROM leads WHERE id=?", (lead_id,)).fetchone()
-        return {**with_company(lead_from_row(row)), "area_context": area_lookup[record["area"]]["cluster_label"], "score_warning": scorer.warning(score)}
+        return {**with_company(lead_from_row(row)), "area_context": area_lookup.get(record["area"], {}).get("cluster_label"), "score_warning": scorer.warning(score)}
 
     @app.get("/api/leads")
     def list_leads(partner_id: str | None = None, stage: str | None = None):
@@ -229,7 +282,7 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
                 raise HTTPException(404, "Lead not found")
             events = [dict(event) for event in db.execute("SELECT * FROM stage_events WHERE lead_id=? ORDER BY id", (lead_id,))]
             drafts = [dict(draft) for draft in db.execute("SELECT * FROM followup_drafts WHERE lead_id=? ORDER BY id DESC", (lead_id,))]
-        return {**with_company(lead_from_row(row)), "stage_events": events, "drafts": drafts, "area_context": area_lookup[row["area"]]["cluster_label"], "score_warning": scorer.warning(row["ml_score"])}
+        return {**with_company(lead_from_row(row)), "stage_events": events, "drafts": drafts, "area_context": area_lookup.get(row["area"], {}).get("cluster_label"), "score_warning": scorer.warning(row["ml_score"])}
 
     @app.patch("/api/leads/{lead_id}/stage")
     def change_stage(lead_id: int, payload: StageInput):
@@ -239,9 +292,34 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
                 raise HTTPException(404, "Lead not found")
             if not stage_allowed(row["stage"], payload.stage, row["qualification_status"]):
                 raise HTTPException(422, f"Cannot move from {row['stage']} to {payload.stage} under demo pipeline rules")
+            reason = (payload.reason or "").strip()
+            if payload.stage != "qualified" and len(reason) < 10:
+                raise HTTPException(422, "Record at least 10 characters of evidence or an outcome reason")
+            if payload.stage == "qualified":
+                reason = "Initial screening passed or staff review confirmed suitability."
             db.execute("UPDATE leads SET stage=? WHERE id=?", (payload.stage, lead_id))
-            db.execute("INSERT INTO stage_events (lead_id,from_stage,to_stage,created_at) VALUES (?,?,?,?)", (lead_id, row["stage"], payload.stage, now()))
-        return {"id": lead_id, "from_stage": row["stage"], "stage": payload.stage}
+            db.execute("INSERT INTO stage_events (lead_id,from_stage,to_stage,reason,created_at) VALUES (?,?,?,?,?)", (lead_id, row["stage"], payload.stage, reason, now()))
+        return {"id": lead_id, "from_stage": row["stage"], "stage": payload.stage, "reason": reason}
+
+    @app.post("/api/leads/{lead_id}/review")
+    def approve_after_review(lead_id: int, payload: ReviewInput):
+        if payload.area not in known_areas:
+            raise HTTPException(422, "Confirm a listed Singapore planning area")
+        with session(path) as db:
+            row = db.execute("SELECT * FROM leads WHERE id=?", (lead_id,)).fetchone()
+            if not row:
+                raise HTTPException(404, "Lead not found")
+            if row["stage"] != "new" or row["qualification_status"] != "needs_review":
+                raise HTTPException(422, "Only new enquiries awaiting review can be approved")
+            reasons = ["Initial review flag: " + reason for reason in json.loads(row["qualification_reasons"])]
+            reasons.extend([
+                "Staff confirmed planning area: " + payload.area,
+                "Staff confirmed supported AC system: " + payload.ac_type.replace("_", " "),
+                "Staff review: " + payload.reason.strip(),
+            ])
+            db.execute("UPDATE leads SET area=?,ac_type=?,qualification_status='qualified',qualification_reasons=? WHERE id=?",
+                       (payload.area, payload.ac_type, json.dumps(reasons), lead_id))
+        return {"id": lead_id, "qualification_status": "qualified", "reason": payload.reason.strip()}
 
     @app.post("/api/leads/{lead_id}/draft", status_code=201)
     def create_draft(lead_id: int):
@@ -258,16 +336,37 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
     @app.patch("/api/drafts/{draft_id}")
     def edit_draft(draft_id: int, payload: DraftInput):
         with session(path) as db:
-            if not db.execute("SELECT id FROM followup_drafts WHERE id=?", (draft_id,)).fetchone():
+            existing = db.execute("SELECT id,status FROM followup_drafts WHERE id=?", (draft_id,)).fetchone()
+            if not existing:
                 raise HTTPException(404, "Draft not found")
+            if existing["status"] != "draft":
+                raise HTTPException(422, "Create a new draft to change a recorded sent message")
             db.execute("UPDATE followup_drafts SET message=?,updated_at=? WHERE id=?", (payload.message, now(), draft_id))
+            result = db.execute("SELECT * FROM followup_drafts WHERE id=?", (draft_id,)).fetchone()
+        return dict(result)
+
+    @app.post("/api/drafts/{draft_id}/mark-sent")
+    def mark_draft_sent(draft_id: int, payload: SentConfirmation):
+        if not payload.confirmed:
+            raise HTTPException(422, "Confirm that you sent this message outside the prototype")
+        with session(path) as db:
+            existing = db.execute("SELECT * FROM followup_drafts WHERE id=?", (draft_id,)).fetchone()
+            if not existing:
+                raise HTTPException(404, "Draft not found")
+            if existing["status"] != "draft":
+                raise HTTPException(422, "This message was already marked sent")
+            db.execute("UPDATE followup_drafts SET status='sent',sent_at=?,updated_at=? WHERE id=?",
+                       (now(), now(), draft_id))
             result = db.execute("SELECT * FROM followup_drafts WHERE id=?", (draft_id,)).fetchone()
         return dict(result)
 
     @app.get("/api/dashboard")
     def dashboard():
         with session(path) as db:
-            active_ids = {row["id"] for row in db.execute("SELECT id FROM partners WHERE active=1")}
+            active_partners = [dict(row) for row in db.execute("SELECT id,company_id FROM partners WHERE active=1")]
+            active_ids = {row["id"] for row in active_partners}
+            companies = {item["id"]: {"id": item["id"], "name": item["name"]} for item in candidates_by_id.values()}
+            companies.update({row["id"]: dict(row) for row in db.execute("SELECT id,name FROM prospect_companies")})
             visits = [row["partner_id"] for row in db.execute("SELECT partner_id FROM referral_events")]
             leads = [dict(row) for row in db.execute("SELECT id,partner_id,qualification_status,stage FROM leads")]
             booked_ids = {row["lead_id"] for row in db.execute("SELECT lead_id FROM stage_events WHERE to_stage='assessment_booked'")}
@@ -296,11 +395,11 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
             }
 
         company_breakdown = {
-            company_id: {
-                "company_name": candidate["name"],
-                **summary({partner_id for partner_id, mapped_id in SCENARIO_COMPANY_BY_PARTNER.items() if mapped_id == company_id}),
+            company["id"]: {
+                "company_name": company["name"],
+                **summary({partner["id"] for partner in active_partners if partner["company_id"] == company["id"]}),
             }
-            for company_id, candidate in candidates_by_id.items()
+            for company in companies.values()
         }
         return {
             **summary(None),

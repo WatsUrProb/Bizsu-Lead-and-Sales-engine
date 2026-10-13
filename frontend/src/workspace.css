@@ -10,3 +10,56 @@
 .pilot-insight li{margin:6px 0}
 .pilot-insight>small{display:block;color:#85899b;font-size:10px;line-height:1.5;margin-top:9px}
 @media(max-width:720px){.workspace-main,.ws-content,.ws-hero>div:first-child,.ws-trust>div{min-width:0}.ws-section-head{flex-direction:column;align-items:stretch}.ws-section-head .ws-button{align-self:flex-start}.topbar-status{display:none}.ws-hero p,.ws-trust small,.ws-section-head p{overflow-wrap:anywhere}.company-card{min-width:0}}
+.company-list{display:grid;gap:10px}
+.company-list-row{display:grid;grid-template-columns:minmax(160px,1.15fr) minmax(140px,1fr) minmax(135px,.85fr) 84px minmax(100px,.65fr) auto;align-items:center;gap:18px;background:#fff;border:1px solid #e9e8f0;border-radius:15px;padding:17px 20px;box-shadow:0 6px 18px #3b3b6808;transition:box-shadow .18s,transform .18s}
+.company-list-row:hover{box-shadow:0 11px 25px #3b3b6815;transform:translateY(-1px)}
+.company-row-identity{display:flex;align-items:center;gap:12px;min-width:0}
+.company-row-identity h3{font-size:14px;line-height:1.3;margin:0 0 4px;color:#292e43}
+.company-row-identity small{color:#999cad;font-size:10px}
+.company-row-fact{min-width:0}
+.company-row-fact small{display:block;color:#9a9bad;font-size:9px;font-weight:800;letter-spacing:.07em;margin-bottom:5px}
+.company-row-fact strong{display:block;color:#60677b;font-size:11px;font-weight:600;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.company-row-score strong{display:block;color:#5b50c6;font-size:20px;letter-spacing:-.04em;line-height:1}
+.company-row-score strong small{font-size:10px;color:#a7a2ca}
+.company-row-score span{display:block;color:#898c9e;font-size:9px;margin-top:5px}
+.company-row-status{justify-self:start;background:#f3f1fb;color:#6860ac;border-radius:20px;padding:6px 9px;font-size:10px;font-weight:800;white-space:nowrap}
+.company-list-row .ws-button{min-height:35px;font-size:11px}
+.discovery-pagination{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:22px;flex-wrap:wrap}
+.discovery-pagination button{border:1px solid #e3e1ee;background:#fff;color:#6e7084;border-radius:8px;min-width:34px;height:34px;padding:0 10px;font-size:11px;font-weight:750}
+.discovery-pagination button.current{background:#6258df;color:#fff;border-color:#6258df}
+.discovery-pagination button:disabled{opacity:.4;cursor:not-allowed}
+@media(max-width:1150px){.company-list-row{grid-template-columns:minmax(150px,1.2fr) minmax(130px,1fr) minmax(120px,.9fr) 80px auto}.company-row-status{display:none}}
+@media(max-width:900px){.company-list-row{grid-template-columns:minmax(150px,1fr) minmax(130px,1fr) 75px auto}.company-list-row .company-row-fact:nth-of-type(3){display:none}}
+@media(max-width:650px){.company-list-row{grid-template-columns:minmax(0,1fr) auto;gap:10px 14px;padding:15px}.company-row-identity{grid-column:1}.company-row-score{grid-column:2;grid-row:1;text-align:right}.company-row-fact{grid-column:1/-1}.company-list-row .company-row-fact:nth-of-type(3){display:block}.company-row-fact strong{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.company-list-row .ws-button{grid-column:1/-1}.discovery-pagination{gap:5px}}
+.manual-review{display:flex;align-items:end;gap:8px;flex-wrap:wrap;background:#f5f3ff;border-radius:10px;padding:12px;margin:14px 0}
+.manual-review label{display:grid;gap:6px;flex:1;min-width:180px;color:#625c83;font-size:11px;font-weight:750}
+.manual-review input{min-height:39px;border:1px solid #dcd8f2;border-radius:8px;padding:8px 10px;background:#fff;color:#30334d}
+.manual-review select{min-height:39px;border:1px solid #dcd8f2;border-radius:8px;padding:8px 10px;background:#fff;color:#30334d}
+.referral-detail{background:#f7f5ff;border-radius:12px;padding:18px!important;margin-top:20px!important;border-top:0!important}
+.referral-detail>strong{font-size:15px;color:#4c43ab}
+.referral-detail>p{font-size:11px;color:#74718f;line-height:1.5;margin:8px 0 10px}
+.enquiry-note{background:#f7f8fb;border-radius:9px;padding:12px;margin-top:12px;font-size:11px;color:#565e75}
+.enquiry-note p{white-space:pre-wrap;margin:6px 0 0;line-height:1.5}
+.stage-rule{background:#eeedff;border-radius:10px;padding:13px;color:#4f48ad;font-size:12px}
+.stage-rule p{margin:5px 0 0;line-height:1.5;color:#686586}
+.sample-caveat{background:#fff1e7;border-radius:8px;padding:10px;color:#8b5e43;font-size:11px;line-height:1.5}
+.stage-guide{margin-top:12px;color:#6b7183;font-size:11px;line-height:1.6}
+.stage-guide summary{cursor:pointer;color:#5b50bd;font-weight:750}
+.stage-guide ul{padding-left:18px}
+.stage-guide li{margin:5px 0}
+.event-list li>div{display:grid;gap:4px;min-width:0}
+.event-list li>div span{color:#768394;line-height:1.4}
+.event-list li>small{white-space:nowrap}
+.stage-update{background:#f8f8fc;border:1px solid #e9e8f2;border-radius:10px;padding:13px;margin-top:17px;display:grid;gap:10px}
+.stage-update label{display:grid;gap:6px;color:#5d6177;font-size:11px;font-weight:750}
+.stage-update select,.stage-update textarea{width:100%;border:1px solid #dcdeeb;border-radius:8px;padding:9px;background:#fff;color:#32384b}
+.stage-update p{margin:0;color:#777c8d;font-size:11px;line-height:1.5}
+.stage-update button{justify-self:start}
+.demo-referral-panel{background:#f7f5ff;border:1px solid #e8e3ff;border-radius:12px;padding:16px;margin:16px 0}
+.demo-referral-panel p{color:#74738b;font-size:11px;line-height:1.5;margin:0 0 13px}
+.demo-referral-panel label{display:grid;gap:7px;color:#64617c;font-size:11px;font-weight:750}
+.demo-referral-panel input{width:100%;min-height:38px;border:1px solid #dcd7f2;border-radius:8px;padding:8px;background:#fff;color:#3b3d58;font-size:11px}
+.draft-section .draft-actions{justify-content:flex-start;flex-wrap:wrap}
+.draft-section .draft-actions .disabled{opacity:.45;pointer-events:none}
+.sent-confirm{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #e8eaf0;margin-top:17px;padding-top:15px;color:#747c8c;font-size:11px}
+.sent-status{background:#eaf7ee;color:#267452;border-radius:8px;padding:10px;font-size:11px}
