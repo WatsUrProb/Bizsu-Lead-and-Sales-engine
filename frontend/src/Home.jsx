@@ -59,7 +59,7 @@ export default function Home({ partners, areas, navigate, onSubmitted }) {
   };
 
   return <div className="homeowner-page">
-    <header className="homeowner-header"><a className="homeowner-brand" href={internalDemo ? '/' : '/demo/form'} aria-label={internalDemo ? 'Back to Bizsu main page' : 'Bizsu home'}><span>B</span><strong>Bizsu</strong></a>{internalDemo ? <a className="homeowner-return" href="/">← Back to main page</a> : <span>Home comfort enquiry</span>}</header>
+    <header className="homeowner-header"><a className="homeowner-brand" href={internalDemo ? '/' : '/demo/form'} aria-label={internalDemo ? 'Back to Bizsu main page' : 'Bizsu home'}><img className="bizsu-logo" src="/images/bizsu-logo.webp" alt="Bizsu" /></a>{internalDemo ? <a className="homeowner-return" href="/">← Back to main page</a> : <span>Home comfort enquiry</span>}</header>
     <main className="homeowner-hero">
       <div className="homeowner-hero-image" role="img" aria-label="Modern home living room with a wall-mounted air conditioner" />
       <div className="homeowner-hero-inner">

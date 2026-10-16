@@ -40,7 +40,7 @@ export default function App() {
   if (page === 'demo-form') return demoError ? <div className="ws-state">{demoError}</div> : !demo?.partners || !demo?.areas ? <div className="ws-state">Loading form…</div> : <Home partners={demo.partners} areas={demo.areas} navigate={navigate} onSubmitted={refreshDemo}/>;
   return <div className="workspace-shell">
     <aside className="workspace-sidebar">
-      <button className="workspace-brand" onClick={() => navigate('discover')}><span className="brand-glyph">B</span><span><strong>Bizsu</strong><small>PARTNER WORKSPACE</small></span></button>
+      <button className="workspace-brand" onClick={() => navigate('discover')} aria-label="Bizsu partner workspace home"><img className="bizsu-logo" src="/images/bizsu-logo.webp" alt="Bizsu" /><small>PARTNER WORKSPACE</small></button>
       <div className="nav-caption">PARTNER ACQUISITION</div>
       <nav aria-label="Main navigation" className="workspace-nav">
         {[["discover","◈","Discover"],["pipeline","▦","Partner Pipeline"],["drafts","✉","Outreach drafts"]].map(([id,icon,label])=><button key={id} className={page===id?'current':''} onClick={()=>navigate(id)}><span aria-hidden="true">{icon}</span>{label}</button>)}
