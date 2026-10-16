@@ -33,6 +33,15 @@ def test_postgres_staff_routes_require_server_side_key(tmp_path, monkeypatch):
         assert client.get("/api/meta", headers={"X-Bizsu-Admin-Key": "private-test-key"}).status_code == 200
 
 
+def test_serverless_without_database_reports_configuration_error(tmp_path, monkeypatch):
+    monkeypatch.setenv("BIZSU_SERVERLESS", "1")
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    with TestClient(create_app(tmp_path / "serverless.db")) as client:
+        assert client.get("/api/health").status_code == 503
+        assert client.get("/api/health").json() == {"detail": "Database is not configured"}
+        assert not (tmp_path / "serverless.db").exists()
+
+
 def test_real_data_join_keeps_aggregate_level_and_suppressed_values():
     result = build()
     assert result["unit"].startswith("planning area")
