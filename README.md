@@ -4,6 +4,28 @@ A prototype for researching Singapore air-conditioning servicing partners, prepa
 
 The prototype does not send email or book appointments. Staff review and send drafts outside the app.
 
+## Screenshots
+
+Captured from the local prototype on 16 October 2026. The customer pipeline is empty after the sample-enquiry reset; the company list is research for prospective partners, not a list of confirmed Bizsu partners.
+
+### Partner discovery
+
+![Bizsu partner discovery screen with a search field, filters, and prospective company list](docs/screenshots/partner-discovery.png)
+
+**Annotations:** The left navigation separates partner and customer work. The company list supports searching, filtering, and opening a profile to review sources before preparing outreach.
+
+### Homeowner enquiry form
+
+![Bizsu homeowner form showing housing, planning area, and air-conditioning questions](docs/screenshots/homeowner-form.png)
+
+**Annotations:** The form begins with home and AC details, then asks for contact information in step two. The referral source shows whether a visitor came directly or through a partner link.
+
+### Customer pipeline
+
+![Bizsu customer pipeline showing zero enquiries, follow-ups, and pending assessments](docs/screenshots/customer-pipeline-empty.png)
+
+**Annotations:** Summary cards highlight new enquiries, reviews, due follow-ups, and assessments or quotes. Search and filters help staff find records as enquiries arrive; this screenshot shows the clean starting state.
+
 ## Watch the walkthrough
 
 [Watch the 2:56 Bizsu pitch walkthrough](public/videos/bizsu-client-pitch.mp4). It was recorded on 15 October 2026 with illustrative enquiries and an earlier interface. The current app starts with an empty customer pipeline.
