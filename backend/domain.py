@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from backend.product_copy import CUSTOMER_FEATURES
+
 STAGES = ["new", "qualified", "assessment_booked", "assessed", "quoted", "won", "lost"]
 NEXT_STAGE = {
     "new": {"qualified", "lost"},
@@ -62,9 +64,18 @@ def stage_allowed(current: str, next_stage: str, qualification_status: str) -> b
 
 def draft_message(lead: dict) -> str:
     name = lead["contact_name"]
-    area = lead["area"]
-    if lead["stage"] == "new":
-        return f"Hi {name}, thanks for your demo enquiry about your AC setup in {area}. We would review your details before proposing an assessment. This is a draft for human review only."
-    if lead["stage"] in {"qualified", "assessment_booked"}:
-        return f"Hi {name}, your demo enquiry has passed initial screening. We would confirm your AC configuration and discuss a suitable assessment time. This is a draft for human review only."
-    return f"Hi {name}, here is a draft follow-up about your demo enquiry in {area}. Any assessment, quote or outcome shown in this prototype is simulated."
+    location = f" in {lead['area']}" if lead.get("area") and lead["area"] != "Not provided" else ""
+    opening = f"Dear {name},\n\nThank you for your interest in Bizsu and for sharing details of your air-conditioning system{location}."
+    if lead["stage"] == "new" and lead["qualification_status"] == "needs_review":
+        next_step = ("We would be pleased to discuss arranging a physical assessment of your air-conditioning "
+                     "setup. Could you please share a convenient date and time and, if possible, confirm the type "
+                     "of system installed? Our team will review these details before confirming an appointment.")
+    elif lead["stage"] in {"new", "qualified"}:
+        next_step = ("We would be pleased to discuss a physical assessment of your air-conditioning setup. "
+                     "Please let us know a convenient time to speak so that we can explain the next steps.")
+    else:
+        next_step = ("I am following up on your enquiry. Please let us know if you have any questions or would "
+                     "like to discuss the next steps with our team.")
+    return (f"{opening}\n\n{CUSTOMER_FEATURES}\n\n"
+            f"{next_step}\n\n"
+            "Kind regards,\nBizsu Team")

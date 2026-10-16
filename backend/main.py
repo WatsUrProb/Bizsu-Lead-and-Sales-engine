@@ -5,7 +5,9 @@ from __future__ import annotations
 import json
 import os
 import re
+import secrets
 from contextlib import asynccontextmanager
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Literal
 
@@ -76,9 +78,18 @@ class StageInput(BaseModel):
 
 
 class ReviewInput(BaseModel):
-    area: str
-    ac_type: Literal["split", "multi_split"]
+    decision: Literal["potentially_compatible", "not_compatible", "need_more_information"] = "potentially_compatible"
+    area: str | None = None
+    ac_type: Literal["split", "multi_split"] | None = None
     reason: str = Field(min_length=10, max_length=500)
+
+
+class LeadActionInput(BaseModel):
+    assigned_to: str | None = Field(default=None, max_length=80)
+    next_action: str | None = Field(default=None, max_length=200)
+    follow_up_due_at: datetime | None = None
+    priority: Literal["low", "normal", "high"] = "normal"
+    internal_notes: str | None = Field(default=None, max_length=3000)
 
 
 class ReferralVisitInput(BaseModel):
@@ -99,7 +110,8 @@ class CandidateActionInput(BaseModel):
     outreach_draft: str = Field(max_length=3000)
 
 
-def create_app(db_path: Path | None = None, seed: bool = True, scorer: ConversionScorer | None = None) -> FastAPI:
+def create_app(db_path: Path | None = None, seed: bool = True, scorer: ConversionScorer | None = None,
+               seed_enquiries: bool = False) -> FastAPI:
     path = Path(db_path or os.environ.get("BIZSU_DB_PATH", DEFAULT_DB))
     area_data = json.loads((DATA / "processed" / "areas.json").read_text())
     cluster_data = json.loads((DATA / "processed" / "clusters.json").read_text())
@@ -108,7 +120,7 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
     candidates_by_id = {item["id"]: item for item in catalog["candidates"]}
 
     def with_company(record: dict) -> dict:
-        partner_id = record.get("partner_id") or record.get("id")
+        partner_id = record["partner_id"] if "partner_id" in record else record.get("id")
         company_id = record.get("company_id")
         company_name = None
         if partner_id:
@@ -134,7 +146,7 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
 
     @asynccontextmanager
     async def lifespan(_app: FastAPI):
-        initialize(path, seed=seed, scorer=scorer)
+        initialize(path, seed=seed, scorer=scorer, seed_enquiries=seed_enquiries)
         initialize_workspace(path)
         with session(path) as db:
             for partner_id, company_id in SCENARIO_COMPANY_BY_PARTNER.items():
@@ -147,6 +159,21 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
 
     @app.middleware("http")
     async def restrict_internal_records(request: Request, call_next):
+        if os.environ.get("VERCEL"):
+            if not os.environ.get("DATABASE_URL"):
+                return JSONResponse(status_code=503, content={"detail": "Database is not configured"})
+            route = request.url.path
+            public_form = os.environ.get("BIZSU_PUBLIC_FORM") == "1"
+            public = (route == "/api/health"
+                      or route == "/api/areas" and request.method == "GET"
+                      or route == "/api/partners" and request.method == "GET"
+                      or public_form and route == "/api/referral-visits" and request.method == "POST"
+                      or public_form and route == "/api/leads" and request.method == "POST")
+            if route.startswith("/api/") and not public:
+                expected = os.environ.get("BIZSU_ADMIN_KEY", "")
+                supplied = request.headers.get("x-bizsu-admin-key", "")
+                if not expected or not secrets.compare_digest(supplied, expected):
+                    return JSONResponse(status_code=401, content={"detail": "Staff access key required"})
         if os.environ.get("BIZSU_PUBLIC_MODE") == "1":
             route = request.url.path
             internal = (
@@ -162,7 +189,7 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
 
     @app.get("/api/health")
     def health():
-        return {"status": "ok", "mode": "local synthetic demo"}
+        return {"status": "ok", "mode": "supabase" if os.environ.get("DATABASE_URL") else "local demo"}
 
     @app.get("/api/meta")
     def meta():
@@ -257,6 +284,8 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
             )
             lead_id = db.execute("SELECT last_insert_rowid()").fetchone()[0]
             db.execute("INSERT INTO stage_events (lead_id,from_stage,to_stage,reason,created_at) VALUES (?,?,?,?,?)", (lead_id, None, "new", "Homeowner submitted the enquiry form with contact consent.", now()))
+            db.execute("INSERT INTO lead_activity (lead_id,kind,detail,created_at) VALUES (?,?,?,?)",
+                       (lead_id, "screening", "Initial screening: " + qualification["status"].replace("_", " ") + ". " + "; ".join(qualification["reasons"]), now()))
             row = db.execute("SELECT * FROM leads WHERE id=?", (lead_id,)).fetchone()
         return {**with_company(lead_from_row(row)), "area_context": area_lookup.get(record["area"], {}).get("cluster_label"), "score_warning": scorer.warning(score)}
 
@@ -281,8 +310,34 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
             if not row:
                 raise HTTPException(404, "Lead not found")
             events = [dict(event) for event in db.execute("SELECT * FROM stage_events WHERE lead_id=? ORDER BY id", (lead_id,))]
+            activity = [dict(event) for event in db.execute("SELECT * FROM lead_activity WHERE lead_id=? ORDER BY id", (lead_id,))]
             drafts = [dict(draft) for draft in db.execute("SELECT * FROM followup_drafts WHERE lead_id=? ORDER BY id DESC", (lead_id,))]
-        return {**with_company(lead_from_row(row)), "stage_events": events, "drafts": drafts, "area_context": area_lookup.get(row["area"], {}).get("cluster_label"), "score_warning": scorer.warning(row["ml_score"])}
+        return {**with_company(lead_from_row(row)), "stage_events": events, "activity": activity, "drafts": drafts, "area_context": area_lookup.get(row["area"], {}).get("cluster_label"), "score_warning": scorer.warning(row["ml_score"])}
+
+    @app.patch("/api/leads/{lead_id}/actions")
+    def update_lead_actions(lead_id: int, payload: LeadActionInput):
+        details = payload.model_dump()
+        for field in ("assigned_to", "next_action", "internal_notes"):
+            details[field] = (details[field] or "").strip() or None
+        due = details["follow_up_due_at"]
+        if due and due.tzinfo is None:
+            raise HTTPException(422, "Follow-up time must include a timezone")
+        due_value = due.astimezone(timezone.utc).isoformat(timespec="seconds") if due else None
+        with session(path) as db:
+            row = db.execute("SELECT * FROM leads WHERE id=?", (lead_id,)).fetchone()
+            if not row:
+                raise HTTPException(404, "Lead not found")
+            db.execute("""UPDATE leads SET assigned_to=?,next_action=?,follow_up_due_at=?,priority=?,internal_notes=? WHERE id=?""",
+                       (details["assigned_to"], details["next_action"], due_value, details["priority"], details["internal_notes"], lead_id))
+            changes = [label for column, label, value in (
+                ("assigned_to", "owner", details["assigned_to"]), ("next_action", "next action", details["next_action"]),
+                ("follow_up_due_at", "follow-up date", due_value), ("priority", "priority", details["priority"]),
+                ("internal_notes", "internal notes", details["internal_notes"]),
+            ) if (row[column] or None) != value]
+            if changes:
+                db.execute("INSERT INTO lead_activity (lead_id,kind,detail,created_at) VALUES (?,?,?,?)",
+                           (lead_id, "follow_up", "Updated " + ", ".join(changes) + ".", now()))
+        return {"id": lead_id, "updated": changes}
 
     @app.patch("/api/leads/{lead_id}/stage")
     def change_stage(lead_id: int, payload: StageInput):
@@ -298,28 +353,51 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
             if payload.stage == "qualified":
                 reason = "Initial screening passed or staff review confirmed suitability."
             db.execute("UPDATE leads SET stage=? WHERE id=?", (payload.stage, lead_id))
+            if payload.stage == "lost":
+                db.execute("UPDATE leads SET outcome_reason=? WHERE id=?", (reason, lead_id))
             db.execute("INSERT INTO stage_events (lead_id,from_stage,to_stage,reason,created_at) VALUES (?,?,?,?,?)", (lead_id, row["stage"], payload.stage, reason, now()))
         return {"id": lead_id, "from_stage": row["stage"], "stage": payload.stage, "reason": reason}
 
     @app.post("/api/leads/{lead_id}/review")
     def approve_after_review(lead_id: int, payload: ReviewInput):
-        if payload.area not in known_areas:
+        reason = payload.reason.strip()
+        if len(reason) < 10:
+            raise HTTPException(422, "Record at least 10 characters explaining the review decision")
+        if payload.area is not None and payload.area not in known_areas:
             raise HTTPException(422, "Confirm a listed Singapore planning area")
         with session(path) as db:
             row = db.execute("SELECT * FROM leads WHERE id=?", (lead_id,)).fetchone()
             if not row:
                 raise HTTPException(404, "Lead not found")
             if row["stage"] != "new" or row["qualification_status"] != "needs_review":
-                raise HTTPException(422, "Only new enquiries awaiting review can be approved")
-            reasons = ["Initial review flag: " + reason for reason in json.loads(row["qualification_reasons"])]
-            reasons.extend([
-                "Staff confirmed planning area: " + payload.area,
-                "Staff confirmed supported AC system: " + payload.ac_type.replace("_", " "),
-                "Staff review: " + payload.reason.strip(),
-            ])
-            db.execute("UPDATE leads SET area=?,ac_type=?,qualification_status='qualified',qualification_reasons=? WHERE id=?",
-                       (payload.area, payload.ac_type, json.dumps(reasons), lead_id))
-        return {"id": lead_id, "qualification_status": "qualified", "reason": payload.reason.strip()}
+                raise HTTPException(422, "Only new enquiries awaiting review can be reviewed")
+            area = payload.area or row["area"]
+            ac_type = payload.ac_type or row["ac_type"]
+            reviewed_at = now()
+            if payload.decision == "potentially_compatible":
+                if area not in known_areas:
+                    raise HTTPException(422, "Confirm a listed Singapore planning area")
+                if ac_type not in {"split", "multi_split"}:
+                    raise HTTPException(422, "Confirm a supported split or multi-split AC system")
+                eligibility = qualify({"area": area, "ac_type": ac_type, "ac_units": row["ac_units"], "daily_hours": row["daily_hours"]}, known_areas)
+                if eligibility["status"] != "qualified":
+                    raise HTTPException(422, "Eligibility requirements are not met: " + "; ".join(eligibility["reasons"]))
+                reasons = ["Initial review flag: " + item for item in json.loads(row["qualification_reasons"])]
+                reasons += ["Staff confirmed planning area: " + area, "Staff confirmed supported AC system: " + ac_type.replace("_", " "), "Staff review: " + reason]
+                db.execute("""UPDATE leads SET qualification_status='qualified',qualification_reasons=?,review_outcome=?,review_notes=?,reviewed_at=?,confirmed_area=?,confirmed_ac_type=? WHERE id=?""",
+                           (json.dumps(reasons), payload.decision, reason, reviewed_at, area, ac_type, lead_id))
+            elif payload.decision == "not_compatible":
+                db.execute("""UPDATE leads SET review_outcome=?,review_notes=?,reviewed_at=?,confirmed_area=?,confirmed_ac_type=?,stage='lost',outcome_reason=? WHERE id=?""",
+                           (payload.decision, reason, reviewed_at, payload.area, payload.ac_type, reason, lead_id))
+                db.execute("INSERT INTO stage_events (lead_id,from_stage,to_stage,reason,created_at) VALUES (?,?,?,?,?)",
+                           (lead_id, "new", "lost", reason, reviewed_at))
+            else:
+                due = row["follow_up_due_at"] or (datetime.now(timezone.utc) + timedelta(days=1)).isoformat(timespec="seconds")
+                db.execute("""UPDATE leads SET review_outcome=?,review_notes=?,reviewed_at=?,confirmed_area=?,confirmed_ac_type=?,next_action=?,follow_up_due_at=? WHERE id=?""",
+                           (payload.decision, reason, reviewed_at, payload.area, payload.ac_type, "Contact homeowner to confirm compatibility details", due, lead_id))
+            db.execute("INSERT INTO lead_activity (lead_id,kind,detail,created_at) VALUES (?,?,?,?)",
+                       (lead_id, "review", payload.decision.replace("_", " ").capitalize() + ": " + reason, reviewed_at))
+        return {"id": lead_id, "decision": payload.decision, "qualification_status": "qualified" if payload.decision == "potentially_compatible" else "needs_review", "reason": reason}
 
     @app.post("/api/leads/{lead_id}/draft", status_code=201)
     def create_draft(lead_id: int):
@@ -357,6 +435,8 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
                 raise HTTPException(422, "This message was already marked sent")
             db.execute("UPDATE followup_drafts SET status='sent',sent_at=?,updated_at=? WHERE id=?",
                        (now(), now(), draft_id))
+            db.execute("INSERT INTO lead_activity (lead_id,kind,detail,created_at) VALUES (?,?,?,?)",
+                       (existing["lead_id"], "follow_up", "Staff marked a follow-up message sent outside the prototype.", now()))
             result = db.execute("SELECT * FROM followup_drafts WHERE id=?", (draft_id,)).fetchone()
         return dict(result)
 

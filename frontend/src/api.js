@@ -1,7 +1,8 @@
 export async function api(path, options = {}) {
+  const adminKey = sessionStorage.getItem('bizsu-admin-key');
   const response = await fetch(`/api${path}`, {
     ...options,
-    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+    headers: { 'Content-Type': 'application/json', ...(adminKey ? { 'X-Bizsu-Admin-Key': adminKey } : {}), ...(options.headers || {}) },
   });
   const body = await response.json().catch(() => ({}));
   if (!response.ok) {

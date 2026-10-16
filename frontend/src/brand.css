@@ -1,0 +1,154 @@
+/* Bizsu's published palette and type pairing, adapted for the app's dense UI. */
+:root {
+  --bizsu-blue: #074279;
+  --bizsu-blue-dark: #06345f;
+  --bizsu-ink: #242c4c;
+  --bizsu-aqua: #1fccd7;
+  --bizsu-teal: #0a5a5f;
+  --bizsu-pale: #f2f7ff;
+  --bizsu-aqua-pale: #e1f8ff;
+  --bizsu-line: #d9e7f0;
+  font-family: Nunito, ui-sans-serif, system-ui, sans-serif;
+  color: var(--bizsu-ink);
+  background: #f7faff;
+}
+
+body, .homeowner-page { font-family: Nunito, ui-sans-serif, system-ui, sans-serif; color: var(--bizsu-ink); }
+body { background: #f7faff; }
+h1, h2, h3, h4, h5, h6,
+.workspace-brand strong, .homeowner-brand strong, .brand strong,
+.ws-button, .cp-primary, .cp-secondary, .cp-open, .homeowner-primary,
+.workspace-nav button, .cp-top-tabs button, .cp-detail-tabs button {
+  font-family: Montserrat, ui-sans-serif, system-ui, sans-serif;
+}
+button { font-family: Montserrat, ui-sans-serif, system-ui, sans-serif; }
+input, select, textarea { font-family: Nunito, ui-sans-serif, system-ui, sans-serif; }
+a { color: var(--bizsu-blue); }
+:where(button, a, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--bizsu-aqua);
+  outline-offset: 2px;
+}
+
+/* Partner workspace */
+.workspace-sidebar, .workspace-topbar { background: #fff; border-color: var(--bizsu-line); }
+.workspace-brand, .workspace-brand strong, .ws-hero h1, .ws-page-head h1,
+.ws-section-head h2, .profile-head h2, .composer-intro h2, .company-form h2 { color: var(--bizsu-ink); }
+.brand-glyph { background: var(--bizsu-blue); box-shadow: 0 7px 15px #07427930; font-family: Montserrat, sans-serif; }
+.workspace-brand small, .nav-caption { color: #647b90; }
+.workspace-nav button { color: #50667a; }
+.workspace-nav button > span { color: #668ca5; }
+.workspace-nav button:hover, .workspace-nav button.current { background: var(--bizsu-aqua-pale); color: var(--bizsu-blue); }
+.workspace-nav button.current > span { color: var(--bizsu-blue); }
+.workspace-nav em { background: var(--bizsu-aqua-pale); color: var(--bizsu-blue); }
+.sidebar-note { background: var(--bizsu-pale); color: #52697c; }
+.topbar-status i { background: var(--bizsu-aqua); }
+.ws-hero { background: linear-gradient(110deg, #e1f8ff 0%, #f2f7ff 62%, #fff 100%); }
+.ws-eyebrow, .ws-hero h1 em, .trust-icon, .ws-section-head h2 span { color: var(--bizsu-blue); }
+.hero-steps b, .art-circle { color: var(--bizsu-blue); }
+.art-card { border-color: var(--bizsu-line); box-shadow: 0 18px 40px #0742791f; }
+.art-line { background: #d4e6f4; }
+.art-line.short { background: #72cddc; }
+.art-circle, .trust-icon { background: var(--bizsu-aqua-pale); }
+.ws-button.primary, .card-actions button:last-child { background: var(--bizsu-blue); color: #fff; box-shadow: 0 6px 14px #07427924; }
+.ws-button.primary:hover, .card-actions button:last-child:hover { background: var(--bizsu-blue-dark); }
+.ws-button.secondary, .card-actions button, .card-arrow,
+.kanban-actions button, .kanban-actions select { background: var(--bizsu-aqua-pale); color: var(--bizsu-blue); }
+.ws-button.secondary:hover, .card-actions button:hover, .card-arrow:hover { background: #c9f1fa; }
+.filter-chips button.active, .company-avatar, .profile-score,
+.template-tag, .ws-feedback { background: var(--bizsu-aqua-pale); color: var(--bizsu-blue); border-color: #a6dce9; }
+.filter-chips button.clear-chip, .company-card .card-bottom strong,
+.inline-button, .kanban-meta, .draft-list-row > span:last-child,
+.profile-score strong, .pilot-insight h3 span, .company-row-score strong,
+.stage-guide summary, .kanban-referral button { color: var(--bizsu-blue); }
+.discovery-pagination button.current { background: var(--bizsu-blue); border-color: var(--bizsu-blue); color: #fff; }
+.manual-review { background: var(--bizsu-pale); }
+.manual-review label, .manual-review .review-help { color: #526b7e; }
+.manual-review input, .manual-review select { border-color: var(--bizsu-line); }
+.kanban-column { background: #edf5fb; border-color: var(--bizsu-line); }
+.company-card, .company-list-row, .ws-trust, .kanban-card,
+.composer-controls, .composer-preview, .outreach-panel { border-color: var(--bizsu-line); }
+.pilot-insight, .facts-box, .weights-panel { background: var(--bizsu-pale); border-color: var(--bizsu-line); }
+.facts-box b { color: var(--bizsu-blue); }
+.drawer-backdrop { background: #062a4a73; }
+
+/* Outreach and customer pipeline */
+.outreach-controls, .outreach-panel, .cp-review { background: #fafdff; }
+.outreach-panel label, .cp-filters label, .cp-detail-body label, .cp-performance label { color: #526b7e; }
+.outreach-panel input:focus, .outreach-panel select:focus, .outreach-panel textarea:focus,
+.cp-filters input:focus, .cp-filters select:focus, .cp-detail-body input:focus,
+.cp-detail-body select:focus, .cp-detail-body textarea:focus, .cp-performance select:focus {
+  border-color: var(--bizsu-blue); box-shadow: 0 0 0 3px #1fccd733;
+}
+.outreach-provenance, .outreach-site-link, .outreach-facts a,
+.outreach-insight summary, .outreach-facts summary { color: var(--bizsu-blue); }
+.outreach-method, .outreach-facts, .outreach-insight { background: var(--bizsu-pale); color: var(--bizsu-blue); border-color: var(--bizsu-line); }
+.cp-page, .cp-header h1, .cp-section-head h2 { color: var(--bizsu-ink); }
+.cp-eyebrow, .cp-summary-card strong, .cp-funnel strong,
+.cp-clear, .cp-text-button, .cp-rules summary, .cp-next small, .cp-next button { color: var(--bizsu-blue); }
+.cp-demo { background: var(--bizsu-aqua-pale); color: var(--bizsu-blue); border-color: #b3e9f1; }
+.cp-top-tabs button.active, .cp-detail-tabs button.active { color: var(--bizsu-blue); border-color: var(--bizsu-aqua); }
+.cp-summary-card:hover, .cp-summary-card.active, .cp-enquiry:hover, .cp-enquiry.selected { border-color: #86c9dc; background: #f8fdff; }
+.cp-summary-card, .cp-list-section, .cp-performance, .cp-enquiry,
+.cp-detail-body section, .cp-rules { border-color: var(--bizsu-line); }
+.cp-avatar { background: var(--bizsu-aqua-pale); color: var(--bizsu-blue); }
+.cp-open, .cp-secondary, .cp-close, .cp-mobile-filter { background: var(--bizsu-aqua-pale); color: var(--bizsu-blue); border-color: #b3e9f1; }
+.cp-open:hover, .cp-secondary:hover { background: #c9f1fa; }
+.cp-primary { background: var(--bizsu-blue); color: #fff; }
+.cp-primary:hover { background: var(--bizsu-blue-dark); }
+.cp-view-toggle, .cp-column, .cp-funnel > div, .cp-note, .cp-next { background: var(--bizsu-pale); border-color: var(--bizsu-line); }
+.cp-view-toggle button.active { color: var(--bizsu-blue); }
+.cp-next { background: linear-gradient(110deg, #e1f8ff, #f2f7ff); }
+.cp-timeline li { border-color: #b9dbe9; }
+.cp-timeline-dot { background: var(--bizsu-blue); }
+
+/* Homeowner enquiry */
+.homeowner-page { background: #f7faff; }
+.homeowner-header { border-bottom: 1px solid var(--bizsu-line); }
+.homeowner-brand { color: var(--bizsu-ink); }
+.homeowner-brand span { background: var(--bizsu-blue); font-family: Montserrat, sans-serif; }
+.homeowner-return, .homeowner-kicker, .homeowner-reference strong,
+.homeowner-demo-link button, .homeowner-text-button { color: var(--bizsu-blue); }
+.homeowner-return:hover { background: var(--bizsu-aqua-pale); }
+.homeowner-hero::before { background: linear-gradient(90deg, #062a4ab3 0%, #062a4a45 52%, #062a4a94 100%); }
+.homeowner-copy > span { color: #bbf5f8; }
+.homeowner-card { box-shadow: 0 25px 65px #062a4a40; }
+.homeowner-source, .homeowner-reference { background: var(--bizsu-pale); color: #526b7e; }
+.homeowner-source strong { color: var(--bizsu-blue); }
+.homeowner-progress span.active, .homeowner-progress span.done,
+.homeowner-primary { background: var(--bizsu-blue); color: #fff; }
+.homeowner-primary { box-shadow: 0 7px 17px #07427935; }
+.homeowner-primary:hover { background: var(--bizsu-blue-dark); }
+.homeowner-consent input { accent-color: var(--bizsu-blue); }
+.homeowner-fields input:focus, .homeowner-fields select:focus,
+.homeowner-fields textarea:focus { border-color: var(--bizsu-blue); box-shadow: 0 0 0 3px #1fccd733; }
+.homeowner-success-icon { background: var(--bizsu-aqua-pale); color: var(--bizsu-blue); }
+.homeowner-footer a { color: var(--bizsu-blue); }
+
+/* Legacy demo surfaces still reachable in the workspace. */
+.site-header, .company-scenario { background: var(--bizsu-blue); }
+.brand-mark { background: var(--bizsu-aqua); color: var(--bizsu-blue-dark); font-family: Montserrat, sans-serif; }
+.site-header nav button:hover, .site-header nav button.active { background: var(--bizsu-aqua); color: var(--bizsu-blue-dark); }
+.page-intro { background: linear-gradient(115deg, #e1f8ff, #f2f7ff 65%, #fff); }
+.page-intro h1, .section-heading h2, .partner-detail h3 { color: var(--bizsu-blue); }
+.page-intro h1 em, .eyebrow, .card-kicker, .score-feature strong { color: var(--bizsu-teal); }
+.button.primary { background: var(--bizsu-blue); color: #fff; box-shadow: 0 8px 20px #0742792b; }
+.button.primary:hover { background: var(--bizsu-blue-dark); }
+.button.secondary { background: var(--bizsu-aqua-pale); color: var(--bizsu-blue); }
+.partner-row.selected { border-color: #86c9dc; background: #f0fbff; }
+.partner-score, .subtle-tag { background: var(--bizsu-aqua-pale); color: var(--bizsu-blue); border-color: #b3e9f1; }
+.funnel-summary strong, .funnel-steps strong { font-family: Montserrat, sans-serif; }
+
+@media (max-width: 900px) {
+  .homeowner-hero::before { background: linear-gradient(180deg, #062a4ab3, #062a4a47 35%, #062a4a85); }
+}
+
+.staff-gate { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: linear-gradient(135deg, #e1f8ff, #f2f7ff); }
+.staff-gate form { width: min(420px, 100%); display: grid; gap: 16px; padding: 36px; border-radius: 18px; background: #fff; box-shadow: 0 18px 55px #0742791f; }
+.staff-gate-label { color: var(--bizsu-blue); font: 700 11px Montserrat, sans-serif; letter-spacing: .12em; }
+.staff-gate h1 { margin: 0; font-size: 30px; }
+.staff-gate p { margin: 0; color: #526b7e; }
+.staff-gate label { display: grid; gap: 7px; font-weight: 700; }
+.staff-gate input { width: 100%; min-height: 44px; border: 1px solid var(--bizsu-line); border-radius: 8px; padding: 10px 12px; }
+.staff-gate button { min-height: 44px; border: 0; border-radius: 8px; color: #fff; background: var(--bizsu-blue); font-weight: 700; }
+.staff-gate button:disabled { opacity: .6; }
+.staff-gate .staff-gate-error { color: #a23333; font-size: 13px; }

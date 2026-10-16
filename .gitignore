@@ -9,3 +9,9 @@ __pycache__/
 *.db-wal
 agents-*.zip
 .agents */
+.env
+.env.*
+!.env.example
+.vercel/
+.DS_Store
+/videos/

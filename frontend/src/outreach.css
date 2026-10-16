@@ -1,0 +1,36 @@
+.outreach-studio{min-width:0}
+.outreach-layout{display:grid;grid-template-columns:minmax(230px,.85fr) minmax(0,1.15fr);gap:16px}
+.outreach-panel{min-width:0;border:1px solid #e9e7f2;background:#fcfcff;border-radius:14px;padding:19px;display:grid;align-content:start;gap:13px}
+.outreach-controls{background:#faf9ff}
+.outreach-panel label{display:grid;gap:6px;color:#666b80;font-size:11px;font-weight:750}
+.outreach-panel input,.outreach-panel select,.outreach-panel textarea{width:100%;min-width:0;border:1px solid #deddea;border-radius:9px;padding:10px 11px;background:#fff;color:#303449;font-size:12px;outline:0}
+.outreach-panel textarea{resize:vertical;line-height:1.5}
+.outreach-panel input:focus,.outreach-panel select:focus,.outreach-panel textarea:focus{border-color:#9288e6;box-shadow:0 0 0 3px #eeeaff}
+.outreach-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.outreach-heading strong{font-size:12px;color:#30354a}
+.outreach-heading .ws-button{min-height:34px;padding:8px 10px;font-size:10px}
+.outreach-hint{color:#85899c;font-size:10px;line-height:1.5;margin:0}
+.outreach-optional{font-weight:500;color:#9b9db0}
+.outreach-provenance{color:#736e9a;font-size:10px;line-height:1.45}
+.outreach-provenance a,.outreach-site-link,.outreach-facts a{color:#5b50c4;text-underline-offset:2px}
+.outreach-site-link{font-size:11px;font-weight:700}
+.outreach-divider{height:1px;background:#e9e7f2;margin:2px 0}
+.outreach-method{justify-self:start;border-radius:30px;background:#eeeaff;color:#5e52c6;padding:6px 10px;font-size:10px;font-weight:800}
+.outreach-settings{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}
+.outreach-settings .ws-button{grid-column:1/-1;justify-self:start}
+.outreach-actions{display:flex;gap:7px;flex-wrap:wrap}
+.outreach-actions .ws-button{font-size:11px;padding:9px 11px}
+.outreach-preview>small{color:#9295a7;font-size:10px;line-height:1.5}
+.outreach-facts{background:#f4f2ff;border-radius:10px;padding:12px;color:#68647f;font-size:11px}
+.outreach-facts summary{cursor:pointer;font-weight:800;color:#5a4db9}
+.outreach-facts ul{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:9px}
+.outreach-facts li{display:grid;gap:3px}
+.outreach-facts small{color:#8e8ba1}
+.outreach-studio>.ws-feedback{margin-top:14px}
+.outreach-insight{background:#f8f6ff;border:1px solid #ebe7ff;border-radius:12px;padding:16px;margin:16px 0}
+.outreach-insight p{color:#686d80;font-size:11px;line-height:1.5;margin:8px 0}
+.outreach-insight details{font-size:11px;color:#676d80}
+.outreach-insight summary{cursor:pointer;font-weight:750;color:#5b50c4}
+.outreach-insight ul{padding-left:18px}
+@media(max-width:850px){.outreach-layout{grid-template-columns:1fr}}
+@media(max-width:480px){.outreach-settings{grid-template-columns:1fr}.outreach-heading{align-items:start;flex-direction:column}}

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 from contextlib import contextmanager
 from datetime import datetime, timezone
@@ -27,6 +28,9 @@ def now() -> str:
 
 
 def connect(path: Path = DEFAULT_DB) -> sqlite3.Connection:
+    if url := os.environ.get("DATABASE_URL"):
+        from backend.postgres import Connection
+        return Connection(url)
     path.parent.mkdir(parents=True, exist_ok=True)
     connection = sqlite3.connect(path)
     connection.row_factory = sqlite3.Row
@@ -68,6 +72,10 @@ CREATE TABLE IF NOT EXISTS stage_events (
  id INTEGER PRIMARY KEY AUTOINCREMENT, lead_id INTEGER NOT NULL REFERENCES leads(id),
  from_stage TEXT, to_stage TEXT NOT NULL, reason TEXT, created_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS lead_activity (
+ id INTEGER PRIMARY KEY AUTOINCREMENT, lead_id INTEGER NOT NULL REFERENCES leads(id),
+ kind TEXT NOT NULL, detail TEXT NOT NULL, created_at TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS followup_drafts (
  id INTEGER PRIMARY KEY AUTOINCREMENT, lead_id INTEGER NOT NULL REFERENCES leads(id),
  message TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'draft', created_at TEXT NOT NULL,
@@ -84,10 +92,12 @@ CREATE TABLE IF NOT EXISTS candidate_actions (
 );
 CREATE INDEX IF NOT EXISTS leads_partner_stage ON leads(partner_id, stage);
 CREATE INDEX IF NOT EXISTS stage_events_lead ON stage_events(lead_id);
+CREATE INDEX IF NOT EXISTS lead_activity_lead ON lead_activity(lead_id);
 """
 
 
-def initialize(path: Path = DEFAULT_DB, seed: bool = True, scorer: ConversionScorer | None = None) -> None:
+def initialize(path: Path = DEFAULT_DB, seed: bool = True, scorer: ConversionScorer | None = None,
+               seed_enquiries: bool = False) -> None:
     with session(path) as connection:
         connection.executescript(SCHEMA)
         if "company_id" not in {row["name"] for row in connection.execute("PRAGMA table_info(partners)")}:
@@ -97,6 +107,14 @@ def initialize(path: Path = DEFAULT_DB, seed: bool = True, scorer: ConversionSco
             connection.execute("ALTER TABLE leads ADD COLUMN contact_phone TEXT")
         if "enquiry_note" not in {row["name"] for row in connection.execute("PRAGMA table_info(leads)")}:
             connection.execute("ALTER TABLE leads ADD COLUMN enquiry_note TEXT")
+        lead_columns = {row["name"] for row in connection.execute("PRAGMA table_info(leads)")}
+        for column in (
+            "assigned_to", "next_action", "follow_up_due_at", "priority", "outcome_reason",
+            "internal_notes", "review_outcome", "review_notes", "reviewed_at",
+            "confirmed_area", "confirmed_ac_type",
+        ):
+            if column not in lead_columns:
+                connection.execute(f"ALTER TABLE leads ADD COLUMN {column} TEXT")
         if "reason" not in {row["name"] for row in connection.execute("PRAGMA table_info(stage_events)")}:
             connection.execute("ALTER TABLE stage_events ADD COLUMN reason TEXT")
         if "sent_at" not in {row["name"] for row in connection.execute("PRAGMA table_info(followup_drafts)")}:
@@ -104,12 +122,12 @@ def initialize(path: Path = DEFAULT_DB, seed: bool = True, scorer: ConversionSco
         if seed and connection.execute("SELECT COUNT(*) FROM partners").fetchone()[0] == 0:
             for partner in DEMO_PARTNERS:
                 connection.execute(
-                    "INSERT INTO partners (id,name,description,customer_focus,service_areas,services,engagement_fit,referral_code,source_notes,active) VALUES (?,?,?,?,?,?,?,?,?,1)",
+                    "INSERT OR IGNORE INTO partners (id,name,description,customer_focus,service_areas,services,engagement_fit,referral_code,source_notes,active) VALUES (?,?,?,?,?,?,?,?,?,1)",
                     (partner["id"], partner["name"], partner["description"], partner["customer_focus"],
                      json.dumps(partner["service_areas"]), json.dumps(partner["services"]),
                      partner["engagement_fit"], partner["referral_code"], "Fictional demo partner; no real company facts"),
                 )
-        if seed and connection.execute("SELECT COUNT(*) FROM leads").fetchone()[0] == 0:
+        if seed and seed_enquiries and connection.execute("SELECT COUNT(*) FROM leads").fetchone()[0] == 0:
             records = [row for row in json.loads((ROOT / "data" / "processed" / "synthetic_training.json").read_text()) if row["ac_type"] == "split"][:12]
             scorer = scorer or ConversionScorer()
             for index, record in enumerate(records, start=1):
@@ -140,7 +158,7 @@ def initialize(path: Path = DEFAULT_DB, seed: bool = True, scorer: ConversionSco
                 for step in path:
                     connection.execute("INSERT INTO stage_events (lead_id,from_stage,to_stage,reason,created_at) VALUES (?,?,?,?,?)", (lead_id, previous, step, "Illustrative seeded stage; no real assessment, quote, or sale.", now()))
                     previous = step
-        if seed:
+        if seed and seed_enquiries:
             # Backfill earlier local demo databases created before seeded visits were added.
             for row in connection.execute("SELECT id,partner_id FROM leads WHERE data_kind='synthetic seeded enquiry' AND partner_id IS NOT NULL"):
                 connection.execute("INSERT OR IGNORE INTO referral_events (partner_id,session_id,created_at) VALUES (?,?,?)", (row["partner_id"], f"seed-lead-{row['id']}", now()))

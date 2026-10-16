@@ -1,71 +1,55 @@
-# Bizsu Partner Workspace
+# Bizsu Partner and Customer Pipeline
 
-A local hackathon prototype for finding potential Singapore aircon referral partners. Staff can inspect sourced company evidence, shortlist prospects, draft company-specific proposal emails, and track actual recruitment stages. The separate referral and sales demo contains fictional data.
+A prototype for researching Singapore air-conditioning servicing partners, preparing reviewable outreach, and following attributed homeowner enquiries. Company profiles come from public research. Referral partners, visits, enquiry outcomes, and any walkthrough figures are simulated; no listed company has agreed to partner with Bizsu.
 
-**The 22 listed companies are prospects, not confirmed Bizsu partners.** Twenty came from the supplied `data/Bizsu_aircon_partner_prospects.pdf`; two were added from the newer sourced catalogue. Eight have separate pilot research reviewed through 12 Oct 2026. “Unverified” means the research did not establish the attribute. Published maintenance packages do not prove customer retention or partnership interest.
+The prototype does not send email or book appointments. Staff review and send drafts outside the app.
 
-## Start locally
+## Watch the walkthrough
 
-Use Node.js 22+ and Python 3.13. No LLM key or external service is required.
+[Watch the 2:56 Bizsu pitch walkthrough](public/videos/bizsu-client-pitch.mp4). It was recorded on 15 October 2026 with illustrative enquiries and an earlier interface. The current app starts with an empty customer pipeline.
+
+## Run locally
+
+Use Node.js 22+ and Python 3.13. Install dependencies:
 
 ```bash
 python3.13 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
-npm install
+npm ci
 ```
 
-In separate terminals:
+Start FastAPI and Vite in separate terminals:
 
 ```bash
-.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8000
+.venv/bin/python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
 npm run dev -- --port 5173
 ```
 
-Open **http://127.0.0.1:5173/**. Vite proxies `/api` to FastAPI. SQLite data is stored at `data/demo.db`. Set `BIZSU_DB_PATH` to a different local file to use a separate database. Existing databases are migrated in place; the seed import uses `INSERT OR IGNORE` and does not overwrite staff edits.
+Open <http://127.0.0.1:5173/>. The API creates an ignored `data/demo.db` on first run. It seeds fictional referral sources and a research snapshot of potential partner companies, **but no sample enquiries**. Submit fictional contact details through `/demo/form` to try the customer pipeline. Saved drafts remain manual; nothing is sent.
 
-## 90-second demonstration
+The local database is not committed. To reset an existing local demo, back it up and clear `leads`, `stage_events`, `lead_activity`, `followup_drafts`, and `referral_events`. The current local copy was reset before this release. The `seed_enquiries=True` option exists only for explicit test and presentation fixtures.
 
-1. On **Discover**, search for a company such as **81Aircon**. Its card gives a short service summary and published-service fit.
-2. Open the company. Inspect the source and unknowns in **Evidence and unknowns**. The score is a weighted business rubric, not a prediction of willingness to partner.
-3. Click **Shortlist**. Go to **Pipeline** to see the card move to Shortlisted.
-4. Open **Generate tailored email**. Change tone or partnership angle, generate a draft, edit a sentence, and save it.
-5. Return to the profile or **Outreach drafts** to find the saved copy. It remains Shortlisted until someone explicitly confirms actual outreach.
-6. In Pipeline, use **Move to…** to record later stages. Contacted and Onboarded each require explicit confirmation.
+## Deploy to Vercel with Supabase
 
-## Homeowner and customer demo
+The frontend is a Vite app; `api/index.py` exposes FastAPI as a Vercel Python Function. The catch-all rewrite in `vercel.json` supports direct links to the SPA routes. The deployment build enables the staff workspace and shows a staff-key prompt before it loads.
 
-Open **http://127.0.0.1:5173/demo/form** to try the two-step homeowner form. For attribution, use a demo partner referral URL with `?ref=partner001` (or another code returned by `/api/partners`). The form keeps the code in the URL and sends it with the enquiry; the response includes the partner ID, referral code and enquiry ID. Ordinary valid email addresses are accepted. The header's **Back to main page** link returns to Partner Discovery in the internal demo. The success screen's **Internal demo only** link opens that exact enquiry in the Customer Pipeline.
+1. Create a Supabase project in an appropriate region. Copy its **Transaction pooler** connection URI from **Connect**. Use the URI as the Vercel `DATABASE_URL` environment variable. The server connects over TLS; never use a browser-visible `VITE_` variable for this credential.
+2. Generate a long random value and set it as `BIZSU_ADMIN_KEY` in Vercel. Share it only with staff who may view enquiry contact details. The key is checked by the API and kept in browser session storage for the current tab. Leave `BIZSU_PUBLIC_FORM` unset or `0` for a staff-only demo.
+3. Import this repository into Vercel with the root directory set to the repository root. The committed `vercel.json` builds the frontend and routes `/api/*` to FastAPI. Pin Python 3.13 using `.python-version`.
+4. Deploy a preview first. Check `/api/health`, unlock the workspace, verify the empty enquiry list, submit a fictional enquiry, refresh, and confirm that it remains. Review access before promoting to production.
 
-The first form step asks for housing type, planning area, AC system type, unit count, daily use and an optional enquiry note. The backend's stated screening rules use area, system type and completeness. A supported setup can be marked Qualified by staff; uncertain or unsupported setups stay at New until a staff review records why they can proceed. Optional phone numbers and notes persist in SQLite; existing databases receive the new columns automatically.
+The first API startup creates the required tables in Supabase Postgres and seeds only fictional referral sources and sourced company profiles. All mutable workspace records, including enquiries, drafts and stage history, use the same Supabase database when `DATABASE_URL` is set. Vercel's temporary filesystem is never used for customer records.
 
-The Customer Pipeline identifies the referral company, code and demo partner ID for each attributed enquiry. Form submissions are separated from seeded sample journeys. New submissions always begin at New, even if initial screening passes. Moving to later stages requires a recorded reason: an agreed appointment, completed assessment, issued quote, customer acceptance, or loss reason. Seeded stages remain explicitly labelled illustrative because no real events support them.
+For a public homeowner form, set **both** `BIZSU_PUBLIC_FORM=1` and `VITE_PUBLIC_FORM=true` in Vercel and redeploy. Do this only after Bizsu has reviewed its privacy notice, consent text, retention policy, and anti-abuse controls for real enquiries. The public form does not grant access to saved enquiries; staff access still requires the key.
 
-From any company profile in Partner Discovery, staff can create a **demo referral link** and try the homeowner form. The link is stable in SQLite and keeps that company's name on the resulting enquiry, but does not move the company to Contacted or Onboarded. In the Customer Pipeline, Lost is never preselected. A follow-up can be saved, copied, or opened in an email app; staff explicitly mark it sent only after sending it outside the prototype. This message status does not change the customer stage.
-
-Partner Discovery shows five companies per page. Search, filters and sorting apply to the full company list first. The selected page and search state remain when a company profile is opened and closed.
-
-The hero uses a locally stored [Pexels photograph by Max Vakhtbovych](https://www.pexels.com/photo/interior-of-modern-apartment-living-room-6588599/) showing a modern apartment living room and wall-mounted air conditioner. It represents the residential use case and is not presented as a photographed Singapore property. No approved Bizsu product image was present in this repository.
-
-For a public form deployment, set `BIZSU_PUBLIC_MODE=1` on the API. This disables customer record, dashboard, draft, and partner workspace endpoints while keeping enquiry submission available. Production frontend builds show only the homeowner form unless `VITE_INTERNAL_DEMO=true` is explicitly set at build time. Staff access beyond this local demo still requires a separate authenticated deployment.
-
-The email composer uses a deterministic template grounded in the selected record. It shows the generation method and facts used. It never sends an email. A potential referral commission is presented only as subject to discussion and agreement; installation collaboration requires technical approval.
-
-## Data and design
-
-- `data/partner_prospects.json` is the original 20-company snapshot transcribed from the supplied PDF. `data/company_candidates.json` adds pilot recommendations and source links for eight companies, including two not in the PDF. Existing staff edits and pipeline stages are preserved when the catalogue is loaded.
-- Staff can add and edit companies through the interface. Company, pipeline, event, settings, and draft records persist in SQLite.
-- Fit starts with residential relevance 35%, recurring maintenance 30%, geographic coverage 20%, and installation 15%. Staff can edit and save weights that sum to 100%. Unverified attributes contribute no points.
-- Discover keeps the same cards and profile flow. Use **Pilot reviewed** or **Sort: pilot priority** to find the eight researched recommendations. Pilot rank is an internal outreach suggestion, separate from the adjustable published-service fit score. It does not imply interest or endorsement.
-- **Homeowner form** and **Customer pipeline** under **Customer acquisition** retain synthetic sample journeys alongside locally submitted enquiries. All sample referrals and outcomes are fictional; the real companies did not supply them.
-- The synthetic conversion model is optional. If its local artifact or model card cannot be loaded, or prediction fails, enquiries still save and rule-based screening continues. Scores and model versions are left empty rather than invented.
+The current project has no Supabase credentials in Git. Do not commit `.env` files or connection strings.
 
 ## Checks
 
 ```bash
 .venv/bin/python -m pytest -q
+npm test
 npm run build
 ```
 
-The workspace tests cover the 22-company import, pilot research, company-specific generation, control changes, persistence, and stage confirmation. Demo tests cover missing and failing synthetic scoring.
-
-This prototype has no authentication or outbound messaging and is not a live outreach system. Before operational use, Bizsu would need to confirm company willingness, product compatibility, consent, data handling, and measured pilot outcomes.
+The source data, dates, and caveats are recorded in [data/sources.json](data/sources.json), [data/company_candidates.json](data/company_candidates.json), and [PROJECT-KNOWLEDGE.md](PROJECT-KNOWLEDGE.md). The conversion model is trained only on synthetic examples and is not a validated sales prediction.

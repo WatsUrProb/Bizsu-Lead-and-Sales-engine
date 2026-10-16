@@ -15,6 +15,7 @@ export default function App() {
     if (!internalDemo && next !== 'demo-form') return;
     const routes = {discover:'/',pipeline:'/pipeline',drafts:'/drafts','demo-form':'/demo/form','demo-sales':'/demo/sales'};
     if (next === 'demo-form' && query.includes('ref=')) setDemo(current => current ? {...current, partners: null} : current);
+    if (next === 'demo-sales') setDemo(current => current ? {...current, leads: null, dashboard: null} : current);
     history.pushState({}, '', (routes[next] || '/') + query);
     setPage(next);
     window.scrollTo({top:0,behavior:'smooth'});
@@ -42,7 +43,7 @@ export default function App() {
       <button className="workspace-brand" onClick={() => navigate('discover')}><span className="brand-glyph">B</span><span><strong>Bizsu</strong><small>PARTNER WORKSPACE</small></span></button>
       <div className="nav-caption">PARTNER ACQUISITION</div>
       <nav aria-label="Main navigation" className="workspace-nav">
-        {[["discover","◈","Discover"],["pipeline","▦","Pipeline"],["drafts","✉","Outreach drafts"]].map(([id,icon,label])=><button key={id} className={page===id?'current':''} onClick={()=>navigate(id)}><span aria-hidden="true">{icon}</span>{label}</button>)}
+        {[["discover","◈","Discover"],["pipeline","▦","Partner Pipeline"],["drafts","✉","Outreach drafts"]].map(([id,icon,label])=><button key={id} className={page===id?'current':''} onClick={()=>navigate(id)}><span aria-hidden="true">{icon}</span>{label}</button>)}
       </nav>
       <div className="sidebar-spacer" />
       <div className="nav-caption">CUSTOMER ACQUISITION</div>
@@ -54,7 +55,7 @@ export default function App() {
     </aside>
     <div className="workspace-main">
       <header className="workspace-topbar"><span>{page==='demo-sales'?'Customer acquisition':'Partner acquisition'} <span className="topbar-slash">/</span> {page==='demo-sales'?'Customer pipeline':page}</span><span className="topbar-status"><i/> Local prototype</span></header>
-      {page==='demo-sales' ? <div className="legacy-demo"><div className="demo-warning"><strong>Illustrative customer data</strong><span>Company referral links and sample outcomes here are simulated. No prospect is presented as a confirmed Bizsu partner.</span></div>{demoError ? <div className="ws-state">{demoError}</div> : !demo?.leads || !demo?.areas ? <div className="ws-state">Loading customer pipeline…</div> : <Sales leads={demo.leads} areas={demo.areas} dashboard={demo.dashboard} refresh={async()=>{const [leads,dashboard]=await Promise.all([api('/leads'),api('/dashboard')]);setDemo(current=>({...current,leads,dashboard}));}}/>}</div> : <Workspace page={page} navigate={navigate}/>}
+      {page==='demo-sales' ? demoError ? <div className="ws-state">{demoError}</div> : !demo?.leads || !demo?.areas || !demo?.dashboard ? <div className="ws-state">Loading customer pipeline…</div> : <Sales leads={demo.leads} areas={demo.areas} dashboard={demo.dashboard} refresh={async()=>{const [leads,dashboard]=await Promise.all([api('/leads'),api('/dashboard')]);setDemo(current=>({...current,leads,dashboard}));}}/> : <Workspace page={page} navigate={navigate}/>}
     </div>
   </div>;
 }

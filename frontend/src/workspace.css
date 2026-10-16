@@ -35,6 +35,7 @@
 .manual-review label{display:grid;gap:6px;flex:1;min-width:180px;color:#625c83;font-size:11px;font-weight:750}
 .manual-review input{min-height:39px;border:1px solid #dcd8f2;border-radius:8px;padding:8px 10px;background:#fff;color:#30334d}
 .manual-review select{min-height:39px;border:1px solid #dcd8f2;border-radius:8px;padding:8px 10px;background:#fff;color:#30334d}
+.manual-review .review-help{flex-basis:100%;margin:0;color:#625c83;font-size:11px;line-height:1.5}
 .referral-detail{background:#f7f5ff;border-radius:12px;padding:18px!important;margin-top:20px!important;border-top:0!important}
 .referral-detail>strong{font-size:15px;color:#4c43ab}
 .referral-detail>p{font-size:11px;color:#74718f;line-height:1.5;margin:8px 0 10px}
@@ -59,6 +60,12 @@
 .demo-referral-panel p{color:#74738b;font-size:11px;line-height:1.5;margin:0 0 13px}
 .demo-referral-panel label{display:grid;gap:7px;color:#64617c;font-size:11px;font-weight:750}
 .demo-referral-panel input{width:100%;min-height:38px;border:1px solid #dcd7f2;border-radius:8px;padding:8px;background:#fff;color:#3b3d58;font-size:11px}
+.kanban-referral{margin-top:12px;padding:10px 0;border-top:1px solid #f0eff5;display:grid;gap:5px}
+.kanban-referral span{color:#818497;font-size:10px}
+.kanban-referral button{justify-self:start;border:0;background:none;padding:2px 0;color:#5b50c4;font-size:11px;font-weight:750;text-align:left}
+.kanban-referral button:hover{text-decoration:underline}
+.referral-count{display:flex;align-items:center;gap:8px;margin:12px 0 3px;color:#6d6988;font-size:11px}
+.referral-count strong{display:grid;place-items:center;min-width:27px;height:27px;padding:0 6px;border-radius:8px;background:#ece9ff;color:#5549bd;font-size:13px}
 .draft-section .draft-actions{justify-content:flex-start;flex-wrap:wrap}
 .draft-section .draft-actions .disabled{opacity:.45;pointer-events:none}
 .sent-confirm{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #e8eaf0;margin-top:17px;padding-top:15px;color:#747c8c;font-size:11px}

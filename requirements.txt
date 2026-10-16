@@ -4,3 +4,5 @@ scikit-learn>=1.6,<2
 joblib>=1.4,<2
 pytest>=8,<10
 httpx>=0.27,<1
+openai>=2,<3
+psycopg[binary]>=3.2,<4

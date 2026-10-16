@@ -3,6 +3,8 @@
 import json
 from pathlib import Path
 
+from backend.product_copy import PARTNER_FEATURES
+
 CATALOG = Path(__file__).resolve().parents[1] / "data" / "company_candidates.json"
 WEIGHTS = {"residential": 40, "servicing_and_installation": 30, "maintenance_plan": 20, "coverage": 10}
 # Fictional referral links are assigned to research candidates for a clearly
@@ -29,7 +31,8 @@ def outreach_template(candidate: dict) -> str:
         f"Subject: Exploring a possible residential collaboration with Bizsu\n\n"
         f"Hello {candidate['name']} team,\n\n"
         "Bizsu is exploring whether an air-conditioning service partnership could help homeowners "
-        "understand their options. Your publicly listed services prompted us to learn more. "
+        "understand their options. Your publicly listed services prompted us to learn more.\n\n"
+        f"{PARTNER_FEATURES}\n\n"
         "Would you be open to a short conversation about your residential work and service coverage?\n\n"
         "This is an editable research draft. Please verify the company details and Bizsu's proposal "
         "before any outreach.\n"

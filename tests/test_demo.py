@@ -13,6 +13,25 @@ from pipeline.build_data import build
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def test_fresh_demo_starts_without_sample_enquiries(tmp_path):
+    with TestClient(create_app(tmp_path / "fresh.db")) as client:
+        assert client.get("/api/leads").json() == []
+        assert client.get("/api/dashboard").json()["submitted_enquiries"] == 0
+        assert client.get("/api/partners").json()
+
+
+def test_vercel_staff_routes_require_server_side_key(tmp_path, monkeypatch):
+    with TestClient(create_app(tmp_path / "staff.db")) as client:
+        monkeypatch.setenv("VERCEL", "1")
+        monkeypatch.setenv("DATABASE_URL", "postgresql://unused")
+        monkeypatch.setenv("BIZSU_ADMIN_KEY", "private-test-key")
+        assert client.get("/api/leads").status_code == 401
+        assert client.post("/api/leads", json={}).status_code == 401
+        assert client.get("/api/meta").status_code == 401
+        assert client.get("/api/health").status_code == 200
+        assert client.get("/api/meta", headers={"X-Bizsu-Admin-Key": "private-test-key"}).status_code == 200
+
+
 def test_real_data_join_keeps_aggregate_level_and_suppressed_values():
     result = build()
     assert result["unit"].startswith("planning area")
@@ -30,7 +49,7 @@ def test_referral_qualification_stage_and_metrics(tmp_path):
     with TestClient(app) as client:
         # Seed partners while leaving leads empty, so metrics can be checked from zero.
         from backend.db import initialize
-        initialize(tmp_path / "demo.db", seed=True)
+        initialize(tmp_path / "demo.db", seed=True, seed_enquiries=True)
         with sqlite3.connect(tmp_path / "demo.db") as db:
             db.execute("DELETE FROM stage_events")
             db.execute("DELETE FROM leads")
@@ -93,6 +112,9 @@ def test_sourced_candidates_stay_separate_from_demo_referrals(tmp_path):
         assert len(catalog["candidates"]) == 8
         assert sorted(item["pilot_rank"] for item in catalog["candidates"]) == list(range(1, 9))
         candidate = catalog["candidates"][0]
+        assert "CONTINEWM®" in candidate["outreach_draft"]
+        assert "heat exchange" in candidate["outreach_draft"]
+        assert "https://www.bizsu.co/" in candidate["outreach_draft"]
         assert candidate["evidence"] and candidate["website"].startswith("https://")
         assert candidate["shortlisted"] is False
         assert "Unverified" in next(item["coverage"] for item in catalog["candidates"] if item["id"] == "gain-city")
@@ -142,7 +164,7 @@ def test_company_scenario_counts_follow_attributed_demo_leads(tmp_path):
 
 def test_missing_model_keeps_demo_working(tmp_path):
     scorer = ConversionScorer(tmp_path / "missing.joblib", tmp_path / "missing-card.json")
-    with TestClient(create_app(tmp_path / "demo.db", scorer=scorer)) as client:
+    with TestClient(create_app(tmp_path / "demo.db", scorer=scorer, seed_enquiries=True)) as client:
         assert client.get("/api/meta").json()["model"]["available"] is False
         seeded = client.get("/api/leads").json()
         assert len(seeded) == 12
@@ -238,11 +260,16 @@ def test_any_workspace_company_can_have_an_attributed_demo_referral(tmp_path):
     with TestClient(create_app(tmp_path / "demo.db")) as client:
         company = next(item for item in client.get("/api/workspace").json()["companies"] if item["id"] == "81aircon")
         assert company["stage"] == "Discovered"
+        assert company["demo_referral_code"] is None
+        assert company["referral_enquiry_count"] == 0
         created = client.post(f"/api/workspace/companies/{company['id']}/demo-referral")
         assert created.status_code == 200, created.text
         referral = created.json()
         assert referral["company_id"] == company["id"]
         assert client.post(f"/api/workspace/companies/{company['id']}/demo-referral").json() == referral
+        linked = next(item for item in client.get("/api/workspace").json()["companies"] if item["id"] == company["id"])
+        assert linked["demo_referral_code"] == referral["referral_code"]
+        assert linked["referral_enquiry_count"] == 0
         lead = client.post("/api/leads", json={
             "referral_code": referral["referral_code"], "property_type": "HDB",
             "area": "Ang Mo Kio", "ac_type": "split", "ac_units": 2,
@@ -253,11 +280,13 @@ def test_any_workspace_company_can_have_an_attributed_demo_referral(tmp_path):
         assert lead["company_id"] == company["id"]
         assert lead["company_name"] == company["name"]
         assert client.get("/api/dashboard").json()["company_breakdown"][company["id"]]["submitted_enquiries"] == 1
+        linked = next(item for item in client.get("/api/workspace").json()["companies"] if item["id"] == company["id"])
+        assert linked["referral_enquiry_count"] == 1
         assert client.get(f"/api/workspace/companies/{company['id']}").json()["stage"] == "Discovered"
 
 
 def test_followup_requires_manual_sent_confirmation(tmp_path):
-    with TestClient(create_app(tmp_path / "demo.db")) as client:
+    with TestClient(create_app(tmp_path / "demo.db", seed_enquiries=True)) as client:
         lead_id = client.get("/api/leads").json()[0]["id"]
         draft = client.post(f"/api/leads/{lead_id}/draft").json()
         assert draft["status"] == "draft"

@@ -3,7 +3,7 @@ import { api } from './api.js';
 import './home.css';
 
 const initialForm = { property_type: '', area: '', ac_type: '', ac_units: '', daily_hours: '', enquiry_note: '', contact_name: '', contact_email: '', contact_phone: '', consent: false };
-const internalDemo = import.meta.env.DEV || import.meta.env.VITE_INTERNAL_DEMO === 'true';
+const internalDemo = import.meta.env.DEV || (import.meta.env.VITE_INTERNAL_DEMO === 'true' && Boolean(sessionStorage.getItem('bizsu-admin-key')));
 
 export default function Home({ partners, areas, navigate, onSubmitted }) {
   const ref = new URLSearchParams(window.location.search).get('ref');
