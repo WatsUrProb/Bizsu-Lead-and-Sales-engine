@@ -1,4 +1,4 @@
-"""Local-only FastAPI service for the Bizsu synthetic hackathon demo."""
+"""FastAPI service for the Bizsu partner and customer pipeline."""
 
 from __future__ import annotations
 
@@ -159,7 +159,7 @@ def create_app(db_path: Path | None = None, seed: bool = True, scorer: Conversio
 
     @app.middleware("http")
     async def restrict_internal_records(request: Request, call_next):
-        if os.environ.get("VERCEL"):
+        if os.environ.get("VERCEL") or os.environ.get("DATABASE_URL"):
             if not os.environ.get("DATABASE_URL"):
                 return JSONResponse(status_code=503, content={"detail": "Database is not configured"})
             route = request.url.path

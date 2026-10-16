@@ -20,9 +20,9 @@ def test_fresh_demo_starts_without_sample_enquiries(tmp_path):
         assert client.get("/api/partners").json()
 
 
-def test_vercel_staff_routes_require_server_side_key(tmp_path, monkeypatch):
+def test_postgres_staff_routes_require_server_side_key(tmp_path, monkeypatch):
     with TestClient(create_app(tmp_path / "staff.db")) as client:
-        monkeypatch.setenv("VERCEL", "1")
+        monkeypatch.delenv("VERCEL", raising=False)
         monkeypatch.setenv("DATABASE_URL", "postgresql://unused")
         monkeypatch.setenv("BIZSU_ADMIN_KEY", "private-test-key")
         assert client.get("/api/leads").status_code == 401
