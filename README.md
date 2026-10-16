@@ -34,7 +34,7 @@ The pipeline starts empty after the sample-enquiry reset. As enquiries arrive, t
 | API | Python 3.13, FastAPI, Uvicorn | Enquiry handling, partner research, outreach drafts, and pipeline updates |
 | Data | SQLite locally; Supabase PostgreSQL via psycopg when `DATABASE_URL` is set | Stores enquiries, referral activity, drafts, and sales history |
 | Hosting | Vercel configuration | Builds the frontend and serves FastAPI through a Python Function |
-| Optional features | scikit-learn and OpenAI API | Synthetic conversion scoring and assisted outreach drafting; the app can run without an OpenAI key |
+| Optional features | Exported JSON model and OpenAI API | Synthetic conversion scoring and assisted outreach drafting; the app can run without an OpenAI key |
 
 The Supabase and Vercel integration is configured in the repository; a live deployment still needs project credentials and environment variables.
 
@@ -48,7 +48,7 @@ Use Node.js 22+ and Python 3.13. Install dependencies:
 
 ```bash
 python3.13 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m pip install -r requirements-dev.txt
 npm ci
 ```
 
@@ -60,6 +60,8 @@ npm run dev -- --port 5173
 ```
 
 Open <http://127.0.0.1:5173/>. The API creates an ignored `data/demo.db` on first run. It seeds fictional referral sources and a research snapshot of potential partner companies, **but no sample enquiries**. Submit fictional contact details through `/demo/form` to try the customer pipeline. Saved drafts remain manual; nothing is sent.
+
+Vercel installs only `requirements.txt`. The synthetic conversion model runs from the small exported `data/models/conversion_model.json`; scikit-learn, NumPy, SciPy and joblib are needed only to retrain it with `python -m pipeline.train_models` after installing `requirements-dev.txt`.
 
 The local database is not committed. To reset an existing local demo, back it up and clear `leads`, `stage_events`, `lead_activity`, `followup_drafts`, and `referral_events`. The current local copy was reset before this release. The `seed_enquiries=True` option exists only for explicit test and presentation fixtures.
 

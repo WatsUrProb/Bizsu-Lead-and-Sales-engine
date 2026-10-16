@@ -1,0 +1,36 @@
+{
+  "format": "dictvectorizer-logistic-regression-v1",
+  "feature_names": [
+    "ac_type=central",
+    "ac_type=multi_split",
+    "ac_type=split",
+    "ac_type=window",
+    "ac_units",
+    "daily_hours",
+    "property_type=Condo/apartment",
+    "property_type=HDB 1–2 room",
+    "property_type=HDB 3 room",
+    "property_type=HDB 4 room",
+    "property_type=HDB 5 room/executive",
+    "property_type=Landed"
+  ],
+  "coefficients": [
+    -0.5283048344627993,
+    0.5077348807978092,
+    0.3826766489195239,
+    -0.36424201060181477,
+    0.2854145764623349,
+    0.07456802455617423,
+    0.09582707863366532,
+    0.40144345900892336,
+    -0.18660713007212665,
+    0.012780085262182847,
+    0.027854741109941517,
+    -0.3534335492898645
+  ],
+  "intercept": -2.537505935987877,
+  "classes": [
+    0,
+    1
+  ]
+}

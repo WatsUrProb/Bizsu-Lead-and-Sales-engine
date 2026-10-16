@@ -1,4 +1,5 @@
 import json
+import math
 import sqlite3
 from pathlib import Path
 
@@ -163,7 +164,7 @@ def test_company_scenario_counts_follow_attributed_demo_leads(tmp_path):
 
 
 def test_missing_model_keeps_demo_working(tmp_path):
-    scorer = ConversionScorer(tmp_path / "missing.joblib", tmp_path / "missing-card.json")
+    scorer = ConversionScorer(tmp_path / "missing-model.json", tmp_path / "missing-card.json")
     with TestClient(create_app(tmp_path / "demo.db", scorer=scorer, seed_enquiries=True)) as client:
         assert client.get("/api/meta").json()["model"]["available"] is False
         seeded = client.get("/api/leads").json()
@@ -180,6 +181,19 @@ def test_missing_model_keeps_demo_working(tmp_path):
         assert lead["ml_score"] is None and lead["model_version"] is None
         assert lead["score_warning"] == UNAVAILABLE_MESSAGE
         assert client.get(f"/api/leads/{lead['id']}").json()["score_warning"] == UNAVAILABLE_MESSAGE
+
+
+def test_exported_conversion_model_preserves_training_predictions():
+    scorer = ConversionScorer()
+    assert scorer.available
+    examples = [
+        ({"property_type": "HDB 4 room", "ac_type": "window", "ac_units": 1, "daily_hours": 9.1}, 0.12730678661949182),
+        ({"property_type": "HDB 1–2 room", "ac_type": "split", "ac_units": 2, "daily_hours": 5.0}, 0.30795089996222785),
+        ({"property_type": "HDB 4 room", "ac_type": "multi_split", "ac_units": 2, "daily_hours": 4.9}, 0.2533587216660332),
+    ]
+    for lead, expected in examples:
+        assert math.isclose(scorer.model.predict_proba([lead])[0][1], expected, abs_tol=1e-12)
+        assert scorer.score(lead) == round(expected * 100, 1)
 
 
 def test_prediction_failure_still_saves_enquiry(tmp_path):

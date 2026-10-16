@@ -166,6 +166,16 @@ def main() -> None:
     model, card = train_conversion(records)
     (DATA / "models").mkdir(exist_ok=True)
     joblib.dump(model, DATA / "models" / "conversion.joblib")
+    vectorizer = model.named_steps["transform"]
+    classifier = model.named_steps["classifier"]
+    artifact = {
+        "format": "dictvectorizer-logistic-regression-v1",
+        "feature_names": vectorizer.get_feature_names_out().tolist(),
+        "coefficients": classifier.coef_[0].tolist(),
+        "intercept": float(classifier.intercept_[0]),
+        "classes": classifier.classes_.tolist(),
+    }
+    (DATA / "models" / "conversion_model.json").write_text(json.dumps(artifact, indent=2, ensure_ascii=False) + "\n")
     (DATA / "models" / "conversion_card.json").write_text(json.dumps(card, indent=2) + "\n")
     print(f"K-Means chose k={clusters['chosen_k']}; candidate metrics: {clusters['candidate_metrics']}")
     print(f"Trained synthetic classifier: {card['metrics']}")

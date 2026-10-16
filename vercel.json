@@ -5,7 +5,7 @@
   "outputDirectory": "dist",
   "functions": {
     "api/index.py": {
-      "excludeFiles": "{tests/**,frontend/**,public/**,videos/**,dist/**,pipeline/**}"
+      "excludeFiles": "{tests/**,frontend/**,public/**,videos/**,dist/**,pipeline/**,data/models/*.joblib}"
     }
   },
   "rewrites": [
